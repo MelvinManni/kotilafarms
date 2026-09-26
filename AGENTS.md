@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — App image checked with Chromium
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P3.5 (follow-up)
+- **Summary:** `docker build .` now completes (the earlier failure was a slow fetch of Alpine's `chromium`). The image has Chromium 152 at `CHROMIUM_PATH=/usr/bin/chromium` and playwright-core's run-time files, so PDF downloads can work in the container. Closes the image-build follow-ups from P2.6, P3.1 and P3.2.
+- **Files:** `AGENTS.md`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** A PDF hasn't been downloaded from a running container yet (needs the full stack with real env).
+
 ### 2026-09-26 — Hardening: accessibility, performance, safe queries
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P3.5
 - **Summary:** Accessibility: an axe sweep of sign-in and 19 owner pages on laptop and phone (WCAG 2.0–2.2 A/AA, serious and critical) now runs in e2e and passes. Fixes it found: wide tables scroll inside a labelled box you can reach by keyboard; the big Set buttons' small text was 4.4:1 (now white, one shared `SetActionLink`); report pickers and the weekly "Week of" line sat on the phone's green band (now on a white panel). Performance measured on a mid-range Android profile (see `docs/02-architecture.md`). Queries: services no longer run side-by-side queries on one transaction's client (`queries` / `eachQuery` helpers: side by side on the pool, one after another in a transaction), which pg@9 will refuse; the test run is now free of those warnings. The P3.5 Playwright flows (offline daily log with reload, lost reply mid-sync, expense attribution, sale balances) were already in place from P1.4–P1.8.
