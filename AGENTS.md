@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-27 — Buttons keep their colours on hover; steady focus rings
+- **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P0.5)
+- **Summary:** Melvin saw button text turn black on hover. Cause: our Button and IconButton wrapped shadcn's Button in its `ghost` variant, which adds `hover:text-foreground` (and `aria-expanded:bg-muted`), so every variant's text went near-black on hover. They now render Base UI's button directly with only Kotila classes: hover changes the background, never the text. Chips and segments keep their text colour on hover too (shadcn's toggle adds `hover:text-foreground`). A picked segment and the active tab now show the same green focus halo as everything else (their "selected" shadow was hiding it). Checked every control on `/dev/components`: rest, hover and keyboard focus. Also fixed the e2e date helper, which used the UTC day and broke "day N" checks just after midnight in Lagos.
+- **Files:** `src/components/kotila/{button,icon-button,chip-group,segmented,tabs}.tsx`, `e2e/helpers.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** Kept on purpose: text links darken one green step on hover, and an unselected tab's grey label darkens on hover.
+
 ### 2026-09-26 — Steady accessibility check on sign-in
 - **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P3.5)
 - **Summary:** The sign-in accessibility check sometimes ran while the Sign in button was still fading from its "not ready" grey to green, and measured the colour mid-fade. It now waits for the button's resting colour (5:1 against white text) before scanning. No app change.

@@ -19,15 +19,16 @@ export async function signIn(page: Page, email = E2E.owner.email, password = E2E
 // Start a Set through the API as whoever is signed in on this page; returns its id
 export async function startSetViaApi(page: Page, over: Record<string, unknown> = {}) {
   const res = await page.request.post("/api/sets", {
-    data: { clientId: crypto.randomUUID(), pen: "Front pen", startDate: new Date().toISOString().slice(0, 10), intake: 600, dayOldSupplier: "Zartech", dayOldUnitCost: 980, ...over },
+    data: { clientId: crypto.randomUUID(), pen: "Front pen", startDate: dayFromToday(0), intake: 600, dayOldSupplier: "Zartech", dayOldUnitCost: 980, ...over },
   });
   expect(res.ok()).toBe(true);
   return ((await res.json()) as { id: string }).id;
 }
 
-// A farm day n days from today (UTC date is fine for e2e)
+// A farm day n days from today, in the farm's time zone (UTC is a day behind Lagos just after midnight)
 export function dayFromToday(n: number) {
-  const d = new Date();
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Lagos" }).format(new Date());
+  const d = new Date(`${today}T12:00:00Z`);
   d.setUTCDate(d.getUTCDate() + n);
   return d.toISOString().slice(0, 10);
 }

@@ -2,13 +2,14 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { cva } from "class-variance-authority";
-import { Button as ButtonBase } from "@/components/ui/button";
+// Base UI directly, not shadcn's Button: its variants add hover text and aria-expanded colours we don't want
+import { Button as ButtonBase } from "@base-ui/react/button";
 import { Icon } from "@/svgs/icon";
 import type { IconName } from "@/svgs/icon-paths";
 import { cn } from "@/utils/cn";
 
 export const kotilaButtonVariants = cva(
-  "inline-flex h-auto min-h-11 items-center justify-center gap-2 rounded-full border-[1.5px] border-transparent px-5 font-sans text-[15px] leading-none font-bold whitespace-nowrap no-underline transition-[background-color,box-shadow,transform] focus-visible:border-green-600 focus-visible:shadow-focus focus-visible:ring-0 active:translate-y-px disabled:cursor-not-allowed disabled:border-line disabled:bg-surface-sunken disabled:text-ink-faint disabled:opacity-100 disabled:shadow-none aria-disabled:cursor-not-allowed aria-disabled:border-line aria-disabled:bg-surface-sunken aria-disabled:text-ink-faint aria-disabled:shadow-none",
+  "inline-flex h-auto min-h-11 items-center justify-center gap-2 rounded-full border-[1.5px] border-transparent px-5 font-sans text-[15px] leading-none font-bold whitespace-nowrap no-underline transition-[background-color,box-shadow,transform] cursor-pointer outline-none focus-visible:border-green-600 focus-visible:shadow-focus active:translate-y-px [&_svg]:shrink-0 disabled:cursor-not-allowed disabled:border-line disabled:bg-surface-sunken disabled:text-ink-faint disabled:opacity-100 disabled:shadow-none aria-disabled:cursor-not-allowed aria-disabled:border-line aria-disabled:bg-surface-sunken aria-disabled:text-ink-faint aria-disabled:shadow-none",
   {
     variants: {
       variant: {
@@ -70,7 +71,7 @@ export function Button({ variant, size, icon, full, href, download, disabled, ty
     );
   }
   return (
-    <ButtonBase type={type} variant="ghost" className={classes} disabled={disabled} onClick={onClick}>
+    <ButtonBase type={type} className={classes} disabled={disabled} onClick={onClick}>
       {content}
     </ButtonBase>
   );

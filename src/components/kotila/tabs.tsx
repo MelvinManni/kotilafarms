@@ -18,7 +18,7 @@ export function Tabs({ items, active, onChange }: TabsProps) {
             <TabsTrigger
               key={opt.value}
               value={opt.value}
-              className="-mb-px h-12 flex-none gap-2 rounded-none border-0 border-b-[3px] border-transparent px-4 text-[15px] leading-none font-semibold text-ink-muted after:hidden hover:text-ink focus-visible:shadow-focus focus-visible:ring-0 focus-visible:outline-none data-active:border-green-600 data-active:text-ink"
+              className="-mb-px h-12 flex-none gap-2 rounded-none border-0 border-b-[3px] border-transparent px-4 text-[15px] leading-none font-semibold text-ink-muted after:hidden hover:text-ink focus-visible:shadow-focus focus-visible:ring-0 focus-visible:outline-none data-active:border-green-600 data-active:text-ink data-active:focus-visible:shadow-focus"
             >
               {opt.label}
               {itemCount !== undefined ? (

@@ -32,7 +32,7 @@ export function Segmented({ label, options, value, defaultValue, onChange, optio
           <ToggleGroupItem
             key={opt.value}
             value={opt.value}
-            className="h-auto min-h-12 rounded-sm border-0 bg-transparent px-3 text-[15px] leading-tight font-semibold text-ink-2 hover:bg-surface/60 focus-visible:shadow-focus focus-visible:ring-0 data-pressed:bg-surface data-pressed:text-ink data-pressed:shadow-seg"
+            className="h-auto min-h-12 rounded-sm border-0 bg-transparent px-3 text-[15px] leading-tight font-semibold text-ink-2 hover:bg-surface/60 hover:text-ink-2 focus-visible:shadow-focus focus-visible:ring-0 data-pressed:bg-surface data-pressed:text-ink data-pressed:shadow-seg data-pressed:hover:text-ink data-pressed:focus-visible:shadow-focus"
           >
             {opt.label}
           </ToggleGroupItem>

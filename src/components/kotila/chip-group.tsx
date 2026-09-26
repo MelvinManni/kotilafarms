@@ -48,7 +48,7 @@ export function ChipGroup({ label, options, value, defaultValue, multiple = true
             key={opt.value}
             value={opt.value}
             className={cn(
-              "h-auto min-h-11 gap-1.5 rounded-full border-[1.5px] border-line-strong bg-surface px-4 text-[15px] leading-none font-semibold text-ink-2 hover:bg-surface-sunken focus-visible:shadow-focus focus-visible:ring-0 data-pressed:border-green-600 data-pressed:bg-green-100 data-pressed:text-green-800",
+              "h-auto min-h-11 gap-1.5 rounded-full border-[1.5px] border-line-strong bg-surface px-4 text-[15px] leading-none font-semibold text-ink-2 hover:bg-surface-sunken hover:text-ink-2 focus-visible:border-green-600 focus-visible:shadow-focus focus-visible:ring-0 data-pressed:border-green-600 data-pressed:bg-green-100 data-pressed:text-green-800 data-pressed:hover:bg-green-100 data-pressed:hover:text-green-800",
               size === "sm" && "min-h-9 px-3 text-sm",
             )}
           >
