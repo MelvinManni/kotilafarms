@@ -165,6 +165,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — UI base: shadcn (Base UI), Kotila theme, fonts, logos
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P0.4
+- **Summary:** `shadcn init` with Base UI (base-nova). `globals.css` is now the Kotila theme from `design/theme.css` plus shadcn's colour utilities; dark theme removed, and `dark:` classes in primitives only apply under a `.dark` class we never set, so phones in dark mode still get the light app. Signika and Plus Jakarta Sans via `next/font`. Logos as React components. Added the shadcn primitives listed in `docs/08-design-system.md`.
+- **Files:** `components.json`, `src/app/{globals.css,layout.tsx,page.tsx}`, `src/components/ui/*` (alert, avatar, badge, button, card, checkbox, dialog, drawer, empty, field, input, label, radio-group, select, separator, sheet, sidebar, skeleton, table, tabs, toggle, toggle-group, tooltip), `src/svgs/{kotila-icon,kotila-mark}.tsx`, `src/utils/cn.ts`, `src/hooks/{use-media-query,use-mobile}.ts`
+- **Packages:** shadcn@4.21.0, @base-ui/react@1.8.0, cn@0.4.0, class-variance-authority@0.7.1, lucide-react@1.48.0, tw-animate-css@1.4.0 (added, pinned exact)
+- **Migrations:** none
+- **Follow-ups:** `cn` lives at `src/utils/cn.ts` (components.json points there). shadcn's `use-mobile` was rewritten on `useSyncExternalStore` to pass the React hooks lint rule.
+
 ### 2026-09-26 — Env validation
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P0.3
 - **Summary:** `.env` is checked with zod when the server starts (`src/instrumentation.ts`), not at build time, so Docker builds need no secrets. A bad env stops the server with one list of every problem. The schema is pure (`env-schema.ts`) so seed scripts and tests can use it; `env.ts` is the server-only getter.

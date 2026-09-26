@@ -41,3 +41,9 @@ See AGENTS.md › Version policy. Look up every version with `pnpm view <pkg> ve
 | vitest | 5.0.2 | P0.1 | Unit tests |
 | zod | 4.6.5 | P0.3 | Validation (env now; forms and API later) |
 | server-only | 0.0.1 | P0.3 | Stops server modules being bundled for the browser |
+| shadcn | 4.21.0 | P0.4 | CLI; also provides `shadcn/tailwind.css` imported by globals.css |
+| @base-ui/react | 1.8.0 | P0.4 | Primitives under shadcn components |
+| cn | 0.4.0 | P0.4 | Tailwind class merge used by shadcn (replaces clsx + tailwind-merge) |
+| class-variance-authority | 0.7.1 | P0.4 | Component variants |
+| lucide-react | 1.48.0 | P0.4 | Icons |
+| tw-animate-css | 1.4.0 | P0.4 | Enter/exit animations for dialogs and sheets |

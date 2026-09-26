@@ -1,17 +1,21 @@
-// Root layout: html shell, fonts and global styles
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+// Root layout: html shell, Kotila fonts and global styles
+import type { Metadata, Viewport } from "next";
+import { Plus_Jakarta_Sans, Signika } from "next/font/google";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
-// TODO(P0.4): swap to the Kotila fonts from docs/08-design-system.md
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Display font: headings and the wordmark
+const signika = Signika({
+  variable: "--font-signika",
   subsets: ["latin"],
+  weight: ["300", "400", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Body font: text and figures
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -19,13 +23,16 @@ export const metadata: Metadata = {
   description: "Daily records, sales and money for Kotila Farms",
 };
 
+export const viewport: Viewport = {
+  themeColor: "#2f6410",
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en" className={`${signika.variable} ${jakarta.variable} h-full antialiased`}>
+      <body className="flex min-h-full flex-col">
+        <TooltipProvider>{children}</TooltipProvider>
+      </body>
     </html>
   );
 }
