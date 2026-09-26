@@ -4,6 +4,7 @@ import { count } from "@/utils/format/count";
 import { longDate, shortDate } from "@/utils/format/dates";
 import { naira } from "@/utils/format/naira";
 import { pct } from "@/utils/format/percent";
+import { setNames } from "@/utils/format/set-names";
 
 export function cashHeadline(c: CashPayload): { title: string; subtitle: string } {
   const since = c.since ? `since ${c.since.by.split(" ")[0]} reconciled on ${shortDate(c.since.date, false)}` : c.firstRecord ? `since the first record on ${shortDate(c.firstRecord, false)}` : "";
@@ -13,8 +14,7 @@ export function cashHeadline(c: CashPayload): { title: string; subtitle: string 
 
 // "Set 3 made ₦568,750 — a 15.96% margin" / "Sets 1–3 made …" / "Set 5 has lost ₦X so far"
 export function pnlHeadline(p: PnlPayload): { title: string; subtitle: string } {
-  const numbers = p.sets.map((s) => s.number).sort((a, b) => a - b);
-  const name = numbers.length === 1 ? `Set ${numbers[0]}` : numbers.every((n, i) => i === 0 || n === numbers[i - 1]! + 1) ? `Sets ${numbers[0]}–${numbers.at(-1)}` : `Sets ${numbers.join(", ")}`;
+  const name = setNames(p.sets.map((s) => s.number));
   const running = p.sets.some((s) => s.status !== "closed");
   const profit = p.pnl.profit;
   const title = profit >= 0

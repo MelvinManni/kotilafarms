@@ -63,6 +63,8 @@ One file per entity. Each mutating method runs in a Drizzle transaction and writ
 
 Set report and weekly review are pages under `src/app/(print)/…` rendered at A4. Export with a headless browser from a route handler (`/api/reports/set/[ids]/pdf`). Check whether Playwright's Chromium is acceptable in the container image; if too heavy, run it only in the app container, not the dev container.
 
+As built (P2.6): `playwright-core` drives Alpine's `chromium` in the app image (`CHROMIUM_PATH`), or the installed Chrome in development. The route passes the person's session cookie to the browser, which only ever visits `INTERNAL_APP_URL` (or `NEXTAUTH_URL`), never the request's Host. The print page is `/print/reports/set?setIds=`, rendered on the server.
+
 ## Environment
 
 `.env.example` lists every variable. Validate env at startup with a zod schema in `src/lib/env.ts`; fail fast on missing values.

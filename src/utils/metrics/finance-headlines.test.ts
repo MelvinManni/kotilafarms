@@ -16,9 +16,9 @@ describe("finance headlines", () => {
   });
 
   it("states what a Set made, and a loss plainly", () => {
-    expect(pnlHeadline(pnl([{ id: "3", number: 3, closedOn: "2026-09-14", status: "closed" }]))).toEqual({ title: "Set 3 made ₦568,750 — a 15.96% margin", subtitle: "500 day-olds, 465 sold · closed 14 September 2026" });
-    const three = [1, 2, 3].map((n) => ({ id: String(n), number: n, closedOn: "2026-01-01", status: "closed" }));
+    expect(pnlHeadline(pnl([{ id: "3", number: 3, startDate: "2026-07-20", closedOn: "2026-09-14", status: "closed" }]))).toEqual({ title: "Set 3 made ₦568,750 — a 15.96% margin", subtitle: "500 day-olds, 465 sold · closed 14 September 2026" });
+    const three = [1, 2, 3].map((n) => ({ id: String(n), number: n, startDate: "2026-01-01", closedOn: "2026-01-01", status: "closed" }));
     expect(pnlHeadline(pnl(three)).title).toMatch(/^Sets 1–3 made/);
-    expect(pnlHeadline(pnl([{ id: "5", number: 5, closedOn: null, status: "brooding" }], 1_000_000)).title).toBe("Set 5 is ₦431,250 down so far");
+    expect(pnlHeadline(pnl([{ id: "5", number: 5, startDate: "2026-09-20", closedOn: null, status: "brooding" }], 1_000_000)).title).toBe("Set 5 is ₦431,250 down so far");
   });
 });

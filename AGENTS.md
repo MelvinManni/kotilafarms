@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Set report and PDF
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P2.6
+- **Summary:** `/reports/set`: pick a Set or all closed Sets and read the full picture — intake, deaths, birds sold, weight at sale, revenue, expenses, profit, margin, per-bird money, FCR, feed cost per kg live weight, mortality, spend by category, growth against the standard (one Set), the largest expenses by date, and unpaid balances in the footnote. Reproduces Set 3 (FCR 1.74, ₦1,806 a kg). Download PDF prints the server-rendered A4 page `/print/reports/set` with headless Chromium, signed in as the person asking.
+- **Files:** `src/server/services/reports/{set-report,print-pdf}.ts`, `src/app/api/reports/set/{route.ts,pdf/route.ts}`, `src/app/(print)/print/reports/set/page.tsx`, `src/app/(app)/reports/{page.tsx,set/page.tsx}`, `src/components/reports/*`, `src/components/kotila/button.tsx` (`download`), `src/utils/metrics/{set-performance,report-headlines}.ts`, `src/utils/format/set-names.ts`, `src/lib/env-schema.ts` (`CHROMIUM_PATH`, `INTERNAL_APP_URL`), `src/app/globals.css` (white paper when printing), `Dockerfile` (Alpine `chromium`), `next.config.ts`, `test/api/set3.ts`, `e2e/reports.spec.ts`, `docs/02-architecture.md`
+- **Packages:** playwright-core@1.63.0 (added)
+- **Migrations:** none
+- **Follow-ups:** The Docker image with Chromium wasn't built here (Docker build takes a while; check `docker compose --profile app up --build` before deploying). `pg` warns about queries run side by side on one transaction (`Promise.all` inside a transaction); it still works but pg@9 will refuse it — tidy up in P3.5.
+
 ### 2026-09-26 — Set P&L, cash position and cash counts
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P2.5
 - **Summary:** `/finance`: cash position since the last count (money in: sale money received, deposits, payments, manure, capital, loans; money out: every expense by category, withdrawals, loan repayments with gross interest), what should be on hand, and what buyers owe (not cash yet). Owners record a count (cash box + bank; needs a connection): the difference against the books is saved and the count becomes the new starting point; same-day entries made after the count still count. Set P&L for one Set or all closed Sets: revenue, expenses, profit, margin, per-bird figures, feed share, spend by category; capital items spread over Sets count their share. Reproduces Set 3 (₦568,750, 15.96%, ₦6,440 a bird). Today gets cash and feed price cards.

@@ -93,6 +93,8 @@
 
 @layer base {
   body { background: var(--ground); color: var(--ink); font-family: var(--font-sans); font-variant-numeric: tabular-nums; }
+  /* Printed reports are white paper */
+  @media print { body { background: var(--surface); } }
   h1, h2, h3 { font-family: var(--font-display); }
   :focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(61,122,18,0.22); }
 }

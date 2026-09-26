@@ -9,6 +9,9 @@ export type FeedStock = { boughtBags: number; usedBags: number; stockBags: numbe
 // Bags from a log entry, turning kg into bags with this feed's bag size
 export const toBags = (u: Pick<Use, "qty" | "unit">, kgPerBag: number) => (u.unit === "kg" ? u.qty / kgPerBag : u.qty);
 
+// Kilograms from a log entry
+export const toKg = (u: Pick<Use, "qty" | "unit">, kgPerBag: number) => (u.unit === "kg" ? u.qty : u.qty * kgPerBag);
+
 // Daily rate = average bags a day over the days with feed logged in the last 7 days
 export function feedStock(boughtBags: number[], uses: Use[], kgPerBag: number, today: string): FeedStock {
   const bought = boughtBags.reduce((a, b) => a + b, 0);

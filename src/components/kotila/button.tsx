@@ -38,6 +38,8 @@ type ButtonProps = {
   icon?: IconName;
   full?: boolean;
   href?: string;
+  // A file to save (e.g. a PDF): a plain link, not page navigation
+  download?: boolean;
   disabled?: boolean;
   type?: "button" | "submit";
   onClick?: () => void;
@@ -45,7 +47,7 @@ type ButtonProps = {
   children?: ReactNode;
 };
 
-export function Button({ variant, size, icon, full, href, disabled, type = "button", onClick, className, children }: ButtonProps) {
+export function Button({ variant, size, icon, full, href, download, disabled, type = "button", onClick, className, children }: ButtonProps) {
   const classes = cn(kotilaButtonVariants({ variant, size, full }), className);
   const content = (
     <>
@@ -53,6 +55,13 @@ export function Button({ variant, size, icon, full, href, disabled, type = "butt
       {children}
     </>
   );
+  if (href && download) {
+    return (
+      <a href={href} download className={classes} aria-disabled={disabled || undefined} onClick={onClick}>
+        {content}
+      </a>
+    );
+  }
   if (href) {
     return (
       <Link href={href} className={classes} aria-disabled={disabled || undefined} onClick={onClick}>

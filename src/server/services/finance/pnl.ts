@@ -23,7 +23,7 @@ export async function pnlFor(db: Executor, setIds: string[]): Promise<PnlPayload
   const pnl = setPnl({ intake, birdsSold: sum("sold"), birdRevenue: sum("birdRevenue"), manureRevenue: sum("manure"), expensesByCategory: byCategory });
   const list = Object.entries(byCategory).map(([label, value]) => ({ label, value })).sort((a, b) => b.value - a.value);
   return {
-    sets: rows.sort((a, b) => b.number - a.number).map((s) => ({ id: s.id, number: s.number, closedOn: s.closedOn, status: s.status })),
+    sets: rows.sort((a, b) => b.number - a.number).map((s) => ({ id: s.id, number: s.number, startDate: s.startDate, closedOn: s.closedOn, status: s.status })),
     intake, birdsSold: sum("sold"), birdRevenue: sum("birdRevenue"), manureRevenue: sum("manure"), pnl, byCategory: list,
     feedShare: list.length ? categoryShare(list, "Feed") : null,
   };

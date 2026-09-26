@@ -38,6 +38,10 @@ export const envSchema = z
     S3_ACCESS_KEY_ID: optionalText,
     S3_SECRET_ACCESS_KEY: optionalText,
     S3_ENDPOINT: optionalUrl,
+    // PDF reports: Chromium to print with (the container sets it; empty uses the installed Chrome)
+    CHROMIUM_PATH: optionalText,
+    // Where the headless browser reaches this app (empty uses NEXTAUTH_URL)
+    INTERNAL_APP_URL: optionalUrl,
     FARM_TIMEZONE: z
       .string()
       .default("Africa/Lagos")

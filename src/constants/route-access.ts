@@ -16,6 +16,7 @@ const ACCESS: [string, Role[]][] = [
   ["/finance", ["owner", "manager"]],
   ["/finance/capital", ["owner"]],
   ["/reports", ["owner", "manager"]],
+  ["/print", ["owner", "manager"]],
   ["/settings", ["owner", "manager"]],
   ["/settings/users", ["owner"]],
 ];

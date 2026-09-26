@@ -16,7 +16,7 @@ export type CashPayload = {
 };
 
 export type PnlPayload = {
-  sets: { id: string; number: number; closedOn: string | null; status: string }[];
+  sets: { id: string; number: number; startDate: string; closedOn: string | null; status: string }[];
   intake: number;
   birdsSold: number;
   birdRevenue: number;
