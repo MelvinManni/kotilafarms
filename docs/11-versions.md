@@ -46,6 +46,9 @@ See AGENTS.md › Version policy. Look up every version with `pnpm view <pkg> ve
 | pg / @types/pg | 8.23.0 / 8.23.1 | P0.6 | Postgres driver (node-postgres) |
 | @node-rs/argon2 | 2.2.1 | P0.6 | Argon2id password hashing; prebuilt binaries incl. Alpine (musl) |
 | tsx | 4.23.15 | P0.6 | Runs `db:setup` (dev) |
+| next-auth | 4.24.15 | P0.8 | Auth (v5 is beta only); peers allow Next 16 |
+| @tanstack/react-query | 5.103.3 | P0.8 | Client data |
+| @tanstack/react-query-devtools | 5.103.3 | P0.8 | Dev only |
 | shadcn | 4.21.0 | P0.4 | CLI; also provides `shadcn/tailwind.css` imported by globals.css |
 | @base-ui/react | 1.8.0 | P0.4 | Primitives under shadcn components |
 | cn | 0.4.0 | P0.4 | Tailwind class merge used by shadcn (replaces clsx + tailwind-merge) |

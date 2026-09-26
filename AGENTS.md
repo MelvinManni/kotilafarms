@@ -169,6 +169,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — API plumbing
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P0.8
+- **Summary:** `route()` wrapper maps errors to `{ error: { code, message, issues? } }` (ApiError, zod → 422, Postgres unique → 409, check/FK → 422, anything else → 500 without details). NextAuth v4 options (Credentials against `users`, Argon2id, JWT with id and role, role/active re-read every 5 minutes so a deactivated person loses access), `requireSession` / `requireRole`, audit helpers (one row per changed field, soft delete logged as delete). Client: query client (offline-first), key factory, `apiFetch` with typed errors, providers.
+- **Files:** `src/server/{errors,http,auth,auth-options,audit}.ts`, `src/server/services/sign-in.ts`, `src/app/api/auth/[...nextauth]/route.ts`, `src/lib/auth/roles.ts`, `src/lib/query/*`, `src/app/providers.tsx`, `src/types/{api,session,next-auth.d}.ts` + tests
+- **Packages:** next-auth@4.24.15, @tanstack/react-query@5.103.3 (added); @tanstack/react-query-devtools@5.103.3 (added, dev)
+- **Migrations:** none
+- **Follow-ups:** Sign-in pages, invites, middleware and rate limiting come in P1.1.
+
 ### 2026-09-26 — Metrics module
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P0.7
 - **Summary:** Pure metric functions in `src/utils/metrics`: live birds, mortality, sample average / CV / uniformity, growth (from P0.5), FCR, live weight, feed stock, daily use, days left, feed cost per kg, Set P&L (one or several Sets) with per-bird figures, sale balance, cash position, capital, ownership, loan interest (gross / WHT / net) and borrowing capacity. Tests reproduce the Set 3 calibration, both loan examples and the Set 4 growth numbers, using the doc's figures as fixtures (no database).
