@@ -59,6 +59,7 @@ An internal web app for Kotila Farms, a broiler poultry farm in Nigeria owned by
 - **Server is the gatekeeper.** Every route handler: check session → check role → validate with the shared zod schema → call a service in `src/server/services` → return typed JSON. Hiding a button is not security.
 - **Every write is audited.** Updates and deletes write an `audit_events` row in the same transaction (see `docs/03-data-model.md`).
 - **Styling is Tailwind v4 only.** All classes and styling use Tailwind v4 utilities and its CSS-first config (`@theme` in CSS, no `tailwind.config.js`). No CSS modules, styled-components or inline `style` for things a utility can do. Custom CSS only for tokens and theme in `globals.css`.
+- **Use `cn` from `@/utils/cn`**, never from the `cn` package directly (it is configured for our theme). After `shadcn add`, fix the import in the new files.
 - **Money is integer naira** (no floats). Weights are integer grams. Format only for display, with `src/utils/format`.
 - **Dates:** `date` for farm days, `timestamptz` for events. Farm timezone is `Africa/Lagos`.
 - **Accessibility:** 4.5:1 text contrast (the tokens already meet it), 44px minimum touch targets, 56px on entry screens, every icon-only control has `aria-label` and a tooltip.
@@ -164,6 +165,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 ```
 
 ## Change log
+
+### 2026-09-26 — Kotila design components and /dev/components
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P0.5
+- **Summary:** Ported every reference component to typed React + Tailwind v4 on shadcn/Base UI: fields (Field, TextInput, MoneyInput, Select, Checkbox), LinkedAmounts, Stepper, ChipGroup, Segmented, AttributionField, Button, IconButton, Tooltip, Tag, StatusChip, Delta, Figure, Money, Rows, Panel, LedgerTable, Notice, SyncStatus, Person, RoleBadge, AuditTrail, EmptyState, Tabs, Sheet, Wordmark, SideRail, TopBar, TabBar, GrowthChart, Sparkline, BarList. Dev-only `/dev/components` shows each with Set 3/4/5 data (404 in production; `?sheet=modal|sheet` opens a sheet). Checked by screenshot at 1280px and 390px.
+- **Files:** `src/components/kotila/**`, `src/components/layout/{side-rail,top-bar,tab-bar}.tsx`, `src/components/dev/*`, `src/app/dev/components/page.tsx`, `src/svgs/{icon,icon-paths}.ts(x)`, `src/utils/format/*`, `src/utils/parse/parse-number.ts`, `src/utils/linked-amounts/*`, `src/utils/metrics/growth.ts`, `src/utils/charts/smooth-path.ts`, `src/utils/cn.ts`, `src/hooks/use-controlled.ts`, `src/types/*`, `src/constants/{nav,breed-standard}.ts`, `src/app/globals.css` (component tokens), `docs/08-design-system.md`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** `cn` is now configured for our theme (font sizes and shadows were being dropped next to colours); shadcn `ui/*` files import it from `@/utils/cn`. Prop differences from `index.d.ts` are listed in `docs/08-design-system.md` › Port notes. The growth projection label now flips left sooner so it isn't clipped.
 
 ### 2026-09-26 — UI base: shadcn (Base UI), Kotila theme, fonts, logos
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P0.4

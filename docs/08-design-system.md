@@ -9,6 +9,22 @@ The design system is **Kotila Farm Ledger**. Its full brand book is in `design/b
 3. Fonts with `next/font/google`: `Signika` (300, 400, 600, 700) as `--font-signika`, `Plus_Jakarta_Sans` (400–800) as `--font-jakarta`, applied on `<html>`.
 4. Logos: turn `design/logos/*.svg` into React components in `src/svgs/` (`kotila-icon.tsx`, `kotila-mark.tsx` with a `color` prop for green or white). Use the icon beside a text wordmark (**Kotila** Signika 600, **Farms** Signika 300 in green-700); the white mark on green-700/green-900.
 
+5. **After every `shadcn add`**, change `import { cn } from "cn"` in the new `components/ui` files to `import { cn } from "@/utils/cn"`. Our `cn` knows the theme's font sizes and shadows; the plain one mistakes `text-caption` for a colour and drops it.
+
+## Port notes (P0.5)
+
+Where the built components differ from `design/reference-components/index.d.ts`:
+
+- `SideRail` and `TabBar` take `items` (required); nav lives in `src/constants/nav.ts`. No `logoSrc`: the logo is `src/svgs/kotila-icon.tsx`.
+- `TopBar.back` is `{ label, href }` (a link), not a string.
+- `Sheet` has no `fixed` prop: it always renders in a portal over the whole screen.
+- `SyncStatus` has a fifth state, `rejected` (see `docs/07-offline-sync.md`).
+- `LinkedAmounts.onChange` values can be `null` until two fields are filled.
+- `Tooltip` wraps exactly one focusable element.
+- Formatting: `kg()` takes grams, `pct()` takes a ratio (0.036 → 3.6%). Growth maths live in `src/utils/metrics/growth.ts`.
+- Finance shows in the rail for managers too (cash and P&L); capital and loans inside it stay owner-only.
+- `SideRail` is a plain `nav`, not shadcn `sidebar`: the sidebar's provider brings phone-drawer behaviour we don't use (phones get TopBar + TabBar).
+
 ## Component mapping
 
 `design/reference-components/kotila-ui.js` is a working React reference for every component, with the props contract in `index.d.ts` and live previews in the Design System artifact. Rebuild each as a typed component, composing shadcn primitives where one exists. **Keep the props from `index.d.ts`** so screens can be built straight from the designs.
