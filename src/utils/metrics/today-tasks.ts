@@ -4,6 +4,7 @@ import type { FeedStockRow } from "@/types/feed";
 import type { TodayTask } from "@/types/today";
 import { addDays } from "@/utils/dates/add-days";
 import { RUN_OUT_WARN_DAYS, runOutDetail, runOutNotice } from "@/utils/metrics/feed-headlines";
+import { doseLabel, vaccineStatus } from "@/utils/metrics/vaccine-status";
 
 type RunningSet = { id: string; number: number; startDate: string; dayOfAge: number };
 type Vaccine = { setId: string; item: string; doseNo: number; dueAgeDays: number; givenOn: string | null };
@@ -31,10 +32,10 @@ export function todayTasks({ today, sets, loggedToday, vaccines, weekLogs, sampl
   for (const v of vaccines.filter((x) => !x.givenOn)) {
     const set = sets.find((s) => s.id === v.setId);
     if (!set) continue;
-    const due = addDays(set.startDate, v.dueAgeDays);
-    if (due > addDays(today, 1)) continue;
-    const when = due < today ? "is late" : due === today ? "due today" : "due tomorrow";
-    tasks.push({ kind: "vaccine", tone: due < today ? "alert" : "warning", title: `${v.item} ${when} · Set ${set.number}`, detail: `Day ${v.dueAgeDays} · dose ${v.doseNo} · in drinking water, morning` });
+    const { state } = vaccineStatus(v, set.startDate, today);
+    if (state === "upcoming") continue;
+    const when = state === "late" ? "is late" : state === "due-today" ? "due today" : "due tomorrow";
+    tasks.push({ kind: "vaccine", tone: state === "late" ? "alert" : "warning", title: `${v.item} ${when} · Set ${set.number}`, detail: `Day ${v.dueAgeDays} · ${doseLabel(v.doseNo)} · in drinking water, morning`, href: "/health" });
   }
 
   for (const r of feed.filter((f) => f.daysLeft !== null && f.daysLeft <= RUN_OUT_WARN_DAYS).sort((a, b) => a.daysLeft! - b.daysLeft!)) {

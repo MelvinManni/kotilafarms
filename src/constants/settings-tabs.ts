@@ -5,5 +5,6 @@ export const SETTINGS_TABS: { value: string; label: string; href: string; roles:
   { value: "users", label: "Users and roles", href: "/settings/users", roles: ["owner"] },
   { value: "breed", label: "Breed standard", href: "/settings/breed", roles: ["owner", "manager"] },
   { value: "feed", label: "Feed types", href: "/settings/feed", roles: ["owner", "manager"] },
+  { value: "vaccines", label: "Vaccine schedule", href: "/settings/vaccines", roles: ["owner", "manager"] },
   { value: "categories", label: "Expense categories", href: "/settings/categories", roles: ["owner", "manager"] },
 ];

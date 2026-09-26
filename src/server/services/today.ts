@@ -4,6 +4,7 @@ import { and, eq, gt, gte, inArray, isNull } from "drizzle-orm";
 import type { Executor } from "@/db";
 import { dailyLogs, devices, setVaccines, users, weightSamples } from "@/db/schema";
 import { can } from "@/lib/auth/roles";
+import { canOpenPath } from "@/constants/route-access";
 import { missingLogDays } from "@/server/services/daily-logs/missing";
 import { outstanding } from "@/server/services/sales/list";
 import { listSets } from "@/server/services/sets/list";
@@ -40,8 +41,8 @@ export async function todayFor(db: Executor, role: Role, today: string): Promise
   }));
   const growthSetId = gaps.sort((a, b) => a.gap - b.gap)[0]?.setId ?? null;
   const feed = (await feedStockFor(db, today)).rows;
-  // Recorders see a feed warning but can't open the Feed page
-  const tasks = todayTasks({ today, sets, loggedToday, vaccines, weekLogs: logs, samples, waiting, feed }).map((t) => (t.kind === "feed" && !can.seeMoney(role) ? { ...t, href: undefined } : t));
+  // Everyone sees the task; the link only when this role can open the page
+  const tasks = todayTasks({ today, sets, loggedToday, vaccines, weekLogs: logs, samples, waiting, feed }).map((t) => (t.href && !canOpenPath(t.href, role) ? { ...t, href: undefined } : t));
   const payload: TodayPayload = {
     date: today,
     sets,

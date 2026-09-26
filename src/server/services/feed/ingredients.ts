@@ -5,7 +5,7 @@ import type { Executor } from "@/db";
 import { ingredientPurchases, sets, users } from "@/db/schema";
 import { recordCreate } from "@/server/audit";
 import { createExpense } from "@/server/services/expenses/create";
-import { categoryIdByKey } from "@/server/services/feed/category";
+import { categoryIdByKey } from "@/server/services/expenses/category-by-key";
 import type { IngredientPurchaseCreate } from "@/schemas/feed";
 import type { IngredientRow } from "@/types/feed";
 import type { SessionUser } from "@/types/session";

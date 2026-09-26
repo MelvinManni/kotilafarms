@@ -6,7 +6,7 @@ import { expenses, feedPurchases, feedTypes, sets, users } from "@/db/schema";
 import { recordCreate } from "@/server/audit";
 import { unprocessable } from "@/server/errors";
 import { createExpense } from "@/server/services/expenses/create";
-import { categoryIdByKey } from "@/server/services/feed/category";
+import { categoryIdByKey } from "@/server/services/expenses/category-by-key";
 import type { FeedPurchaseCreate } from "@/schemas/feed";
 import type { FeedPurchaseRow } from "@/types/feed";
 import type { SessionUser } from "@/types/session";

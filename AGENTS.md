@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Health and vaccines
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P2.4
+- **Summary:** `/health`: the most pressing dose leads (late, then due today, then tomorrow, with doses = live birds and how to give it) with Mark as given; each running Set's schedule shows due day and date, when given and by whom, and a status (given, given N days late, N days late, due today or tomorrow, upcoming); a dose can be marked given on a day or cleared (audited). Treatments: Set, date, item (quick picks from the spec's list), amount, cost and why; a cost becomes a Drugs and vaccines expense on the Set in the same transaction; saved once per clientId. Settings › Vaccine schedule edits the defaults new Sets copy. Today's vaccine tasks use the same status rule and link to Health for roles that can open it.
+- **Files:** `src/server/services/health/*`, `src/server/services/expenses/category-by-key.ts` (moved from feed), `src/app/api/{health,sets/[id]/vaccines,settings/vaccine-schedule}/**`, `src/components/health/*`, `src/components/settings/{vaccines-screen,vaccine-schedule-form,vaccine-row}.tsx`, `src/app/(app)/{health,settings/vaccines}/page.tsx`, `src/schemas/health.ts`, `src/types/health.ts`, `src/utils/metrics/{vaccine-status,health-headlines,today-tasks}.ts`, `src/constants/health-items.ts`, `src/server/services/today.ts`, `e2e/health.spec.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** A running Set's own due days can't be moved yet (only the defaults). Set detail tabs for health come with the Set report work.
+
 ### 2026-09-26 — Feed
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P2.3
 - **Summary:** `/feed`: bags in the store per feed (bought − used from the daily log, kg turned into bags), daily rate and days left, a run-out warning with an order-by day, the price per bag over the last six purchases with the change stated and what a ₦1,000 rise costs a Set, and every feed and ingredient buy. Feed purchase sheet: bags × price per bag = total (any two, none blank), bag size, transport as its own Transport expense, supplier, date, Set or the store. Ingredient sheet: what, quantity × cost each = total, which Set. Each buy writes its expenses in the same transaction and is saved once per clientId. Settings › Feed types (add, change, retire; audited). Today lists a feed running out within a week.
