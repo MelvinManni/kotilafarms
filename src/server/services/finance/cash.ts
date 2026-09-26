@@ -6,6 +6,7 @@ import { cashReconciliations, users } from "@/db/schema";
 import { recordCreate } from "@/server/audit";
 import { cashLines } from "@/server/services/finance/cash-lines";
 import { outstanding } from "@/server/services/sales/list";
+import { queries } from "@/server/queries";
 import type { CashPayload, Reconciliation } from "@/types/finance";
 import type { SessionUser } from "@/types/session";
 import { cashSince, reconcileDifference } from "@/utils/metrics/cash-since";
@@ -18,7 +19,7 @@ async function lastReconciliation(db: Executor): Promise<(Reconciliation & { ent
 }
 
 export async function cashFor(db: Executor, today: string): Promise<CashPayload> {
-  const [last, lines, owed] = await Promise.all([lastReconciliation(db), cashLines(db), outstanding(db, today)]);
+  const [last, lines, owed] = await queries(db, [() => lastReconciliation(db), () => cashLines(db), () => outstanding(db, today)]);
   const c = cashSince(lines.moneyIn, lines.moneyOut, last ? { date: last.date, enteredAt: last.enteredAt, actual: last.countedCash + last.bankBalance } : null);
   const firstRecord = [...lines.moneyIn, ...lines.moneyOut].map((l) => l.date).sort()[0] ?? null;
   const since = last ? (({ enteredAt: _e, ...r }) => r)(last) : null;

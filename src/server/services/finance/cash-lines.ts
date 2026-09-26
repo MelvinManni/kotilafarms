@@ -5,18 +5,19 @@ import type { Executor } from "@/db";
 import { capitalEntries, expenseCategories, expenses, loans, otherSales, salePayments, sales, shareholders } from "@/db/schema";
 import type { CashLine } from "@/utils/metrics/cash-since";
 import { loanInterest } from "@/utils/metrics/loans";
+import { queries } from "@/server/queries";
 
 const SALES = "Bird and manure sales";
 const iso = (d: Date) => d.toISOString();
 
 export async function cashLines(db: Executor): Promise<{ moneyIn: CashLine[]; moneyOut: CashLine[] }> {
-  const [saleRows, payments, other, spent, capital, loanRows] = await Promise.all([
-    db.select({ date: sales.date, deposit: sales.deposit, paidAtSale: sales.paidAtSale, at: sales.createdAt }).from(sales).where(isNull(sales.deletedAt)),
-    db.select({ date: salePayments.date, amount: salePayments.amount, at: salePayments.createdAt }).from(salePayments).innerJoin(sales, eq(sales.id, salePayments.saleId)).where(and(isNull(salePayments.deletedAt), isNull(sales.deletedAt))),
-    db.select({ date: otherSales.date, amount: otherSales.amount, at: otherSales.createdAt }).from(otherSales).where(isNull(otherSales.deletedAt)),
-    db.select({ date: expenses.date, amount: expenses.amount, group: expenseCategories.name, at: expenses.createdAt }).from(expenses).innerJoin(expenseCategories, eq(expenseCategories.id, expenses.categoryId)).where(isNull(expenses.deletedAt)),
-    db.select({ date: capitalEntries.date, amount: capitalEntries.amount, name: shareholders.name, at: capitalEntries.createdAt }).from(capitalEntries).innerJoin(shareholders, eq(shareholders.id, capitalEntries.shareholderId)).where(isNull(capitalEntries.deletedAt)),
-    db.select({ l: loans, name: shareholders.name }).from(loans).innerJoin(shareholders, eq(shareholders.id, loans.lenderShareholderId)).where(isNull(loans.deletedAt)),
+  const [saleRows, payments, other, spent, capital, loanRows] = await queries(db, [
+    () => db.select({ date: sales.date, deposit: sales.deposit, paidAtSale: sales.paidAtSale, at: sales.createdAt }).from(sales).where(isNull(sales.deletedAt)),
+    () => db.select({ date: salePayments.date, amount: salePayments.amount, at: salePayments.createdAt }).from(salePayments).innerJoin(sales, eq(sales.id, salePayments.saleId)).where(and(isNull(salePayments.deletedAt), isNull(sales.deletedAt))),
+    () => db.select({ date: otherSales.date, amount: otherSales.amount, at: otherSales.createdAt }).from(otherSales).where(isNull(otherSales.deletedAt)),
+    () => db.select({ date: expenses.date, amount: expenses.amount, group: expenseCategories.name, at: expenses.createdAt }).from(expenses).innerJoin(expenseCategories, eq(expenseCategories.id, expenses.categoryId)).where(isNull(expenses.deletedAt)),
+    () => db.select({ date: capitalEntries.date, amount: capitalEntries.amount, name: shareholders.name, at: capitalEntries.createdAt }).from(capitalEntries).innerJoin(shareholders, eq(shareholders.id, capitalEntries.shareholderId)).where(isNull(capitalEntries.deletedAt)),
+    () => db.select({ l: loans, name: shareholders.name }).from(loans).innerJoin(shareholders, eq(shareholders.id, loans.lenderShareholderId)).where(isNull(loans.deletedAt)),
   ]);
   const moneyIn: CashLine[] = [
     ...saleRows.map((s) => ({ date: s.date, amount: s.deposit + s.paidAtSale, group: SALES, enteredAt: iso(s.at) })),

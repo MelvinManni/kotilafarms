@@ -68,3 +68,4 @@ See AGENTS.md › Version policy. Look up every version with `pnpm view <pkg> ve
 | lucide-react | 1.48.0 | P0.4 | Icons |
 | tw-animate-css | 1.4.0 | P0.4 | Enter/exit animations for dialogs and sheets |
 | playwright-core | 1.63.0 | P2.6 | Prints the Set report to PDF with headless Chromium (the Docker image adds Alpine's `chromium`; dev uses the installed Chrome) |
+| @axe-core/playwright | 4.13.0 | P3.5 | Accessibility checks in the e2e suite (WCAG 2.0–2.2 A/AA, serious and critical) (dev) |

@@ -6,6 +6,7 @@ import { dailyLogs, expenseCategories, expenses, feedTypes, sales, sets } from "
 import { feedStockFor } from "@/server/services/feed/stock";
 import { listSetVaccines } from "@/server/services/health/vaccines";
 import { listWeights } from "@/server/services/weights";
+import { eachQuery, queries } from "@/server/queries";
 import type { WeeklyPayload } from "@/types/weekly";
 import { weekOf } from "@/utils/dates/week-of";
 import { toKg } from "@/utils/metrics/feed-stock";
@@ -20,14 +21,16 @@ export async function weeklyFor(db: Executor, day: string, today: string): Promi
   const running = await db.select().from(sets).where(and(isNull(sets.deletedAt), lte(sets.startDate, week.end), or(isNull(sets.closedOn), gte(sets.closedOn, week.start))));
   // Stock is only known for now, so run-out points belong to the current week
   const stock = current ? (await feedStockFor(db, today)).rows : [];
-  const out = await Promise.all(
-    running.sort((a, b) => b.number - a.number).map(async (s) => {
-      const [logs, weights, vaccines, [sold], [feed]] = await Promise.all([
-        db.select({ date: dailyLogs.date, deaths: dailyLogs.deaths, tags: dailyLogs.tags, deathCause: dailyLogs.deathCause, qty: dailyLogs.feedQty, unit: dailyLogs.feedUnit, kgPerBag: feedTypes.kgPerBag }).from(dailyLogs).leftJoin(feedTypes, eq(feedTypes.id, dailyLogs.feedTypeId)).where(and(eq(dailyLogs.setId, s.id), isNull(dailyLogs.deletedAt), lte(dailyLogs.date, asOf))),
-        listWeights(db, s.id),
-        listSetVaccines(db, s.id, asOf),
-        db.select({ birds: sum(sales.birds) }).from(sales).where(and(eq(sales.setId, s.id), isNull(sales.deletedAt), lte(sales.date, asOf))),
-        db.select({ total: sum(expenses.amount) }).from(expenses).innerJoin(expenseCategories, eq(expenseCategories.id, expenses.categoryId)).where(and(eq(expenses.setId, s.id), isNull(expenses.deletedAt), eq(expenseCategories.key, "feed"), lte(expenses.date, asOf))),
+  const out = await eachQuery(
+    db,
+    running.sort((a, b) => b.number - a.number),
+    async (s) => {
+      const [logs, weights, vaccines, [sold], [feed]] = await queries(db, [
+        () => db.select({ date: dailyLogs.date, deaths: dailyLogs.deaths, tags: dailyLogs.tags, deathCause: dailyLogs.deathCause, qty: dailyLogs.feedQty, unit: dailyLogs.feedUnit, kgPerBag: feedTypes.kgPerBag }).from(dailyLogs).leftJoin(feedTypes, eq(feedTypes.id, dailyLogs.feedTypeId)).where(and(eq(dailyLogs.setId, s.id), isNull(dailyLogs.deletedAt), lte(dailyLogs.date, asOf))),
+        () => listWeights(db, s.id),
+        () => listSetVaccines(db, s.id, asOf),
+        () => db.select({ birds: sum(sales.birds) }).from(sales).where(and(eq(sales.setId, s.id), isNull(sales.deletedAt), lte(sales.date, asOf))),
+        () => db.select({ total: sum(expenses.amount) }).from(expenses).innerJoin(expenseCategories, eq(expenseCategories.id, expenses.categoryId)).where(and(eq(expenses.setId, s.id), isNull(expenses.deletedAt), eq(expenseCategories.key, "feed"), lte(expenses.date, asOf))),
       ]);
       const facts = weekFacts({
         set: { number: s.number, pen: s.pen, startDate: s.startDate, intake: s.intake, sold: Number(sold?.birds ?? 0) },
@@ -39,7 +42,7 @@ export async function weeklyFor(db: Executor, day: string, today: string): Promi
       });
       const review = setReview({ number: s.number, intake: s.intake, facts, week: { start: week.start, end: asOf }, feed: stock.filter((r) => r.eating.some((e) => e.id === s.id)), vaccines });
       return { id: s.id, number: s.number, pen: s.pen, status: s.status, intake: s.intake, facts, review };
-    }),
+    },
   );
   return { week, written: asOf, sets: out };
 }

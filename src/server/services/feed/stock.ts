@@ -4,16 +4,17 @@ import { and, asc, desc, eq, isNotNull, isNull } from "drizzle-orm";
 import type { Executor } from "@/db";
 import { dailyLogs, feedPurchases, sets } from "@/db/schema";
 import { listFeedTypes } from "@/server/services/feed-types";
+import { queries } from "@/server/queries";
 import type { FeedStockPayload } from "@/types/feed";
 import { feedName } from "@/utils/format/feed-name";
 import { feedStock, toBags } from "@/utils/metrics/feed-stock";
 
 export async function feedStockFor(db: Executor, today: string): Promise<FeedStockPayload> {
-  const [types, purchases, uses, setRows] = await Promise.all([
-    listFeedTypes(db, true),
-    db.select({ feedTypeId: feedPurchases.feedTypeId, bags: feedPurchases.bags, price: feedPurchases.pricePerBag }).from(feedPurchases).where(isNull(feedPurchases.deletedAt)).orderBy(asc(feedPurchases.date), asc(feedPurchases.createdAt)),
-    db.select({ feedTypeId: dailyLogs.feedTypeId, date: dailyLogs.date, setId: dailyLogs.setId, qty: dailyLogs.feedQty, unit: dailyLogs.feedUnit }).from(dailyLogs).where(and(isNull(dailyLogs.deletedAt), isNotNull(dailyLogs.feedTypeId), isNotNull(dailyLogs.feedQty))),
-    db.select({ id: sets.id, number: sets.number, intake: sets.intake, status: sets.status }).from(sets).where(isNull(sets.deletedAt)).orderBy(desc(sets.closedOn)),
+  const [types, purchases, uses, setRows] = await queries(db, [
+    () => listFeedTypes(db, true),
+    () => db.select({ feedTypeId: feedPurchases.feedTypeId, bags: feedPurchases.bags, price: feedPurchases.pricePerBag }).from(feedPurchases).where(isNull(feedPurchases.deletedAt)).orderBy(asc(feedPurchases.date), asc(feedPurchases.createdAt)),
+    () => db.select({ feedTypeId: dailyLogs.feedTypeId, date: dailyLogs.date, setId: dailyLogs.setId, qty: dailyLogs.feedQty, unit: dailyLogs.feedUnit }).from(dailyLogs).where(and(isNull(dailyLogs.deletedAt), isNotNull(dailyLogs.feedTypeId), isNotNull(dailyLogs.feedQty))),
+    () => db.select({ id: sets.id, number: sets.number, intake: sets.intake, status: sets.status }).from(sets).where(isNull(sets.deletedAt)).orderBy(desc(sets.closedOn)),
   ]);
   const setsById = new Map(setRows.map((s) => [s.id, s]));
   const rows = types

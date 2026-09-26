@@ -7,6 +7,7 @@ import { pnlFor } from "@/server/services/finance/pnl";
 import { saleRows } from "@/server/services/sales/rows";
 import { setTotals } from "@/server/services/sets/aggregates";
 import { listWeights } from "@/server/services/weights";
+import { eachQuery, queries } from "@/server/queries";
 import type { SetReportPayload } from "@/types/report";
 import { liveBirds } from "@/utils/metrics/birds";
 import { toKg } from "@/utils/metrics/feed-stock";
@@ -17,12 +18,12 @@ const LARGEST = 7;
 
 export async function setReportFor(db: Executor, setIds: string[], today: string): Promise<SetReportPayload> {
   const money = await pnlFor(db, setIds);
-  const [totals, logs, spent, unpaid, weights] = await Promise.all([
-    setTotals(db, setIds),
-    db.select({ qty: dailyLogs.feedQty, unit: dailyLogs.feedUnit, kgPerBag: feedTypes.kgPerBag }).from(dailyLogs).innerJoin(feedTypes, eq(feedTypes.id, dailyLogs.feedTypeId)).where(and(inArray(dailyLogs.setId, setIds), isNull(dailyLogs.deletedAt), isNotNull(dailyLogs.feedQty))),
-    db.select({ date: expenses.date, description: expenses.description, category: expenseCategories.name, amount: expenses.amount }).from(expenses).innerJoin(expenseCategories, eq(expenseCategories.id, expenses.categoryId)).where(and(inArray(expenses.setId, setIds), isNull(expenses.deletedAt))).orderBy(desc(expenses.amount)),
-    saleRows(db, [inArray(sales.setId, setIds)], today),
-    Promise.all(setIds.map((id) => listWeights(db, id))),
+  const [totals, logs, spent, unpaid, weights] = await queries(db, [
+    () => setTotals(db, setIds),
+    () => db.select({ qty: dailyLogs.feedQty, unit: dailyLogs.feedUnit, kgPerBag: feedTypes.kgPerBag }).from(dailyLogs).innerJoin(feedTypes, eq(feedTypes.id, dailyLogs.feedTypeId)).where(and(inArray(dailyLogs.setId, setIds), isNull(dailyLogs.deletedAt), isNotNull(dailyLogs.feedQty))),
+    () => db.select({ date: expenses.date, description: expenses.description, category: expenseCategories.name, amount: expenses.amount }).from(expenses).innerJoin(expenseCategories, eq(expenseCategories.id, expenses.categoryId)).where(and(inArray(expenses.setId, setIds), isNull(expenses.deletedAt))).orderBy(desc(expenses.amount)),
+    () => saleRows(db, [inArray(sales.setId, setIds)], today),
+    () => eachQuery(db, setIds, (id) => listWeights(db, id)),
   ]);
   const deaths = setIds.reduce((a, id) => a + totals.get(id)!.deaths, 0);
   const live = liveBirds(money.intake, deaths, money.birdsSold);

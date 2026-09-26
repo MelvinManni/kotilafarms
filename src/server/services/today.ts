@@ -14,16 +14,17 @@ import { addDays } from "@/utils/dates/add-days";
 import { todayTasks } from "@/utils/metrics/today-tasks";
 import { listWeights } from "@/server/services/weights";
 import { feedStockFor } from "@/server/services/feed/stock";
+import { eachQuery, queries } from "@/server/queries";
 import { growthSummary } from "@/utils/metrics/growth-summary";
 
 export async function todayFor(db: Executor, role: Role, today: string): Promise<TodayPayload> {
   const sets = (await listSets(db, role, today)).filter((s) => s.status !== "closed");
   const ids = sets.map((s) => s.id);
-  const [logs, vaccines, samples, missing] = await Promise.all([
-    ids.length ? db.select({ setId: dailyLogs.setId, date: dailyLogs.date, tags: dailyLogs.tags }).from(dailyLogs).where(and(inArray(dailyLogs.setId, ids), isNull(dailyLogs.deletedAt), gte(dailyLogs.date, addDays(today, -6)))) : [],
-    ids.length ? db.select().from(setVaccines).where(and(inArray(setVaccines.setId, ids), isNull(setVaccines.deletedAt))) : [],
-    ids.length ? db.select({ setId: weightSamples.setId, ageDays: weightSamples.ageDays }).from(weightSamples).where(and(inArray(weightSamples.setId, ids), isNull(weightSamples.deletedAt))) : [],
-    Promise.all(sets.map(async (s) => (await missingLogDays(db, s.id, today)).map((date) => ({ setId: s.id, setNumber: s.number, date })))),
+  const [logs, vaccines, samples, missing] = await queries(db, [
+    () => ids.length ? db.select({ setId: dailyLogs.setId, date: dailyLogs.date, tags: dailyLogs.tags }).from(dailyLogs).where(and(inArray(dailyLogs.setId, ids), isNull(dailyLogs.deletedAt), gte(dailyLogs.date, addDays(today, -6)))) : [],
+    () => ids.length ? db.select().from(setVaccines).where(and(inArray(setVaccines.setId, ids), isNull(setVaccines.deletedAt))) : [],
+    () => ids.length ? db.select({ setId: weightSamples.setId, ageDays: weightSamples.ageDays }).from(weightSamples).where(and(inArray(weightSamples.setId, ids), isNull(weightSamples.deletedAt))) : [],
+    () => eachQuery(db, sets, async (s) => (await missingLogDays(db, s.id, today)).map((date) => ({ setId: s.id, setNumber: s.number, date }))),
   ]);
   const loggedToday = logs.filter((l) => l.date === today).map((l) => l.setId);
   // Logs other phones said are waiting, and that still haven't arrived
@@ -35,10 +36,10 @@ export async function todayFor(db: Executor, role: Role, today: string): Promise
       .map((i) => ({ person: d.person, setId: i.setId!, date: i.date! })),
   );
   // The running Set furthest under its standard leads the growth panel
-  const gaps = await Promise.all(sets.filter((s) => samples.some((w) => w.setId === s.id)).map(async (s) => {
+  const gaps = await eachQuery(db, sets.filter((s) => samples.some((w) => w.setId === s.id)), async (s) => {
     const w = await listWeights(db, s.id);
     return { setId: s.id, gap: growthSummary(w.samples, w.standard)?.gap ?? 0 };
-  }));
+  });
   const growthSetId = gaps.sort((a, b) => a.gap - b.gap)[0]?.setId ?? null;
   const feed = (await feedStockFor(db, today)).rows;
   // Everyone sees the task; the link only when this role can open the page

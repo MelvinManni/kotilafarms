@@ -6,6 +6,7 @@ import type { Executor } from "@/db";
 import { sets, setVaccines, users, vaccineScheduleDefaults } from "@/db/schema";
 import { recordChange } from "@/server/audit";
 import { notFound, unprocessable } from "@/server/errors";
+import { queries } from "@/server/queries";
 import type { VaccineMark } from "@/schemas/health";
 import type { SetVaccineRow } from "@/types/health";
 import type { SessionUser } from "@/types/session";
@@ -20,9 +21,9 @@ async function liveSet(db: Executor, setId: string) {
 export async function listSetVaccines(db: Executor, setId: string, today: string): Promise<SetVaccineRow[]> {
   const set = await liveSet(db, setId);
   const giver = alias(users, "giver");
-  const [rows, defaults] = await Promise.all([
-    db.select({ v: setVaccines, by: giver.name }).from(setVaccines).leftJoin(giver, eq(giver.id, setVaccines.givenBy)).where(and(eq(setVaccines.setId, setId), isNull(setVaccines.deletedAt))).orderBy(asc(setVaccines.dueAgeDays), asc(setVaccines.doseNo)),
-    db.select().from(vaccineScheduleDefaults).where(isNull(vaccineScheduleDefaults.deletedAt)),
+  const [rows, defaults] = await queries(db, [
+    () => db.select({ v: setVaccines, by: giver.name }).from(setVaccines).leftJoin(giver, eq(giver.id, setVaccines.givenBy)).where(and(eq(setVaccines.setId, setId), isNull(setVaccines.deletedAt))).orderBy(asc(setVaccines.dueAgeDays), asc(setVaccines.doseNo)),
+    () => db.select().from(vaccineScheduleDefaults).where(isNull(vaccineScheduleDefaults.deletedAt)),
   ]);
   return rows.map(({ v, by }) => {
     const s = vaccineStatus(v, set.startDate, today);

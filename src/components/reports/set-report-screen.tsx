@@ -6,6 +6,7 @@ import { SetReportDocument } from "@/components/reports/set-report-document";
 import { Button } from "@/components/kotila/button";
 import { EmptyState } from "@/components/kotila/empty-state";
 import { Notice } from "@/components/kotila/notice";
+import { Panel } from "@/components/kotila/panel";
 import { Segmented } from "@/components/kotila/segmented";
 import { PageHeader } from "@/components/layout/page-header";
 import { useSetReport } from "@/hooks/queries/use-reports";
@@ -33,7 +34,11 @@ export function SetReportScreen({ initialIds }: { initialIds: string[] }) {
       {sets.data?.length === 0 ? (
         <EmptyState title="No Sets yet" icon="reports" action={{ label: "Start a new Set", icon: "plus", href: "/sets" }}>A report shows a Set’s birds, money and growth from start to sale. Start a Set to see one.</EmptyState>
       ) : null}
-      {choices.length ? <Segmented label="Sets" options={choices.map(({ value, label }) => ({ value, label }))} value={choice ?? undefined} onChange={setPicked} /> : null}
+      {choices.length ? (
+        <Panel>
+          <Segmented label="Sets" options={choices.map(({ value, label }) => ({ value, label }))} value={choice ?? undefined} onChange={setPicked} />
+        </Panel>
+      ) : null}
       {report.data ? <SetReportDocument r={report.data} /> : ids.length && !failed ? <p className="text-body text-on-deep-muted lg:text-ink-muted">Putting the report together…</p> : null}
     </>
   );

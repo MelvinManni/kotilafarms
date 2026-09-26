@@ -21,8 +21,11 @@ const EDGE = "first:pl-6 last:pr-6";
 
 export function LedgerTable<R extends Row>({ columns, rows, footer, dense, caption, onRowClick }: LedgerTableProps<R>) {
   return (
-    <div className="w-full overflow-x-auto">
-      <Table className="w-full border-collapse text-body text-ink tabular-nums">
+    <div className="w-full">
+      <Table
+        className="w-full border-collapse text-body text-ink tabular-nums"
+        containerProps={{ tabIndex: 0, role: "region", "aria-label": caption ?? "Table", className: "outline-none focus-visible:shadow-focus" }}
+      >
         {caption ? <TableCaption className="sr-only">{caption}</TableCaption> : null}
         <TableHeader>
           <TableRow className="border-b border-line hover:bg-transparent">

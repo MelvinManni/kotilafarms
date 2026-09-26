@@ -1,5 +1,6 @@
 // Compare Sets: each Set's report boiled down to one line of figures
 import "server-only";
+import { eachQuery } from "@/server/queries";
 import { setReportFor } from "@/server/services/reports/set-report";
 import type { CompareRow } from "@/types/compare";
 import { daysBetween } from "@/utils/dates/days-between";
@@ -7,7 +8,7 @@ import { daysBetween } from "@/utils/dates/days-between";
 const finite = (n: number) => (Number.isFinite(n) ? n : null);
 
 export async function compareFor(db: Parameters<typeof setReportFor>[0], setIds: string[], today: string): Promise<CompareRow[]> {
-  const reports = await Promise.all(setIds.map((id) => setReportFor(db, [id], today)));
+  const reports = await eachQuery(db, setIds, (id) => setReportFor(db, [id], today));
   return reports.map((r) => {
     const s = r.sets[0]!;
     const closed = s.status === "closed";

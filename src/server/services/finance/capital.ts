@@ -4,16 +4,17 @@ import { asc, eq, isNull } from "drizzle-orm";
 import type { Executor } from "@/db";
 import { capitalEntries, loans, shareholders } from "@/db/schema";
 import { getSetting } from "@/server/services/settings";
+import { queries } from "@/server/queries";
 import type { CapitalPayload } from "@/types/capital";
 import { borrowingCapacity, loanInterest } from "@/utils/metrics/loans";
 import { capitalPosition, ownershipShare } from "@/utils/metrics/money";
 
 export async function capitalFor(db: Executor, today: string): Promise<CapitalPayload> {
-  const [people, entries, loanRows, capPct] = await Promise.all([
-    db.select().from(shareholders).where(isNull(shareholders.deletedAt)).orderBy(asc(shareholders.createdAt)),
-    db.select().from(capitalEntries).where(isNull(capitalEntries.deletedAt)),
-    db.select({ l: loans, name: shareholders.name }).from(loans).innerJoin(shareholders, eq(shareholders.id, loans.lenderShareholderId)).where(isNull(loans.deletedAt)).orderBy(asc(loans.advancedOn)),
-    getSetting<number>(db, "borrowingCapPct"),
+  const [people, entries, loanRows, capPct] = await queries(db, [
+    () => db.select().from(shareholders).where(isNull(shareholders.deletedAt)).orderBy(asc(shareholders.createdAt)),
+    () => db.select().from(capitalEntries).where(isNull(capitalEntries.deletedAt)),
+    () => db.select({ l: loans, name: shareholders.name }).from(loans).innerJoin(shareholders, eq(shareholders.id, loans.lenderShareholderId)).where(isNull(loans.deletedAt)).orderBy(asc(loans.advancedOn)),
+    () => getSetting<number>(db, "borrowingCapPct"),
   ]);
   const totalShares = people.reduce((a, p) => a + p.shares, 0);
   const rows = people

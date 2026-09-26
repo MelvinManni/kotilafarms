@@ -68,3 +68,17 @@ As built (P2.6): `playwright-core` drives Alpine's `chromium` in the app image (
 ## Environment
 
 `.env.example` lists every variable. Validate env at startup with a zod schema in `src/lib/env.ts`; fail fast on missing values.
+
+## Performance (measured in P3.5)
+
+Production build, Pixel 7 profile, CPU slowed 4×, slow 4G (1.6 Mb/s down, 150 ms latency):
+
+| Visit | Time |
+| --- | --- |
+| Sign-in, first visit (no cache, no service worker) | about 2.7 s to tap-ready; 348 KB JS compressed |
+| Sign in → Today on screen | about 2.2 s |
+| `/log`, `/today` with no cache | about 2.8 s and 3.7 s to interactive |
+| Any phone page once the service worker has it | 0.3–0.4 s |
+
+The largest chunk is zod (about 87 KB compressed). Moving the forms to `zod/mini` would cut it; not done yet.
+

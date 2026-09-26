@@ -10,10 +10,11 @@ import type { BuyerCreate } from "@/schemas/sale";
 import type { BuyerRow } from "@/types/sale";
 import type { SessionUser } from "@/types/session";
 import { getSetting } from "@/server/services/settings";
+import { queries } from "@/server/queries";
 import { buyerInsight } from "@/utils/metrics/buyer-insight";
 
 export async function listBuyers(db: Executor, today: string): Promise<BuyerRow[]> {
-  const [rows, sales, bulkRate] = await Promise.all([db.select().from(buyers).where(isNull(buyers.deletedAt)).orderBy(asc(buyers.name)), saleRows(db, [], today), getSetting<number>(db, "bulkRatePerBird")]);
+  const [rows, sales, bulkRate] = await queries(db, [() => db.select().from(buyers).where(isNull(buyers.deletedAt)).orderBy(asc(buyers.name)), () => saleRows(db, [], today), () => getSetting<number>(db, "bulkRatePerBird")]);
   return rows.map((b) => {
     const mine = sales.filter((s) => s.buyer.id === b.id);
     const x = buyerInsight(mine, bulkRate, today);

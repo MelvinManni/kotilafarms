@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Hardening: accessibility, performance, safe queries
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P3.5
+- **Summary:** Accessibility: an axe sweep of sign-in and 19 owner pages on laptop and phone (WCAG 2.0–2.2 A/AA, serious and critical) now runs in e2e and passes. Fixes it found: wide tables scroll inside a labelled box you can reach by keyboard; the big Set buttons' small text was 4.4:1 (now white, one shared `SetActionLink`); report pickers and the weekly "Week of" line sat on the phone's green band (now on a white panel). Performance measured on a mid-range Android profile (see `docs/02-architecture.md`). Queries: services no longer run side-by-side queries on one transaction's client (`queries` / `eachQuery` helpers: side by side on the pool, one after another in a transaction), which pg@9 will refuse; the test run is now free of those warnings. The P3.5 Playwright flows (offline daily log with reload, lost reply mid-sync, expense attribution, sale balances) were already in place from P1.4–P1.8.
+- **Files:** `src/server/queries.ts` and every service that read in parallel, `src/components/ui/table.tsx` (`containerProps`), `src/components/kotila/{ledger-table,set-action-link}.tsx`, `src/components/daily-log/log-today-links.tsx`, `src/components/weights/weigh-index-screen.tsx`, `src/components/reports/{set-report-screen,weekly-screen,weekly-document}.tsx`, `e2e/a11y.spec.ts`, `docs/02-architecture.md`, `docs/11-versions.md`
+- **Packages:** @axe-core/playwright@4.13.0 (added, dev)
+- **Migrations:** none
+- **Follow-ups:** zod is the biggest JS chunk (about 87 KB compressed); `zod/mini` would trim first visits on slow signal.
+
 ### 2026-09-26 — Buyer analytics
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P3.4
 - **Summary:** The buyer page now reads like the design: phone and "buying since", Record a payment and New sale to them; birds (sales, Sets), average per bird with its gap to the bulk rate, total bought since, still owed (from which sale, how many days); a warning when a buyer pays ₦100+ a bird under the bulk rate, with what that came to over the year's birds; every sale with a totals row (opens the sale, payments and edit history); and every payment including deposits and money paid at the sale. The buyers list shows who pays under the bulk rate. One metric (`buyerInsight`) feeds both pages.

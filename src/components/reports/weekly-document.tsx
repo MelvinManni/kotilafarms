@@ -10,7 +10,7 @@ import { farmDay, weekSpan } from "@/utils/format/dates";
 export function WeeklyDocument({ w }: { w: WeeklyPayload }) {
   return (
     <div className="flex flex-col gap-5">
-      <p className="m-0 text-sm font-medium text-on-deep-muted lg:text-ink-muted print:text-ink-muted">Week of {weekSpan(w.week.start, w.week.end)} · written {farmDay(w.written)}</p>
+      <p className="m-0 text-sm font-medium text-ink-muted">Week of {weekSpan(w.week.start, w.week.end)} · written {farmDay(w.written)}</p>
       {w.sets.length ? w.sets.map((s) => <WeeklySetCard key={s.id} s={s} />) : <EmptyState title="No Sets running that week" icon="reports">A note is written for every Set running in the week. Pick another week, or start a Set.</EmptyState>}
       <Panel title="How reviews are written" variant="sunken" className="break-inside-avoid">
         <ul className="m-0 flex list-disc flex-col gap-1.5 pl-5 text-body text-ink-2">

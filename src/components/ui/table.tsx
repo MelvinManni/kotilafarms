@@ -3,11 +3,13 @@
 import * as React from "react"
 import { cn } from "@/utils/cn"
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
+// Kotila: containerProps lets a wide table's scroll box be reached and named for keyboard users
+function Table({ className, containerProps, ...props }: React.ComponentProps<"table"> & { containerProps?: React.ComponentProps<"div"> }) {
   return (
     <div
       data-slot="table-container"
-      className="relative w-full overflow-x-auto"
+      {...containerProps}
+      className={cn("relative w-full overflow-x-auto", containerProps?.className)}
     >
       <table
         data-slot="table"

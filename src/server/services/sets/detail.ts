@@ -7,13 +7,14 @@ import { can } from "@/lib/auth/roles";
 import { notFound } from "@/server/errors";
 import { deathsByDay, setTotals } from "@/server/services/sets/aggregates";
 import { summarizeSet } from "@/server/services/sets/summarize";
+import { queries } from "@/server/queries";
 import type { Role } from "@/types/role";
 import type { SetDetail } from "@/types/sets";
 
 export async function getSet(db: Executor, id: string, role: Role, today: string): Promise<SetDetail> {
   const [row] = await db.select().from(sets).where(and(eq(sets.id, id), isNull(sets.deletedAt)));
   if (!row) throw notFound("That Set");
-  const [totals, logs] = await Promise.all([setTotals(db, [id]), deathsByDay(db, [id])]);
+  const [totals, logs] = await queries(db, [() => setTotals(db, [id]), () => deathsByDay(db, [id])]);
   const t = totals.get(id)!;
   const detail: SetDetail = {
     ...summarizeSet(row, t, logs, today, role),

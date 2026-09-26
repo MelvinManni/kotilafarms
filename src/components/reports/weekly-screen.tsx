@@ -5,6 +5,7 @@ import { ReportTabs } from "@/components/reports/report-tabs";
 import { WeeklyDocument } from "@/components/reports/weekly-document";
 import { Button } from "@/components/kotila/button";
 import { Notice } from "@/components/kotila/notice";
+import { Panel } from "@/components/kotila/panel";
 import { Segmented } from "@/components/kotila/segmented";
 import { PageHeader } from "@/components/layout/page-header";
 import { FARM_TIMEZONE } from "@/constants/farm";
@@ -24,7 +25,9 @@ export function WeeklyScreen() {
     <>
       <PageHeader title="Weekly review" actions={<Button icon="download" href={`/api/reports/weekly/pdf?week=${day}`} download disabled={!online}>Download PDF</Button>} />
       <ReportTabs active="weekly" />
-      <Segmented label="Week" options={[{ value: "this", label: "This week" }, { value: "last", label: "Last week" }]} value={which} onChange={setWhich} />
+      <Panel>
+        <Segmented label="Week" options={[{ value: "this", label: "This week" }, { value: "last", label: "Last week" }]} value={which} onChange={setWhich} />
+      </Panel>
       {review.isError ? <Notice tone="alert">{review.error.message}</Notice> : null}
       {review.data ? <WeeklyDocument w={review.data} /> : review.isPending ? <p className="text-body text-on-deep-muted lg:text-ink-muted">Writing the review…</p> : null}
     </>
