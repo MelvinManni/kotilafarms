@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Settings — owner, desktop</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kotila/components/bundle.css">
+<script src="ds/kotila/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#eef2ea;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180b}
+a{color:#2f6410}a:hover{color:#1f470a}
+</style>
+</helmet>
+<div class="k-root" style="position: relative; width: 1440px; height: 1000px; display: flex; background: #eef2ea; overflow: hidden">
+  <x-import component-from-global-scope="Kotila.SideRail" active="settings" logo-src="/_blob/5f856855f9b37e32751e00e7d2b65ce0" user="{{user}}" sync="{{sync}}" badges="{{badges}}" style="height: 1000px"></x-import>
+
+  <main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 32px 40px 40px; display: flex; flex-direction: column; gap: 24px">
+    <header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 15px; color: #4e5948">6 active people · only owners see this page</span>
+        <h1 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 38px; line-height: 42px; letter-spacing: -0.02em">Settings</h1>
+      </div>
+      <div style="display: flex; gap: 12px">
+        <x-import component-from-global-scope="Kotila.Button" variant="primary" icon="plus">Invite someone</x-import>
+      </div>
+    </header>
+
+    <x-import component-from-global-scope="Kotila.Tabs" active="users" items="{{tabs}}"></x-import>
+
+    <div style="display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 20px; align-items: start">
+      <x-import component-from-global-scope="Kotila.Panel" flush="{{yes}}" title="People" subtitle="Everyone who can sign in. Deactivated people keep their name on what they entered." action="{{inviteAct}}">
+        <x-import component-from-global-scope="Kotila.LedgerTable" caption="People with access" columns="{{peopleCols}}" rows="{{people}}"></x-import>
+      </x-import>
+
+      <x-import component-from-global-scope="Kotila.Panel" flush="{{yes}}" title="What each role can do" subtitle="Hidden, not greyed out: people only see what their role allows.">
+        <x-import component-from-global-scope="Kotila.LedgerTable" caption="Access by role" dense="{{yes}}" columns="{{roleCols}}" rows="{{roles}}"></x-import>
+      </x-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var yes = { value: '✓' };
+    var no = { value: '—', tone: 'muted' };
+    var active = { tag: { tone: 'success', label: 'Active' } };
+    return {
+      yes: true,
+      no: false,
+      user: { name: 'Kosi', role: 'owner' },
+      sync: { state: 'synced', lastSynced: '2 min ago' },
+      badges: { sales: { count: 3, title: '3 buyers owe money' } },
+      inviteAct: { label: 'Invite someone' },
+      tabs: [
+        { value: 'users', label: 'Users and roles', count: 7 },
+        { value: 'feed', label: 'Feed types' },
+        { value: 'categories', label: 'Expense categories' },
+        { value: 'buyers', label: 'Buyers' },
+        { value: 'vaccines', label: 'Vaccine schedule' },
+        { value: 'breed', label: 'Breed standard' }
+      ],
+      peopleCols: [
+        { key: 'person', label: 'Person' },
+        { key: 'role', label: 'Role' },
+        { key: 'last', label: 'Last active' },
+        { key: 'status', label: 'Status' }
+      ],
+      people: [
+        { person: { value: 'Kosi', sub: 'kosi@kotilafarms.ng · you' }, role: { tag: { tone: 'deep', label: 'Owner' } }, last: { value: 'Today, 8:12am', sub: 'laptop' }, status: active },
+        { person: { value: 'Queen', sub: 'queen@kotilafarms.ng' }, role: { tag: { tone: 'deep', label: 'Owner' } }, last: { value: 'Thu 24 Sep', sub: 'laptop' }, status: active },
+        { person: { value: 'ThankGod', sub: 'thankgod@kotilafarms.ng' }, role: { tag: { tone: 'deep', label: 'Owner' } }, last: { value: 'Mon 21 Sep', sub: 'phone' }, status: active },
+        { person: { value: 'Emeka', sub: 'emeka@kotilafarms.ng' }, role: { tag: { tone: 'deep', label: 'Owner' } }, last: { value: 'Sat 19 Sep', sub: 'laptop' }, status: active },
+        { person: { value: 'Adaeze Nwankwo', sub: 'adaeze@kotilafarms.ng' }, role: { tag: { tone: 'success', label: 'Manager' } }, last: { value: 'Today, 7:15am', sub: 'phone' }, status: active },
+        { person: { value: 'Chinedu Okafor', sub: 'chinedu@kotilafarms.ng' }, role: { tag: { tone: 'neutral', label: 'Recorder' } }, last: { value: 'Today, 6:40am', sub: 'phone · 3 entries waiting to send' }, status: active },
+        { person: { value: 'Ifeanyi Obi', sub: 'ifeanyi@kotilafarms.ng', tone: 'muted' }, role: { value: 'Recorder', tone: 'muted' }, last: { value: 'Fri 17 Jul', tone: 'muted' }, status: { tag: { tone: 'closed', label: 'Deactivated' }, sub: 'by Kosi, 20 Jul' } }
+      ],
+      roleCols: [
+        { key: 'area', label: 'Area' },
+        { key: 'owner', label: 'Owner', align: 'center', width: 76 },
+        { key: 'manager', label: 'Manager', align: 'center', width: 86 },
+        { key: 'recorder', label: 'Recorder', align: 'center', width: 90 }
+      ],
+      roles: [
+        { area: 'Today', owner: yes, manager: { value: '✓', sub: 'no capital' }, recorder: { value: '✓', sub: 'no money' } },
+        { area: 'Daily log, weights', owner: yes, manager: yes, recorder: yes },
+        { area: 'Sets list and detail', owner: yes, manager: yes, recorder: { value: '✓', sub: 'counts only' } },
+        { area: { value: 'Feed, health, sales', sub: 'buyers, expenses' }, owner: yes, manager: yes, recorder: no },
+        { area: 'Cash position, Set P&L', owner: yes, manager: yes, recorder: no },
+        { area: { value: 'Partner capital', sub: 'loans, settlement' }, owner: yes, manager: no, recorder: no },
+        { area: 'Reports', owner: yes, manager: { value: '✓', sub: 'no capital' }, recorder: no },
+        { area: 'Users and roles', owner: yes, manager: no, recorder: no },
+        { area: { value: 'Other settings', sub: 'feed, categories, buyers, vaccines, breed' }, owner: yes, manager: yes, recorder: no }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

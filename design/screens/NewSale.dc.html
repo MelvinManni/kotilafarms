@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>New sale — Kotila Farms</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kotila/components/bundle.css">
+<script src="ds/kotila/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#eef2ea;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180b}
+a{color:#2f6410}a:hover{color:#1f470a}
+</style>
+</helmet>
+<div class="k-root" style="position: relative; width: 1440px; height: 1000px; display: flex; background: #eef2ea; overflow: hidden">
+  <x-import component-from-global-scope="Kotila.SideRail" active="sales" logo-src="/_blob/5f856855f9b37e32751e00e7d2b65ce0" user="{{user}}" sync="{{sync}}" badges="{{badges}}" style="height: 1000px"></x-import>
+
+  <main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 32px 40px 40px; display: flex; flex-direction: column; gap: 24px">
+    <header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 15px; color: #4e5948">Set 3 closed 14 Sep · 465 birds sold for ₦3,547,650</span>
+        <h1 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 38px; line-height: 42px; letter-spacing: -0.02em">Sales</h1>
+      </div>
+      <div style="display: flex; gap: 12px">
+        <x-import component-from-global-scope="Kotila.Button" icon="naira">Record a payment</x-import>
+        <x-import component-from-global-scope="Kotila.Button" variant="primary" icon="plus">New sale</x-import>
+      </div>
+    </header>
+
+    <x-import component-from-global-scope="Kotila.Notice" tone="owed" title="₦412,000 is owed by 3 buyers" action="{{noticeAction}}">Oldest: Mama Nkechi, ₦215,000 for 30 birds from Set 3 — 19 days unpaid</x-import>
+
+    <x-import component-from-global-scope="Kotila.Panel" title="Outstanding balances" subtitle="Oldest first" flush="{{yes}}">
+      <x-import component-from-global-scope="Kotila.LedgerTable" caption="Buyers who still owe money" dense="{{yes}}" columns="{{owedColumns}}" rows="{{owedRows}}" footer="{{owedFooter}}"></x-import>
+    </x-import>
+  </main>
+
+  <x-import component-from-global-scope="Kotila.Sheet" title="New sale" description="Record every sale with what was paid and what is still owed." wide="{{yes}}">
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+      <x-import component-from-global-scope="Kotila.Select" label="Set" options="{{setOptions}}" default-value="set3" required="{{yes}}"></x-import>
+      <x-import component-from-global-scope="Kotila.TextInput" label="Date of sale" default-value="Sat 12 Sep 2026" hint="Backdated · entered today, Sat 26 Sep"></x-import>
+    </div>
+    <x-import component-from-global-scope="Kotila.Notice" tone="warning" compact="{{yes}}" title="You're adding a sale to Set 3 after it closed.">Its profit will be recalculated.</x-import>
+    <x-import component-from-global-scope="Kotila.Select" label="Buyer" options="{{buyerOptions}}" default-value="chidi" hint="Bought 20 birds on 18 Sep · owes ₦143,400" required="{{yes}}"></x-import>
+    <x-import component-from-global-scope="Kotila.LinkedAmounts" quantity-label="Birds" unit-label="Price per bird" total-label="Sale total" default-quantity="{{qty}}" default-unit-price="{{price}}" note="Fill any two. Bulk rate this year is ₦7,500 a bird."></x-import>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+      <x-import component-from-global-scope="Kotila.MoneyInput" label="Paid now" value="{{paid}}" required="{{yes}}"></x-import>
+      <x-import component-from-global-scope="Kotila.MoneyInput" label="Still owed" value="{{owed}}" calculated="{{yes}}" read-only="{{yes}}" hint="Sale total less paid now"></x-import>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start">
+      <x-import component-from-global-scope="Kotila.Segmented" label="Payment method" options="{{methods}}" default-value="Bank transfer"></x-import>
+      <x-import component-from-global-scope="Kotila.MoneyInput" label="Deposit taken earlier" value="{{zero}}" hint="Optional · leave at ₦0 if none"></x-import>
+    </div>
+    <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 8px; border-top: 1px solid #eef2ea">
+      <x-import component-from-global-scope="Kotila.Button">Cancel</x-import>
+      <x-import component-from-global-scope="Kotila.Button" variant="primary" icon="check">Save sale</x-import>
+    </div>
+  </x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      yes: true,
+      user: { name: 'Kosi', role: 'owner' },
+      sync: { state: 'synced', lastSynced: '2 min ago' },
+      badges: { sales: { count: 3, title: '3 buyers owe money' } },
+      noticeAction: { label: 'Record a payment' },
+      owedColumns: [
+        { key: 'buyer', label: 'Buyer', width: 260 },
+        { key: 'set', label: 'Set' },
+        { key: 'total', label: 'Sale total', align: 'right' },
+        { key: 'paid', label: 'Paid', align: 'right' },
+        { key: 'bal', label: 'Balance', align: 'right' },
+        { key: 'age', label: 'Owed for', align: 'right' }
+      ],
+      owedRows: [
+        { buyer: { value: 'Mama Nkechi', sub: '30 birds · 7 Sep' }, set: 'Set 3', total: '₦225,000', paid: '₦10,000', bal: { value: '₦215,000', tone: 'owed', figure: true }, age: { tag: { tone: 'alert', label: '19 days' } } },
+        { buyer: { value: 'Alhaji Sule', sub: '50 birds · 10 Sep' }, set: 'Set 3', total: '₦358,550', paid: '₦304,950', bal: { value: '₦53,600', tone: 'owed', figure: true }, age: { tag: { tone: 'warning', label: '16 days' } } },
+        { buyer: { value: 'Chidi Poultry Mart', sub: '20 birds · 18 Sep' }, set: 'Set 3', total: '₦153,400', paid: '₦10,000', bal: { value: '₦143,400', tone: 'owed', figure: true }, age: { tag: { tone: 'warning', label: '8 days' } } }
+      ],
+      owedFooter: { buyer: '3 buyers', set: '', total: '₦736,950', paid: '₦324,950', bal: { value: '₦412,000', tone: 'owed' }, age: '' },
+      setOptions: [
+        { value: 'set3', label: 'Set 3 · closed 14 Sep' },
+        { value: 'set4', label: 'Set 4 · growing, day 24' },
+        { value: 'set5', label: 'Set 5 · brooding, day 6' }
+      ],
+      buyerOptions: [
+        { value: 'chidi', label: 'Chidi Poultry Mart' },
+        { value: 'sule', label: 'Alhaji Sule' },
+        { value: 'nkechi', label: 'Mama Nkechi' },
+        { value: 'bisi', label: 'Iya Bisi' },
+        { value: 'ebere', label: 'Madam Ebere' },
+        { value: 'obinna', label: 'Obinna Cold Room' },
+        { value: 'new', label: 'Add a new buyer' }
+      ],
+      qty: 12,
+      price: 7500,
+      paid: 60000,
+      owed: 30000,
+      zero: 0,
+      methods: ['Cash', 'Bank transfer', 'POS']
+    };
+  }
+}
+</script>
+</body>
+</html>

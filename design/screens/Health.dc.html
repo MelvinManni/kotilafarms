@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Health and vaccines — owner, desktop</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kotila/components/bundle.css">
+<script src="ds/kotila/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#eef2ea;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180b}
+a{color:#2f6410}a:hover{color:#1f470a}
+</style>
+</helmet>
+<div class="k-root" style="position: relative; width: 1440px; height: 1100px; display: flex; background: #eef2ea; overflow: hidden">
+  <x-import component-from-global-scope="Kotila.SideRail" active="health" logo-src="/_blob/5f856855f9b37e32751e00e7d2b65ce0" user="{{user}}" sync="{{sync}}" badges="{{badges}}" style="height: 1100px"></x-import>
+
+  <main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 32px 40px 40px; display: flex; flex-direction: column; gap: 24px">
+    <header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 15px; color: #4e5948">2 running Sets</span>
+        <h1 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 38px; line-height: 42px; letter-spacing: -0.02em">Health and vaccines</h1>
+      </div>
+      <div style="display: flex; gap: 12px">
+        <x-import component-from-global-scope="Kotila.Button" icon="edit">Edit vaccine schedule</x-import>
+        <x-import component-from-global-scope="Kotila.Button" variant="primary" icon="syringe">Record a treatment</x-import>
+      </div>
+    </header>
+
+    <x-import component-from-global-scope="Kotila.Notice" tone="warning" icon="syringe" title="Gumboro is due tomorrow for Set 5" action="{{markGiven}}">Day 7 · 600 doses · give in drinking water in the morning</x-import>
+
+    <div class="k-grid-2" style="align-items: stretch">
+      <x-import component-from-global-scope="Kotila.Panel" flush="{{yes}}" title="Vaccine schedule · Set 5" subtitle="Front pen · started 20 Sep · day 6">
+        <x-import component-from-global-scope="Kotila.LedgerTable" caption="Set 5 vaccines" columns="{{vaxCols}}" rows="{{set5}}"></x-import>
+      </x-import>
+      <x-import component-from-global-scope="Kotila.Panel" flush="{{yes}}" title="Vaccine schedule · Set 4" subtitle="Back pen · started 2 Sep · day 24 · all four given">
+        <x-import component-from-global-scope="Kotila.LedgerTable" caption="Set 4 vaccines" columns="{{vaxCols}}" rows="{{set4}}"></x-import>
+      </x-import>
+    </div>
+
+    <x-import component-from-global-scope="Kotila.Panel" flush="{{yes}}" title="Drugs and supplements" subtitle="Sets 4 and 5 · ₦43,800 since 12 Sep" action="{{recordAct}}">
+      <x-import component-from-global-scope="Kotila.LedgerTable" caption="Drugs and supplements given, newest first" dense="{{yes}}" columns="{{drugCols}}" rows="{{drugs}}"></x-import>
+    </x-import>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var muted = function (v) { return { value: v, tone: 'muted' }; };
+    return {
+      yes: true,
+      no: false,
+      user: { name: 'Kosi', role: 'owner' },
+      sync: { state: 'synced', lastSynced: '2 min ago' },
+      badges: { sales: { count: 3, title: '3 buyers owe money' } },
+      markGiven: { label: 'Mark as given' },
+      recordAct: { label: 'Record a treatment' },
+      vaxCols: [
+        { key: 'vax', label: 'Vaccine' },
+        { key: 'due', label: 'Due' },
+        { key: 'given', label: 'Given' },
+        { key: 'status', label: 'Status' }
+      ],
+      set5: [
+        { vax: { value: 'Gumboro', sub: '1st dose' }, due: { value: 'Day 7', sub: 'Sun 27 Sep' }, given: muted('—'), status: { tag: { tone: 'warning', label: 'Due tomorrow' } } },
+        { vax: { value: 'Lasota', sub: '1st dose' }, due: { value: 'Day 10', sub: 'Wed 30 Sep' }, given: muted('—'), status: { tag: { tone: 'neutral', label: 'Upcoming' } } },
+        { vax: { value: 'Gumboro', sub: '2nd dose' }, due: { value: 'Day 14', sub: 'Sun 4 Oct' }, given: muted('—'), status: { tag: { tone: 'neutral', label: 'Upcoming' } } },
+        { vax: { value: 'Lasota', sub: '2nd dose' }, due: { value: 'Day 21', sub: 'Sun 11 Oct' }, given: muted('—'), status: { tag: { tone: 'neutral', label: 'Upcoming' } } }
+      ],
+      set4: [
+        { vax: { value: 'Gumboro', sub: '1st dose' }, due: { value: 'Day 7', sub: 'Wed 9 Sep' }, given: { value: 'Day 9', sub: 'Fri 11 Sep · Adaeze' }, status: { tag: { tone: 'warning', label: 'Given 2 days late' } } },
+        { vax: { value: 'Lasota', sub: '1st dose' }, due: { value: 'Day 10', sub: 'Sat 12 Sep' }, given: { value: 'Day 12', sub: 'Mon 14 Sep · Adaeze' }, status: { tag: { tone: 'warning', label: 'Given 2 days late' } } },
+        { vax: { value: 'Gumboro', sub: '2nd dose' }, due: { value: 'Day 16', sub: '7 days after 1st dose' }, given: { value: 'Day 16', sub: 'Fri 18 Sep · Chinedu' }, status: { tag: { tone: 'success', label: 'Given' } } },
+        { vax: { value: 'Lasota', sub: '2nd dose' }, due: { value: 'Day 21', sub: 'Wed 23 Sep' }, given: { value: 'Day 21', sub: 'Wed 23 Sep · Adaeze' }, status: { tag: { tone: 'success', label: 'Given' } } }
+      ],
+      drugCols: [
+        { key: 'date', label: 'Date', width: 110 },
+        { key: 'set', label: 'Set', width: 90 },
+        { key: 'item', label: 'Item' },
+        { key: 'dose', label: 'Amount / dose' },
+        { key: 'cost', label: 'Cost', align: 'right' },
+        { key: 'why', label: 'Why' },
+        { key: 'by', label: 'Entered by' }
+      ],
+      drugs: [
+        { date: 'Fri 25 Sep', set: 'Set 4', item: 'Oxytetracycline', dose: { value: '100 g', sub: 'in drinking water · 3 days' }, cost: '₦6,800', why: 'Wet litter 3 days, 4 deaths this week', by: { value: 'Adaeze', sub: '25 Sep, 7:15am' } },
+        { date: 'Wed 23 Sep', set: 'Set 4', item: 'Multivitamins', dose: { value: '50 g per 100 L', sub: '5 days' }, cost: '₦3,200', why: 'Stress after Lasota 2nd dose', by: { value: 'Adaeze', sub: '23 Sep, 8:02am' } },
+        { date: 'Mon 21 Sep', set: 'Set 5', item: 'Elrox', dose: { value: '100 g', sub: 'in drinking water · 5 days' }, cost: '₦4,500', why: 'Cover day-olds in the first week', by: { value: 'Chinedu', sub: '21 Sep, 6:40am' } },
+        { date: 'Sun 20 Sep', set: 'Set 5', item: 'Glucose', dose: { value: '2 kg', sub: 'in water on arrival' }, cost: '₦2,400', why: 'Travel stress, 600 day-olds from Zartech', by: { value: 'Chinedu', sub: '20 Sep, 4:10pm' } },
+        { date: 'Thu 17 Sep', set: 'Set 4', item: 'Growth booster (liquid)', dose: { value: '1 L', sub: '7 days' }, cost: '₦9,750', why: 'Day 14 weight under standard', by: { value: 'Adaeze', sub: '17 Sep, 9:30am' } },
+        { date: 'Tue 15 Sep', set: 'Set 4', item: { value: 'Amprolium', sub: 'coccidiosis treatment' }, dose: { value: '250 g', sub: 'in drinking water · 5 days' }, cost: '₦14,500', why: 'Bloody droppings seen on day 12', by: { value: 'Adaeze', sub: '15 Sep, 7:48am' } },
+        { date: 'Sat 12 Sep', set: 'Set 4', item: 'Calcium', dose: { value: '1 kg', sub: 'in feed · 4 days' }, cost: '₦2,650', why: 'Leg weakness in a few birds', by: { value: 'Chinedu', sub: '12 Sep, 6:55pm' } }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

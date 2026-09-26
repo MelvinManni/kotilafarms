@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Expenses — Kotila Farms</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kotila/components/bundle.css">
+<script src="ds/kotila/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#eef2ea;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180b}
+a{color:#2f6410}a:hover{color:#1f470a}
+</style>
+</helmet>
+<div class="k-root" style="position: relative; width: 1440px; height: 1100px; display: flex; background: #eef2ea; overflow: hidden">
+  <x-import component-from-global-scope="Kotila.SideRail" active="expenses" logo-src="/_blob/5f856855f9b37e32751e00e7d2b65ce0" user="{{user}}" sync="{{sync}}" badges="{{badges}}" style="height: 1100px"></x-import>
+
+  <main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 32px 40px 40px; display: flex; flex-direction: column; gap: 24px">
+    <header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 15px; color: #4e5948">September 2026 · day-olds and feed were 85% of it</span>
+        <h1 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 38px; line-height: 42px; letter-spacing: -0.02em">Expenses</h1>
+      </div>
+      <div style="display: flex; gap: 12px">
+        <x-import component-from-global-scope="Kotila.Button" variant="primary" icon="plus">Add expense</x-import>
+      </div>
+    </header>
+
+    <div style="display: flex; gap: 16px; align-items: flex-end">
+      <div style="width: 200px">
+        <x-import component-from-global-scope="Kotila.Select" label="Set" options="{{setOptions}}" default-value="all"></x-import>
+      </div>
+      <div style="width: 220px">
+        <x-import component-from-global-scope="Kotila.Select" label="Category" options="{{categoryOptions}}" default-value="all"></x-import>
+      </div>
+      <div style="width: 200px">
+        <x-import component-from-global-scope="Kotila.Select" label="Month" options="{{monthOptions}}" default-value="2026-09"></x-import>
+      </div>
+      <div style="width: 340px">
+        <x-import component-from-global-scope="Kotila.Segmented" label="Show" options="{{showOptions}}" default-value="all"></x-import>
+      </div>
+    </div>
+
+    <div class="k-grid-3" style="padding: 20px 24px; background: #ffffff; border: 1px solid #e1e8da; border-radius: 24px">
+      <x-import component-from-global-scope="Kotila.Figure" label="Spent in September" value="₦1,318,450" sub="plus ₦42,000 on one capital item" size="lg"></x-import>
+      <x-import component-from-global-scope="Kotila.Figure" label="On Sets" value="₦1,284,050" sub="Set 5 ₦812,600 · Set 4 ₦471,450" size="lg"></x-import>
+      <x-import component-from-global-scope="Kotila.Figure" label="Farm overhead" value="₦34,400" sub="spread across all Sets" size="lg"></x-import>
+    </div>
+
+    <div style="display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 20px; align-items: start">
+      <x-import component-from-global-scope="Kotila.Panel" title="September expenses" subtitle="Latest 10 of 34, newest first" flush="{{yes}}">
+        <x-import component-from-global-scope="Kotila.LedgerTable" caption="September expenses, newest first" dense="{{yes}}" columns="{{columns}}" rows="{{rows}}"></x-import>
+      </x-import>
+
+      <x-import component-from-global-scope="Kotila.Panel" title="September by category" subtitle="Running costs, largest first">
+        <x-import component-from-global-scope="Kotila.BarList" items="{{byCategory}}" format="naira"></x-import>
+        <p style="margin: 0; font-size: 13px; line-height: 18px; color: #4e5948">The ₦42,000 drinker set is a capital item. It is kept apart from running costs and spread over the Sets that use it.</p>
+      </x-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var receipt = { tag: { tone: 'success', label: 'Receipt' } };
+    var noReceipt = { value: 'None', tone: 'muted' };
+    var set4 = { tag: { tone: 'success', label: 'Set 4' } };
+    var set5 = { tag: { tone: 'warning', label: 'Set 5' } };
+    var overhead = { tag: { tone: 'neutral', label: 'Overhead' } };
+    return {
+      yes: true,
+      user: { name: 'Kosi', role: 'owner' },
+      sync: { state: 'synced', lastSynced: '2 min ago' },
+      badges: { sales: { count: 3, title: '3 buyers owe money' } },
+      setOptions: [
+        { value: 'all', label: 'All Sets' },
+        { value: 'set5', label: 'Set 5' },
+        { value: 'set4', label: 'Set 4' },
+        { value: 'set3', label: 'Set 3' },
+        { value: 'overhead', label: 'Farm overhead' }
+      ],
+      categoryOptions: [
+        { value: 'all', label: 'All categories' },
+        { value: 'feed', label: 'Feed' },
+        { value: 'chicks', label: 'Day-old chicks' },
+        { value: 'drugs', label: 'Drugs and vaccines' },
+        { value: 'brooding', label: 'Brooding' },
+        { value: 'sawdust', label: 'Sawdust' },
+        { value: 'labour', label: 'Labour' },
+        { value: 'transport', label: 'Transport' },
+        { value: 'equipment', label: 'Equipment and structures' }
+      ],
+      monthOptions: [
+        { value: '2026-09', label: 'September 2026' },
+        { value: '2026-08', label: 'August 2026' },
+        { value: '2026-07', label: 'July 2026' }
+      ],
+      showOptions: [
+        { value: 'all', label: 'All' },
+        { value: 'sets', label: 'Set costs' },
+        { value: 'overhead', label: 'Overhead' }
+      ],
+      columns: [
+        { key: 'what', label: 'What for' },
+        { key: 'set', label: 'Set or overhead' },
+        { key: 'amount', label: 'Amount', align: 'right' },
+        { key: 'by', label: 'Paid by' },
+        { key: 'receipt', label: 'Receipt' }
+      ],
+      rows: [
+        { what: { value: 'Charcoal, 6 bags', sub: 'Fri 25 Sep · Brooding' }, set: set5, amount: '₦13,500', by: 'Adaeze', receipt: noReceipt },
+        { what: { value: 'Generator fuel, 20 litres', sub: 'Thu 24 Sep · Fuel and power' }, set: overhead, amount: '₦18,400', by: 'Kosi', receipt: receipt },
+        { what: { value: 'Finisher (Ultima), 8 bags', sub: 'Tue 22 Sep · Feed · ₦24,800 a bag' }, set: set4, amount: '₦198,400', by: 'Kosi', receipt: receipt },
+        { what: { value: 'Feed trip from the depot', sub: 'Tue 22 Sep · Transport' }, set: set4, amount: '₦7,500', by: 'Kosi', receipt: noReceipt },
+        { what: { value: 'Drinker set, 10 drinkers', sub: 'Mon 21 Sep · Equipment and structures' }, set: { tag: { tone: 'deep', label: 'Capital item' }, sub: 'Farm overhead' }, amount: '₦42,000', by: 'Kosi', receipt: receipt },
+        { what: { value: 'Day-olds, 600 from Zartech', sub: 'Sun 20 Sep · Day-old chicks · ₦980 each' }, set: set5, amount: '₦588,000', by: 'Kosi', receipt: receipt },
+        { what: { value: 'Starter (Breedwell), 7 bags', sub: 'Sat 19 Sep · Feed · ₦26,200 a bag' }, set: set5, amount: '₦183,400', by: 'Kosi', receipt: receipt },
+        { what: { value: 'Sawdust, 2 loads', sub: 'Sat 19 Sep · Sawdust' }, set: set5, amount: '₦16,000', by: 'Adaeze', receipt: noReceipt },
+        { what: { value: 'Gumboro vaccine, 500 doses', sub: 'Wed 16 Sep · Drugs and vaccines' }, set: set4, amount: '₦9,800', by: 'Adaeze', receipt: receipt },
+        { what: { value: 'Pen hand, first half of September', sub: 'Mon 14 Sep · Labour' }, set: set4, amount: '₦18,500', by: 'Kosi', receipt: noReceipt }
+      ],
+      byCategory: [
+        { label: 'Day-old chicks', value: 588000 },
+        { label: 'Feed', value: 539000 },
+        { label: 'Drugs and vaccines', value: 39250 },
+        { label: 'Brooding', value: 38500 },
+        { label: 'Labour', value: 37000 },
+        { label: 'Sawdust', value: 28000 },
+        { label: 'Fuel and power', value: 18400 },
+        { label: 'Repairs, phone and data', value: 16000 },
+        { label: 'Transport', value: 14300 }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

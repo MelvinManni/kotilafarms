@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Compare Sets — Kotila Farms</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kotila/components/bundle.css">
+<script src="ds/kotila/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#eef2ea;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180b}
+a{color:#2f6410}a:hover{color:#1f470a}
+</style>
+</helmet>
+<div class="k-root" style="position: relative; width: 1440px; height: 1180px; display: flex; background: #eef2ea; overflow: hidden">
+  <x-import component-from-global-scope="Kotila.SideRail" active="reports" logo-src="/_blob/5f856855f9b37e32751e00e7d2b65ce0" user="{{user}}" sync="{{sync}}" badges="{{badges}}" style="height: 1180px"></x-import>
+
+  <main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 32px 40px 40px; display: flex; flex-direction: column; gap: 24px">
+    <header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 15px; color: #4e5948">Any two or more Sets, side by side</span>
+        <h1 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 38px; line-height: 42px; letter-spacing: -0.02em">Compare Sets</h1>
+      </div>
+      <x-import component-from-global-scope="Kotila.Button" icon="download">Download PDF</x-import>
+    </header>
+
+    <section aria-label="Sets to compare" style="background: #ffffff; border: 1px solid #e1e8da; border-radius: 24px; padding: 20px 24px; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px">
+        <h2 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 20px; line-height: 26px">Sets to compare</h2>
+        <span style="font-size: 13px; color: #4e5948">{{pickedCount}} picked · a Set picked in one list is removed from the others</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px">
+        <sc-for list="{{slots}}" as="slot" hint-placeholder-count="2">
+          <div style="display: flex; align-items: flex-end; gap: 4px">
+            <x-import component-from-global-scope="Kotila.Select" label="{{slot.label}}" options="{{slot.options}}" value="{{slot.value}}" on-change="{{slot.onPick}}" style="width: 220px"></x-import>
+            <sc-if value="{{slot.removable}}" hint-placeholder-val="{{no}}">
+              <x-import component-from-global-scope="Kotila.IconButton" icon="x" variant="ghost" label="{{slot.removeLabel}}" on-click="{{slot.onRemove}}" style="margin-bottom: 6px"></x-import>
+            </sc-if>
+          </div>
+        </sc-for>
+        <sc-if value="{{canAdd}}" hint-placeholder-val="{{yes}}">
+          <x-import component-from-global-scope="Kotila.Button" variant="outline" icon="plus" size="lg" on-click="{{addSlot}}">Add a Set</x-import>
+        </sc-if>
+      </div>
+      <sc-if value="{{hasRunning}}" hint-placeholder-val="{{no}}">
+        <span style="font-size: 13px; line-height: 18px; color: #4e5948">Running Sets show figures so far. Sale, cost-per-bird and profit figures appear once a Set has sold.</span>
+      </sc-if>
+    </section>
+
+    <x-import component-from-global-scope="Kotila.Panel" title="{{tableTitle}}" subtitle="The best value in each row is named on the right. Only Sets with that figure take part." flush="{{yes}}">
+      <x-import component-from-global-scope="Kotila.LedgerTable" caption="Sets compared by metric" dense="{{yes}}" columns="{{cols}}" rows="{{rows}}"></x-import>
+    </x-import>
+
+    <div class="k-grid-3" style="align-items: stretch">
+      <x-import component-from-global-scope="Kotila.Panel" title="{{f1.title}}">
+        <p style="margin: 0; font-size: 15px; line-height: 22px; color: #2a3325">{{f1.body}}</p>
+      </x-import>
+      <x-import component-from-global-scope="Kotila.Panel" title="{{f2.title}}">
+        <p style="margin: 0; font-size: 15px; line-height: 22px; color: #2a3325">{{f2.body}}</p>
+      </x-import>
+      <x-import component-from-global-scope="Kotila.Panel" title="{{f3.title}}">
+        <p style="margin: 0; font-size: 15px; line-height: 22px; color: #2a3325">{{f3.body}}</p>
+      </x-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1180}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var self = this;
+    var SETS = [
+      { id: 's1', name: 'Set 1', status: 'Closed 24 Apr', closed: true, intake: 200, deaths: 19, sold: 181, fcr: 1.88, wt: 2.21, cps: 6609, rpb: 7123, mpb: 514, margin: 7.21, feed: 74, profit: 92900 },
+      { id: 's2', name: 'Set 2', status: 'Closed 2 Jul', closed: true, intake: 300, deaths: 19, sold: 281, fcr: 1.69, wt: 2.38, cps: 6094, rpb: 7400, mpb: 1306, margin: 17.65, feed: 71, profit: 367000 },
+      { id: 's3', name: 'Set 3', status: 'Closed 14 Sep', closed: true, intake: 500, deaths: 35, sold: 465, fcr: 1.74, wt: 2.46, cps: 6440, rpb: 7629, mpb: 1189, margin: 15.96, feed: 69, profit: 568750 },
+      { id: 's4', name: 'Set 4', status: 'Growing · day 24', closed: false, intake: 500, deaths: 18, sold: 0, fcr: 1.61, wt: null, cps: null, rpb: null, mpb: null, margin: null, feed: 64, profit: null },
+      { id: 's5', name: 'Set 5', status: 'Brooding · day 6', closed: false, intake: 600, deaths: 3, sold: 0, fcr: null, wt: null, cps: null, rpb: null, mpb: null, margin: null, feed: null, profit: null }
+    ];
+    var byId = {};
+    SETS.forEach(function (s) { byId[s.id] = s; });
+    var picked = (this.state && this.state.picked) || ['s1', 's2', 's3'];
+    var ORD = ['First Set', 'Second Set', 'Third Set', 'Fourth Set', 'Fifth Set'];
+
+    function setPicked(next) { self.setState({ picked: next }); }
+    function optionLabel(s) { return s.name + ' · ' + s.status; }
+
+    var slots = picked.map(function (id, i) {
+      var others = picked.filter(function (_, j) { return j !== i; });
+      return {
+        label: ORD[i],
+        value: id,
+        options: SETS.filter(function (s) { return others.indexOf(s.id) < 0; }).map(function (s) { return { value: s.id, label: optionLabel(s) }; }),
+        onPick: function (v) { var n = picked.slice(); n[i] = v; setPicked(n); },
+        removable: i >= 2,
+        removeLabel: 'Remove ' + byId[id].name + ' from the comparison',
+        onRemove: function () { setPicked(picked.filter(function (_, j) { return j !== i; })); }
+      };
+    });
+    var left = SETS.filter(function (s) { return picked.indexOf(s.id) < 0; });
+    function addSlot() { if (left.length) setPicked(picked.concat([left[0].id])); }
+
+    function naira(n) { return '₦' + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+    function pct(n, d) { return n.toFixed(d) + '%'; }
+    var METRICS = [
+      { key: 'intake', label: 'Intake', fmt: function (s) { return String(s.intake); }, get: function (s) { return s.intake; }, better: null },
+      { key: 'mort', label: 'Mortality', fmt: function (s) { return pct(s.deaths / s.intake * 100, 1) + ' · ' + s.deaths + ' birds'; }, get: function (s) { return s.deaths / s.intake; }, better: 'low', runningOk: true },
+      { key: 'sold', label: 'Birds sold', fmt: function (s) { return s.sold ? String(s.sold) : null; }, get: function (s) { return s.sold || null; }, better: null },
+      { key: 'fcr', label: 'Feed conversion ratio', fmt: function (s) { return s.fcr == null ? null : s.fcr.toFixed(2) + (s.closed ? '' : ' so far'); }, get: function (s) { return s.closed ? s.fcr : null; }, better: 'low' },
+      { key: 'wt', label: 'Average weight at sale', fmt: function (s) { return s.wt == null ? null : s.wt.toFixed(2) + ' kg'; }, get: function (s) { return s.wt; }, better: 'high' },
+      { key: 'cps', label: 'Cost per bird sold', fmt: function (s) { return s.cps == null ? null : naira(s.cps); }, get: function (s) { return s.cps; }, better: 'low' },
+      { key: 'rpb', label: 'Revenue per bird', fmt: function (s) { return s.rpb == null ? null : naira(s.rpb); }, get: function (s) { return s.rpb; }, better: 'high' },
+      { key: 'mpb', label: 'Margin per bird', fmt: function (s) { return s.mpb == null ? null : naira(s.mpb); }, get: function (s) { return s.mpb; }, better: 'high' },
+      { key: 'margin', label: 'Net margin', fmt: function (s) { return s.margin == null ? null : pct(s.margin, 2); }, get: function (s) { return s.margin; }, better: 'high' },
+      { key: 'feed', label: 'Feed share of cost', fmt: function (s) { return s.feed == null ? null : s.feed + '%' + (s.closed ? '' : ' so far'); }, get: function (s) { return s.closed ? s.feed : null; }, better: 'low' },
+      { key: 'profit', label: 'Profit', fmt: function (s) { return s.profit == null ? null : naira(s.profit); }, get: function (s) { return s.profit; }, better: 'high' }
+    ];
+    var pickedSets = picked.map(function (id) { return byId[id]; });
+    var cols = [{ key: 'm', label: 'Metric', width: 240 }].concat(pickedSets.map(function (s) { return { key: s.id, label: s.name, align: 'right' }; })).concat([{ key: 'best', label: 'Best', align: 'right', width: 150 }]);
+    var dash = { value: '—', tone: 'muted' };
+    var rows = METRICS.map(function (m) {
+      var row = { m: m.label };
+      var cands = [];
+      pickedSets.forEach(function (s) {
+        var shown = m.fmt(s);
+        row[s.id] = shown == null ? dash : { value: shown, sub: (!s.closed && m.runningOk) ? 'so far' : undefined };
+        var v = m.get(s);
+        if (m.better && v != null && (s.closed || m.runningOk)) cands.push({ s: s, v: v });
+      });
+      if (m.better && cands.length >= 2) {
+        cands.sort(function (a, b) { return m.better === 'low' ? a.v - b.v : b.v - a.v; });
+        var top = cands[0].s;
+        row.best = { tag: { tone: 'success', label: 'Best: ' + top.name } };
+      } else {
+        row.best = dash;
+      }
+      return row;
+    });
+
+    var closed = pickedSets.filter(function (s) { return s.closed; });
+    var names = pickedSets.map(function (s) { return s.name; });
+    var tableTitle = names.length === 2 ? names[0] + ' and ' + names[1] + ', metric by metric' : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] + ', metric by metric';
+
+    var byMort = pickedSets.slice().sort(function (a, b) { return a.deaths / a.intake - b.deaths / b.intake; });
+    var f1 = {
+      title: byMort[0].name + ' has the lowest mortality, ' + pct(byMort[0].deaths / byMort[0].intake * 100, 1),
+      body: pickedSets.map(function (s) { return s.name + ' ' + pct(s.deaths / s.intake * 100, 1) + ' (' + s.deaths + ' birds' + (s.closed ? '' : ', so far') + ')'; }).join(' · ') + '.'
+    };
+    var f2, f3;
+    if (closed.length) {
+      var byMargin = closed.slice().sort(function (a, b) { return b.margin - a.margin; });
+      f2 = { title: byMargin[0].name + ' made the best margin, ' + pct(byMargin[0].margin, 2), body: closed.map(function (s) { return s.name + ' made ' + naira(s.profit) + ' on ' + s.intake + ' day-olds'; }).join('; ') + '.' };
+    } else {
+      f2 = { title: 'No closed Set picked yet', body: 'Profit and margin appear once a Set has sold its birds. Add Set 1, 2 or 3 to compare money.' };
+    }
+    if (closed.length >= 2) {
+      var first = closed.slice().sort(function (a, b) { return a.id < b.id ? -1 : 1; });
+      var a = first[0], b = first[first.length - 1], diff = b.rpb - a.rpb;
+      f3 = { title: 'Revenue per bird is ' + (diff >= 0 ? 'up ' : 'down ') + naira(Math.abs(diff)) + ' from ' + a.name + ' to ' + b.name, body: naira(a.rpb) + ' in ' + a.name + ' and ' + naira(b.rpb) + ' in ' + b.name + ', with birds at ' + a.wt.toFixed(2) + ' kg and ' + b.wt.toFixed(2) + ' kg at sale.' };
+    } else {
+      f3 = { title: 'Pick two closed Sets to see price trends', body: 'Revenue per bird and weight at sale only exist once a Set has sold.' };
+    }
+
+    return {
+      yes: true, no: false,
+      user: { name: 'Kosi', role: 'owner' },
+      sync: { state: 'synced', lastSynced: '2 min ago' },
+      badges: { sales: { count: 3, title: '3 buyers owe money' } },
+      slots: slots,
+      pickedCount: picked.length + ' Sets',
+      canAdd: left.length > 0,
+      addSlot: addSlot,
+      hasRunning: pickedSets.some(function (s) { return !s.closed; }),
+      tableTitle: tableTitle,
+      cols: cols,
+      rows: rows,
+      f1: f1, f2: f2, f3: f3
+    };
+  }
+}
+</script>
+</body>
+</html>

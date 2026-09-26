@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Daily log — recorder, phone, offline</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kotila/components/bundle.css">
+<script src="ds/kotila/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#eef2ea;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180b}
+a{color:#2f6410}a:hover{color:#1f470a}
+</style>
+</helmet>
+<div class="k-root" style="position: relative; width: 390px; height: 1560px; background: #eef2ea; overflow: hidden">
+  <div style="position: absolute; top: 0; left: 0; width: 390px; height: 220px; background: #2f6410; overflow: hidden">
+    <img src="/_blob/bcc9941ed890ee4dcee545f94223c20f" alt="" style="position: absolute; width: 460px; height: auto; right: -190px; top: -40px; opacity: 0.1">
+  </div>
+
+  <div style="position: absolute; left: 12px; right: 12px; top: 12px; z-index: 2">
+    <x-import component-from-global-scope="Kotila.TopBar" back="Back to Today" title="Log Set 4" sync="{{sync}}"></x-import>
+  </div>
+
+  <main style="position: relative; box-sizing: border-box; padding: 88px 16px 180px; display: flex; flex-direction: column; gap: 16px">
+    <p style="margin: 0; padding: 0 4px; font-size: 15px; font-weight: 600; color: #d6e8c8">Set 4 · Back pen · day 24 · Sat 26 Sep</p>
+
+    <x-import component-from-global-scope="Kotila.Panel" variant="raised" title="Deaths">
+      <x-import component-from-global-scope="Kotila.Stepper" label="Deaths today" default-value="{{deaths}}" unit="birds" alert-above="{{alertAbove}}" hint="Yesterday: 1"></x-import>
+      <p style="margin: 0; font-size: 17px; font-weight: 800; color: #10180b">480 live after today (was 482)</p>
+      <x-import component-from-global-scope="Kotila.ChipGroup" label="Cause" optional="{{yes}}" multiple="{{no}}" size="sm" options="{{causes}}" hint="Leave blank if you're not sure — a guess is worse than nothing"></x-import>
+    </x-import>
+
+    <x-import component-from-global-scope="Kotila.Panel" variant="raised" title="Feed used">
+      <x-import component-from-global-scope="Kotila.Segmented" options="{{feedUnits}}" default-value="bags"></x-import>
+      <x-import component-from-global-scope="Kotila.TextInput" label="Feed used today" default-value="2.5" suffix="bags" input-mode="decimal" hint="9 bags in store before today · about 4 days left"></x-import>
+      <x-import component-from-global-scope="Kotila.Select" label="Feed type" options="{{feedTypes}}" default-value="finisher"></x-import>
+    </x-import>
+
+    <x-import component-from-global-scope="Kotila.Panel" variant="raised" title="Water">
+      <x-import component-from-global-scope="Kotila.Segmented" label="How much did they drink?" optional="{{yes}}" options="{{water}}" default-value="normal"></x-import>
+    </x-import>
+
+    <x-import component-from-global-scope="Kotila.Panel" variant="raised" title="Seen in the pen">
+      <x-import component-from-global-scope="Kotila.ChipGroup" label="Tap anything you saw" optional="{{yes}}" options="{{signs}}" default-value="{{signsOn}}" size="sm" hint="Wet litter logged Thu and Fri too."></x-import>
+    </x-import>
+
+    <x-import component-from-global-scope="Kotila.Panel" variant="raised" title="Temperature and notes">
+      <x-import component-from-global-scope="Kotila.TextInput" label="Temperature in the pen" optional="{{yes}}" suffix="°C" input-mode="decimal" placeholder="31" hint="Matters most while brooding (first 14 days)."></x-import>
+      <x-import component-from-global-scope="Kotila.TextInput" label="Note" optional="{{yes}}" multiline="{{yes}}" placeholder="Anything the manager should know — where the deaths were, what you changed"></x-import>
+    </x-import>
+  </main>
+
+  <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 16px 16px 28px; background: #ffffff; border-top: 1px solid #e1e8da; box-shadow: 0 -4px 24px rgba(16,24,11,.08); display: flex; flex-direction: column; gap: 10px; align-items: stretch">
+    <x-import component-from-global-scope="Kotila.Button" variant="primary" size="xl" full="{{yes}}" icon="check">Save today's log</x-import>
+    <span style="font-size: 13px; line-height: 18px; font-weight: 500; color: #4e5948; text-align: center">Saves on this phone. Sends when signal returns.</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1560}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      yes: true,
+      no: false,
+      sync: { state: 'offline', pending: 3 },
+      deaths: 2,
+      alertAbove: 1,
+      causes: [
+        { value: 'unknown', label: 'Unknown' },
+        { value: 'disease', label: 'Disease' },
+        { value: 'heat', label: 'Heat' },
+        { value: 'culled', label: 'Culled' },
+        { value: 'predator', label: 'Predator' },
+        { value: 'crush', label: 'Crushed' }
+      ],
+      feedUnits: [{ value: 'bags', label: 'Bags' }, { value: 'kg', label: 'Kg' }],
+      feedTypes: [
+        { value: 'finisher', label: 'Finisher · Ultima' },
+        { value: 'grower', label: 'Grower' },
+        { value: 'starter', label: 'Starter · Breedwell' }
+      ],
+      water: [{ value: 'low', label: 'Low' }, { value: 'normal', label: 'Normal' }, { value: 'high', label: 'High' }],
+      signs: [
+        { value: 'coughing', label: 'Coughing' },
+        { value: 'green', label: 'Green stool' },
+        { value: 'lethargy', label: 'Lethargy' },
+        { value: 'panting', label: 'Panting' },
+        { value: 'wet', label: 'Wet litter' },
+        { value: 'appetite', label: 'Poor appetite' }
+      ],
+      signsOn: ['wet']
+    };
+  }
+}
+</script>
+</body>
+</html>

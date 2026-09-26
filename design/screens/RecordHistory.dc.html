@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Edit history — Kotila Farms</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kotila/components/bundle.css">
+<script src="ds/kotila/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#eef2ea;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180b}
+a{color:#2f6410}a:hover{color:#1f470a}
+</style>
+</helmet>
+<div class="k-root" style="position: relative; width: 1440px; height: 1000px; display: flex; background: #eef2ea; overflow: hidden">
+  <x-import component-from-global-scope="Kotila.SideRail" active="log" logo-src="/_blob/5f856855f9b37e32751e00e7d2b65ce0" user="{{user}}" sync="{{sync}}" badges="{{badges}}" style="height: 1000px"></x-import>
+
+  <main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 32px 40px 40px; display: flex; flex-direction: column; gap: 24px">
+    <header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 15px; color: #4e5948">Back pen · 482 live birds · day 24</span>
+        <h1 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 38px; line-height: 42px; letter-spacing: -0.02em">Daily log · Set 4</h1>
+      </div>
+      <div style="display: flex; gap: 12px">
+        <x-import component-from-global-scope="Kotila.Button" icon="calendar">Fill in a missed day</x-import>
+        <x-import component-from-global-scope="Kotila.Button" variant="primary" icon="plus">Log today</x-import>
+      </div>
+    </header>
+
+    <x-import component-from-global-scope="Kotila.Panel" flush="{{yes}}" title="Last 8 days" subtitle="Select a day to open it. Edited days keep their history.">
+      <x-import component-from-global-scope="Kotila.LedgerTable" dense="{{yes}}" caption="Set 4 daily logs, last 8 days" columns="{{columns}}" rows="{{rows}}"></x-import>
+    </x-import>
+
+  </main>
+
+  <x-import component-from-global-scope="Kotila.Sheet" wide="{{yes}}" title="Edit history · 24 Sep log" description="Set 4 · day 22 · first logged by Chinedu Okafor">
+    <x-import component-from-global-scope="Kotila.AuditTrail" entries="{{entries}}"></x-import>
+    <x-import component-from-global-scope="Kotila.Notice" tone="neutral" compact="{{yes}}">Changing a count after the day needs a reason. The old value is kept here.</x-import>
+    <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 8px; border-top: 1px solid #eef2ea">
+      <x-import component-from-global-scope="Kotila.Button">Close</x-import>
+    </div>
+  </x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      yes: true,
+      user: { name: 'Adaeze Nwankwo', role: 'manager' },
+      sync: { state: 'synced', lastSynced: '2 min ago' },
+      badges: { sales: { count: 3, title: '3 buyers owe money' } },
+      columns: [
+        { key: 'date', label: 'Date', width: 170 },
+        { key: 'deaths', label: 'Deaths', align: 'right', width: 110 },
+        { key: 'feed', label: 'Feed used', align: 'right', width: 140 },
+        { key: 'water', label: 'Water', align: 'right', width: 110 },
+        { key: 'seen', label: 'Seen in the pen' },
+        { key: 'by', label: 'Logged by', width: 230 }
+      ],
+      rows: [
+        { date: { value: 'Sat 26 Sep', sub: 'day 24 · today' }, deaths: { value: '—', tone: 'muted' }, feed: { value: '—', tone: 'muted' }, water: { value: '—', tone: 'muted' }, seen: { value: '—', tone: 'muted' }, by: { value: 'Not logged yet', tone: 'muted', sub: 'due by 7pm' } },
+        { date: { value: 'Fri 25 Sep', sub: 'day 23' }, deaths: { value: '—', tone: 'muted', sub: 'not sent yet' }, feed: { value: '—', tone: 'muted' }, water: { value: '—', tone: 'muted' }, seen: { value: '—', tone: 'muted' }, by: { tag: { tone: 'warning', label: 'On Chinedu’s phone' }, sub: 'sends when he has signal' } },
+        { date: { value: 'Thu 24 Sep', sub: 'day 22' }, deaths: { value: '2', figure: true, sub: 'edited, was 3' }, feed: { value: '2.5 bags', sub: 'edited, was 2' }, water: '96 litres', seen: 'Wet litter by the drinkers', by: { value: 'Chinedu', sub: 'Thu 6:40pm · edited by Adaeze today' } },
+        { date: { value: 'Wed 23 Sep', sub: 'day 21' }, deaths: { value: '1', figure: true }, feed: { value: '2.3 bags', sub: 'grower' }, water: '92 litres', seen: 'Wet litter · Lasota given', by: { value: 'Chinedu', sub: 'Wed 6:15pm' } },
+        { date: { value: 'Tue 22 Sep', sub: 'day 20' }, deaths: { value: '0', figure: true }, feed: { value: '2.2 bags', sub: 'grower' }, water: '90 litres', seen: 'Wet litter', by: { value: 'Adaeze', sub: 'Tue 6:52pm' } },
+        { date: { value: 'Mon 21 Sep', sub: 'day 19' }, deaths: { value: '1', figure: true }, feed: { value: '2.2 bags', sub: 'grower' }, water: '88 litres', seen: 'All normal', by: { value: 'Chinedu', sub: 'Mon 6:31pm' } },
+        { date: { value: 'Sun 20 Sep', sub: 'day 18' }, deaths: { value: '0', figure: true }, feed: { value: '2.1 bags', sub: 'grower' }, water: '86 litres', seen: 'All normal', by: { value: 'Chinedu', sub: 'Sun 6:48pm' } },
+        { date: { value: 'Sat 19 Sep', sub: 'day 17' }, deaths: { value: '0', figure: true }, feed: { value: '2.0 bags', sub: 'grower' }, water: '84 litres', seen: 'All normal', by: { value: 'Chinedu', sub: 'Sat 6:22pm' } }
+      ],
+      entries: [
+        { who: 'Chinedu Okafor', role: 'recorder', when: 'Thu 24 Sep, 6:40pm', action: 'entered the daily log', device: 'Phone · sent Fri 7:02am' },
+        { who: 'Adaeze Nwankwo', role: 'manager', when: 'Today, 8:12am', action: 'changed', field: 'deaths', from: '3', to: '2', device: 'Laptop', note: 'One bird counted twice. Found it alive in the corner by the drinkers.' },
+        { who: 'Adaeze Nwankwo', role: 'manager', when: 'Today, 8:13am', action: 'changed', field: 'feed used', from: '2 bags', to: '2.5 bags', device: 'Laptop', note: 'Chinedu confirmed half a bag more from the store book.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

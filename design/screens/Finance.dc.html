@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Finance — Kotila Farms</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kotila/components/bundle.css">
+<script src="ds/kotila/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#eef2ea;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180b}
+a{color:#2f6410}a:hover{color:#1f470a}
+</style>
+</helmet>
+<div class="k-root" style="position: relative; width: 1440px; height: 1300px; display: flex; background: #eef2ea; overflow: hidden">
+  <x-import component-from-global-scope="Kotila.SideRail" active="finance" logo-src="/_blob/5f856855f9b37e32751e00e7d2b65ce0" user="{{user}}" sync="{{sync}}" badges="{{badges}}" style="height: 1300px"></x-import>
+
+  <main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 28px 40px 16px; display: flex; flex-direction: column; gap: 16px">
+    <header style="display: flex; flex-direction: column; gap: 8px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 15px; color: #4e5948">Money in and out, and what each Set made</span>
+        <h1 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 38px; line-height: 42px; letter-spacing: -0.02em">Finance</h1>
+      </div>
+      <x-import component-from-global-scope="Kotila.Tabs" active="cash" items="{{tabs}}"></x-import>
+    </header>
+
+    <section aria-label="Cash position" style="background: #ffffff; border: 1px solid #e1e8da; border-radius: 24px; padding: 22px 24px; display: flex; flex-direction: column; gap: 20px">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 24px">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h2 class="k-title-lg">₦1,284,750 should be on hand</h2>
+          <p style="margin: 0; font-size: 15px; line-height: 22px; color: #4e5948">Money in minus money out since Kosi reconciled on 1 Sep.</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px; flex-shrink: 0">
+          <span class="k-caption" style="text-align: right; width: 300px">Count the cash box and check the bank balance, then record the difference.</span>
+          <x-import component-from-global-scope="Kotila.Button" icon="check">Reconcile cash</x-import>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 32px; align-items: start">
+        <div style="display: flex; flex-direction: column; gap: 20px; padding-right: 24px; border-right: 1px solid #e1e8da">
+          <x-import component-from-global-scope="Kotila.Figure" label="Money in" value="₦2,164,300" sub="bird sales, manure, loans" size="lg"></x-import>
+          <x-import component-from-global-scope="Kotila.Figure" label="Money out" value="−₦879,550" sub="8 kinds of spending" size="lg"></x-import>
+          <x-import component-from-global-scope="Kotila.Figure" label="Owed to the farm" value="₦412,000" sub="3 buyers — not yet cash" tone="owed" size="lg"></x-import>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px">
+          <div style="display: flex; flex-direction: column; gap: 16px">
+            <x-import component-from-global-scope="Kotila.Rows" items="{{inRows}}"></x-import>
+            <x-import component-from-global-scope="Kotila.Rows" items="{{totalRows}}" style="padding: 12px 16px; background: #f4f7f1; border-radius: 14px"></x-import>
+          </div>
+          <x-import component-from-global-scope="Kotila.Rows" items="{{outRows}}"></x-import>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Set profit and loss" style="background: #ffffff; border: 1px solid #e1e8da; border-radius: 24px; padding: 22px 24px; display: flex; flex-direction: column; gap: 20px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 24px">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h2 class="k-title-lg">Set 3 made ₦568,750 — a 15.96% margin</h2>
+          <p style="margin: 0; font-size: 15px; line-height: 22px; color: #4e5948">500 day-olds, 465 sold · closed 14 Sep 2026</p>
+        </div>
+        <x-import component-from-global-scope="Kotila.Segmented" options="{{setOptions}}" default-value="s3" style="width: 400px; flex-shrink: 0"></x-import>
+      </div>
+      <div class="k-grid-2" style="gap: 40px; align-items: start">
+        <div style="display: flex; flex-direction: column; gap: 20px">
+          <x-import component-from-global-scope="Kotila.Rows" items="{{plRows}}"></x-import>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 20px; padding-top: 16px; border-top: 1px solid #e1e8da">
+            <x-import component-from-global-scope="Kotila.Figure" label="Cost per bird sold" value="₦6,440" size="sm"></x-import>
+            <x-import component-from-global-scope="Kotila.Figure" label="Revenue per bird" value="₦7,629" size="sm"></x-import>
+            <x-import component-from-global-scope="Kotila.Figure" label="Margin per bird" value="₦1,189" size="sm"></x-import>
+            <x-import component-from-global-scope="Kotila.Figure" label="Feed share of cost" value="69%" size="sm"></x-import>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <span style="font-size: 15px; font-weight: 700; line-height: 20px">Expenses by category</span>
+          <x-import component-from-global-scope="Kotila.BarList" items="{{expenses}}" format="naira"></x-import>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      user: { name: 'Kosi', role: 'owner' },
+      sync: { state: 'synced', lastSynced: '2 min ago' },
+      badges: { sales: { count: 3, title: '3 buyers owe money' } },
+      tabs: [{ value: 'cash', label: 'Cash position' }, { value: 'pl', label: 'Set profit and loss' }, { value: 'capital', label: 'Partner capital' }, { value: 'loans', label: 'Shareholder loans' }],
+      inRows: [
+        { label: 'Bird and manure sales', value: '₦1,414,300' },
+        { label: 'Shareholder loan from Kosi', value: '₦500,000' },
+        { label: 'Partner capital from Queen', value: '₦250,000' },
+        { label: 'Money in', value: '₦2,164,300', total: true }
+      ],
+      totalRows: [
+        { label: 'Money in since 1 Sep', value: '₦2,164,300' },
+        { label: 'Money out', value: '−₦879,550' },
+        { label: 'Should be on hand', value: '₦1,284,750', total: true }
+      ],
+      outRows: [
+        { label: 'Feed', value: '−₦496,000' },
+        { label: 'Drugs and vaccines', value: '−₦58,300' },
+        { label: 'Brooding', value: '−₦61,450' },
+        { label: 'Litter (sawdust)', value: '−₦24,000' },
+        { label: 'Transport', value: '−₦32,800' },
+        { label: 'Labour', value: '−₦90,000' },
+        { label: 'Equipment', value: '−₦42,000' },
+        { label: 'Other', value: '−₦75,000' },
+        { label: 'Money out', value: '−₦879,550', total: true }
+      ],
+      setOptions: [{ value: 's3', label: 'Set 3' }, { value: 's2', label: 'Set 2' }, { value: 's1', label: 'Set 1' }, { value: 'all', label: 'Sets 1–3' }],
+      plRows: [
+        { label: 'Bird sales · 465 birds', value: '₦3,547,650' },
+        { label: 'Manure', value: '₦15,900' },
+        { label: 'Revenue', value: '₦3,563,550', total: true },
+        { label: 'Expenses', value: '−₦2,994,800' },
+        { label: 'Net profit', value: '₦568,750', total: true },
+        { label: 'Net margin (net profit ÷ revenue)', value: '15.96%' }
+      ],
+      expenses: [
+        { label: 'Feed', value: 2066412 },
+        { label: 'Day-old chicks', value: 445000 },
+        { label: 'Drugs and vaccines', value: 131600 },
+        { label: 'Brooding', value: 96500 },
+        { label: 'Labour', value: 90000 },
+        { label: 'Transport', value: 84000 },
+        { label: 'Litter (sawdust)', value: 36000 },
+        { label: 'Other', value: 22788 },
+        { label: 'Processing', value: 22500 }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

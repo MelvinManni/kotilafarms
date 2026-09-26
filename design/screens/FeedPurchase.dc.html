@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Feed purchase — Kotila Farms</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kotila/components/bundle.css">
+<script src="ds/kotila/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#eef2ea;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180b}
+a{color:#2f6410}a:hover{color:#1f470a}
+</style>
+</helmet>
+<div class="k-root" style="position: relative; width: 1440px; height: 1000px; display: flex; background: #eef2ea; overflow: hidden">
+  <x-import component-from-global-scope="Kotila.SideRail" active="feed" logo-src="/_blob/5f856855f9b37e32751e00e7d2b65ce0" user="{{user}}" sync="{{sync}}" badges="{{badges}}" style="height: 1000px"></x-import>
+
+  <main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 32px 40px 40px; display: flex; flex-direction: column; gap: 24px">
+    <header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 15px; color: #4e5948">23 bags in the store · 2 Sets eating</span>
+        <h1 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 38px; line-height: 42px; letter-spacing: -0.02em">Feed</h1>
+      </div>
+      <div style="display: flex; gap: 12px">
+        <x-import component-from-global-scope="Kotila.Button" icon="bag">Record ingredients</x-import>
+        <x-import component-from-global-scope="Kotila.Button" variant="primary" icon="plus">Record a feed purchase</x-import>
+      </div>
+    </header>
+
+    <div class="k-grid-3" style="align-items: stretch">
+      <x-import component-from-global-scope="Kotila.Panel" title="Finisher · Ultima" subtitle="Set 4 · since day 22">
+        <x-import component-from-global-scope="Kotila.Figure" value="9 bags" sub="~4 days at 2.3 bags a day" tone="alert"></x-import>
+      </x-import>
+      <x-import component-from-global-scope="Kotila.Panel" title="Starter · Breedwell" subtitle="Set 5 · ₦26,200 a bag last paid">
+        <x-import component-from-global-scope="Kotila.Figure" value="14 bags" sub="~11 days at 1.3 bags a day"></x-import>
+      </x-import>
+      <x-import component-from-global-scope="Kotila.Panel" title="Grower" subtitle="No Set on grower now">
+        <x-import component-from-global-scope="Kotila.Figure" value="0 bags" sub="Set 4 moved to finisher on day 22"></x-import>
+      </x-import>
+    </div>
+  </main>
+
+  <x-import component-from-global-scope="Kotila.Sheet" wide="{{yes}}" title="Record a feed purchase" description="Every purchase needs bags, price per bag and total.">
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+      <x-import component-from-global-scope="Kotila.Select" label="Feed type" options="{{feedTypes}}" default-value="finisher"></x-import>
+      <x-import component-from-global-scope="Kotila.TextInput" label="Brand" default-value="Ultima"></x-import>
+    </div>
+    <x-import component-from-global-scope="Kotila.LinkedAmounts" quantity-label="Bags" quantity-unit="bags" unit-label="Price per bag" total-label="Total cost" default-quantity="{{bags}}" default-unit-price="{{price}}"></x-import>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+      <x-import component-from-global-scope="Kotila.TextInput" label="Weight per bag" suffix="kg" default-value="25" input-mode="decimal"></x-import>
+      <x-import component-from-global-scope="Kotila.MoneyInput" label="Transport (separate line)" default-value="{{transport}}"></x-import>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+      <x-import component-from-global-scope="Kotila.TextInput" label="Supplier" default-value="Ultima depot, Nsukka"></x-import>
+      <x-import component-from-global-scope="Kotila.TextInput" label="Date" default-value="26 Sep 2026"></x-import>
+    </div>
+    <x-import component-from-global-scope="Kotila.AttributionField" label="Which Set will eat this?" sets="{{sets}}" default-value="s4"></x-import>
+    <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 8px; border-top: 1px solid #eef2ea">
+      <x-import component-from-global-scope="Kotila.Button">Cancel</x-import>
+      <x-import component-from-global-scope="Kotila.Button" variant="primary" icon="check">Save purchase</x-import>
+    </div>
+  </x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      yes: true,
+      bags: 30,
+      price: 24800,
+      transport: 7500,
+      user: { name: 'Kosi', role: 'owner' },
+      sync: { state: 'synced', lastSynced: '2 min ago' },
+      badges: { sales: { count: 3, title: '3 buyers owe money' } },
+      feedTypes: [
+        { value: 'starter', label: 'Starter' },
+        { value: 'grower', label: 'Grower' },
+        { value: 'finisher', label: 'Finisher' }
+      ],
+      sets: [
+        { id: 's4', label: 'Set 4', meta: 'Back pen · day 24 · on finisher' },
+        { id: 's5', label: 'Set 5', meta: 'Front pen · day 6 · on starter' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

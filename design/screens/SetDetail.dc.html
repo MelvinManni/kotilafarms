@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Set 4 — Kotila Farms</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kotila/components/bundle.css">
+<script src="ds/kotila/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#eef2ea;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180b}
+a{color:#2f6410}a:hover{color:#1f470a}
+</style>
+</helmet>
+<div class="k-root" style="position: relative; width: 1440px; height: 1500px; display: flex; background: #eef2ea; overflow: hidden">
+  <x-import component-from-global-scope="Kotila.SideRail" active="sets" logo-src="/_blob/5f856855f9b37e32751e00e7d2b65ce0" user="{{user}}" sync="{{sync}}" badges="{{badges}}" style="height: 1500px"></x-import>
+
+  <main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 32px 40px 40px; display: flex; flex-direction: column; gap: 24px">
+    <header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 15px; color: #4e5948">Sets › Set 4</span>
+        <div style="display: flex; align-items: center; gap: 14px">
+          <h1 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 38px; line-height: 42px; letter-spacing: -0.02em">Set 4 · Back pen</h1>
+          <x-import component-from-global-scope="Kotila.StatusChip" status="growing" day="{{today}}"></x-import>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px">
+        <x-import component-from-global-scope="Kotila.IconButton" icon="history" label="Edit history for Set 4"></x-import>
+        <x-import component-from-global-scope="Kotila.Button" icon="receipt">Add expense</x-import>
+        <x-import component-from-global-scope="Kotila.Button" variant="primary" icon="plus">Log today</x-import>
+      </div>
+    </header>
+
+    <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; padding: 20px 24px; background: #ffffff; border: 1px solid #e1e8da; border-radius: 24px">
+      <x-import component-from-global-scope="Kotila.Figure" label="Live birds" value="482" sub="of 500 started"></x-import>
+      <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start">
+        <x-import component-from-global-scope="Kotila.Figure" label="Mortality" value="3.6%" sub="18 birds"></x-import>
+        <x-import component-from-global-scope="Kotila.Delta" direction="up" tooltip="Up from 2 last week. Running average 2.6 a week.">4 this week</x-import>
+      </div>
+      <x-import component-from-global-scope="Kotila.Figure" label="Age" value="Day 24" sub="started 2 Sep"></x-import>
+      <x-import component-from-global-scope="Kotila.Figure" label="Spend to date" value="₦1,742,350" sub="₦3,485 per bird started"></x-import>
+      <x-import component-from-global-scope="Kotila.Figure" label="Feed left" value="9 bags" sub="finisher · ~4 days" tone="alert"></x-import>
+    </div>
+
+    <x-import component-from-global-scope="Kotila.Panel" variant="deep" headline="{{yes}}" title="10% under weight at day 24, and the gap is widening" subtitle="It was 5% under at day 14. Check feeder space and finisher intake this week, while there is still time to close it.">
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 28px; align-items: start">
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <div class="k-legend" style="color: #e4f0da">
+            <span class="k-legend__item"><span class="k-legend__line" style="background: #8be55c"></span>Actual</span>
+            <span class="k-legend__item"><span class="k-legend__dash" style="border-color: #f9c930"></span>Breed standard ±5%</span>
+          </div>
+          <x-import component-from-global-scope="Kotila.GrowthChart" theme="deep" samples="{{samples}}" today="{{today}}" project-to="{{projectTo}}" aria-label="Set 4 average weight by day of age against the breed standard. Day 24: 1.03 kg against 1.15 kg standard, 10.4% under. Projected about 1.73 kg at day 35 against 2.20 kg."></x-import>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 18px; padding-top: 34px">
+          <x-import component-from-global-scope="Kotila.Figure" tone="ondeep" label="Average today · 24 birds" value="1.03 kg" sub="−10.4% against standard"></x-import>
+          <x-import component-from-global-scope="Kotila.Figure" tone="standard" label="Standard for day 24" value="1.15 kg"></x-import>
+          <x-import component-from-global-scope="Kotila.Figure" tone="ondeep" label="Daily gain since day 21" value="63 g" sub="standard needs 95 g a day to day 35"></x-import>
+          <x-import component-from-global-scope="Kotila.Figure" tone="ondeep" label="Uniformity (±10%)" value="78%"></x-import>
+        </div>
+      </div>
+    </x-import>
+
+    <div class="k-grid-2" style="align-items: stretch">
+      <x-import component-from-global-scope="Kotila.Panel" title="Deaths by day" subtitle="4 this week, up from 2 last week">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <div role="img" aria-label="Deaths by day of age for Set 4, days 1 to 24. 18 in total, 4 in the last 7 days." style="display: flex; align-items: flex-end; gap: 5px; height: 110px; border-bottom: 1px solid #c9d3c1">
+          <div title="Day 1: 3 deaths" style="flex: 1 1 0; height: 102px; background: #9fc97f; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 2: 2 deaths" style="flex: 1 1 0; height: 68px; background: #9fc97f; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 3: 2 deaths" style="flex: 1 1 0; height: 68px; background: #9fc97f; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 4: 1 death" style="flex: 1 1 0; height: 34px; background: #9fc97f; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 5: 1 death" style="flex: 1 1 0; height: 34px; background: #9fc97f; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 6: 1 death" style="flex: 1 1 0; height: 34px; background: #9fc97f; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 7: 0 deaths" style="flex: 1 1 0; height: 3px; background: #e1e8da; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 8: 1 death" style="flex: 1 1 0; height: 34px; background: #9fc97f; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 9: 1 death" style="flex: 1 1 0; height: 34px; background: #9fc97f; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 10: 0 deaths" style="flex: 1 1 0; height: 3px; background: #e1e8da; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 11: 0 deaths" style="flex: 1 1 0; height: 3px; background: #e1e8da; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 12: 1 death" style="flex: 1 1 0; height: 34px; background: #9fc97f; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 13: 0 deaths" style="flex: 1 1 0; height: 3px; background: #e1e8da; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 14: 0 deaths" style="flex: 1 1 0; height: 3px; background: #e1e8da; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 15: 1 death" style="flex: 1 1 0; height: 34px; background: #9fc97f; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 16: 0 deaths" style="flex: 1 1 0; height: 3px; background: #e1e8da; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 17: 0 deaths" style="flex: 1 1 0; height: 3px; background: #e1e8da; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 18: 0 deaths" style="flex: 1 1 0; height: 3px; background: #e1e8da; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 19: 1 death" style="flex: 1 1 0; height: 34px; background: #3d7a12; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 20: 0 deaths" style="flex: 1 1 0; height: 3px; background: #e1e8da; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 21: 1 death" style="flex: 1 1 0; height: 34px; background: #3d7a12; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 22: 2 deaths" style="flex: 1 1 0; height: 68px; background: #3d7a12; border-radius: 3px 3px 1px 1px"></div>
+          <div title="Day 23: not in yet" style="flex: 1 1 0; height: 10px; box-sizing: border-box; border: 1.5px dashed #9aa893; border-radius: 3px"></div>
+          <div title="Day 24: not in yet" style="flex: 1 1 0; height: 10px; box-sizing: border-box; border: 1.5px dashed #9aa893; border-radius: 3px"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 13px; color: #4e5948">
+            <span>Day 1</span><span>7</span><span>14</span><span>Day 24</span>
+          </div>
+          <div style="display: flex; gap: 20px; flex-wrap: wrap; font-size: 13px; color: #4e5948; padding-top: 4px">
+            <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 2px; background: #3d7a12"></span>Last 7 days · 4</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 2px; background: #9fc97f"></span>Earlier · 14</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; box-sizing: border-box; border-radius: 2px; border: 1.5px dashed #9aa893"></span>Days 23 and 24 not in yet</span>
+          </div>
+        </div>
+      </x-import>
+      <x-import component-from-global-scope="Kotila.Panel" title="Spend so far by category" subtitle="₦1,742,350 · feed is 64%" action="{{expAction}}">
+        <x-import component-from-global-scope="Kotila.BarList" items="{{spend}}"></x-import>
+      </x-import>
+    </div>
+
+    <x-import component-from-global-scope="Kotila.Panel" flush="{{yes}}">
+      <div style="padding: 8px 24px 0">
+        <x-import component-from-global-scope="Kotila.Tabs" active="logs" items="{{tabs}}"></x-import>
+      </div>
+      <x-import component-from-global-scope="Kotila.LedgerTable" dense="{{yes}}" caption="Set 4 daily logs, last 6 days" columns="{{columns}}" rows="{{rows}}"></x-import>
+    </x-import>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      yes: true,
+      today: 24,
+      projectTo: 35,
+      user: { name: 'Kosi', role: 'owner' },
+      sync: { state: 'synced', lastSynced: '2 min ago' },
+      badges: { sales: { count: 3, title: '3 buyers owe money' } },
+      samples: [{ day: 7, kg: 0.176 }, { day: 14, kg: 0.455 }, { day: 21, kg: 0.84 }, { day: 24, kg: 1.03 }],
+      expAction: { label: 'All expenses' },
+      spend: [
+        { label: 'Feed', value: 1112850 },
+        { label: 'Day-old chicks', value: 475000 },
+        { label: 'Drugs and vaccines', value: 58300 },
+        { label: 'Brooding', value: 48200 },
+        { label: 'Litter (sawdust)', value: 24000 },
+        { label: 'Transport', value: 24000 }
+      ],
+      tabs: [
+        { value: 'logs', label: 'Daily logs', count: 23 },
+        { value: 'weights', label: 'Weights', count: 4 },
+        { value: 'health', label: 'Health', count: 6 },
+        { value: 'sales', label: 'Sales', count: 0 },
+        { value: 'expenses', label: 'Expenses', count: 31 }
+      ],
+      columns: [
+        { key: 'date', label: 'Date', width: 170 },
+        { key: 'deaths', label: 'Deaths', align: 'right', width: 110 },
+        { key: 'feed', label: 'Feed used', align: 'right', width: 140 },
+        { key: 'water', label: 'Water', align: 'right', width: 110 },
+        { key: 'seen', label: 'Seen in the pen' },
+        { key: 'by', label: 'Logged by', width: 230 }
+      ],
+      rows: [
+        { date: { value: 'Sat 26 Sep', sub: 'day 24 · today' }, deaths: { value: '—', tone: 'muted' }, feed: { value: '—', tone: 'muted' }, water: { value: '—', tone: 'muted' }, seen: { value: '—', tone: 'muted' }, by: { value: 'Not logged yet', tone: 'muted', sub: 'due by 7pm' } },
+        { date: { value: 'Fri 25 Sep', sub: 'day 23' }, deaths: { value: '—', tone: 'muted', sub: 'not sent yet' }, feed: { value: '—', tone: 'muted' }, water: { value: '—', tone: 'muted' }, seen: { value: '—', tone: 'muted' }, by: { tag: { tone: 'warning', label: 'On Chinedu’s phone' }, sub: 'sends when he has signal' } },
+        { date: { value: 'Thu 24 Sep', sub: 'day 22' }, deaths: { value: '2', figure: true, sub: 'edited, was 3' }, feed: { value: '2.5 bags', sub: 'finisher from today' }, water: '96 litres', seen: 'Wet litter by the drinkers', by: { value: 'Chinedu', sub: 'Thu 6:40pm · sent Fri 7:02am' } },
+        { date: { value: 'Wed 23 Sep', sub: 'day 21' }, deaths: { value: '1', figure: true }, feed: { value: '2.3 bags', sub: 'grower' }, water: '92 litres', seen: 'Wet litter · Lasota given', by: { value: 'Chinedu', sub: 'Wed 6:15pm' } },
+        { date: { value: 'Tue 22 Sep', sub: 'day 20' }, deaths: { value: '0', figure: true }, feed: { value: '2.2 bags', sub: 'grower' }, water: '90 litres', seen: 'Wet litter', by: { value: 'Adaeze', sub: 'Tue 6:52pm' } },
+        { date: { value: 'Mon 21 Sep', sub: 'day 19' }, deaths: { value: '1', figure: true }, feed: { value: '2.2 bags', sub: 'grower' }, water: '88 litres', seen: 'All normal', by: { value: 'Chinedu', sub: 'Mon 6:31pm' } }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

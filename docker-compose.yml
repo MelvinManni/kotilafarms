@@ -1,0 +1,54 @@
+# Kotila Farm — local stack. POSTGRES_VERSION / NODE_VERSION: set to current stable majors before first use (AGENTS.md).
+services:
+  db:
+    image: postgres:${POSTGRES_VERSION:-18}-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-kotila}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kotila}
+      POSTGRES_DB: ${POSTGRES_DB:-kotila}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-kotila} -d ${POSTGRES_DB:-kotila}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    build:
+      context: .
+      target: build
+      args:
+        NODE_VERSION: ${NODE_VERSION:-24}
+    command: ["pnpm", "db:migrate"]
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-kotila}:${POSTGRES_PASSWORD:-kotila}@db:5432/${POSTGRES_DB:-kotila}
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles: ["app"]
+
+  app:
+    build:
+      context: .
+      args:
+        NODE_VERSION: ${NODE_VERSION:-24}
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-kotila}:${POSTGRES_PASSWORD:-kotila}@db:5432/${POSTGRES_DB:-kotila}
+    ports:
+      - "3000:3000"
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    profiles: ["app"]
+
+volumes:
+  pgdata:
+  uploads:

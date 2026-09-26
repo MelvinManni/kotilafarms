@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Weekly review — Kotila Farms</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kotila/components/bundle.css">
+<script src="ds/kotila/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#eef2ea;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180b}
+a{color:#2f6410}a:hover{color:#1f470a}
+</style>
+</helmet>
+<div class="k-root" style="position: relative; width: 1440px; height: 1300px; display: flex; background: #eef2ea; overflow: hidden">
+  <x-import component-from-global-scope="Kotila.SideRail" active="reports" logo-src="/_blob/5f856855f9b37e32751e00e7d2b65ce0" user="{{user}}" sync="{{sync}}" badges="{{badges}}" style="height: 1300px"></x-import>
+
+  <main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 32px 40px 40px; display: flex; flex-direction: column; gap: 24px">
+    <header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 15px; color: #4e5948">Week of 20–26 September 2026 · written Sat 26 Sep</span>
+        <h1 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 38px; line-height: 42px; letter-spacing: -0.02em">Weekly review</h1>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px">
+        <x-import component-from-global-scope="Kotila.Segmented" options="{{weeks}}" default-value="this" style="width: 280px"></x-import>
+        <x-import component-from-global-scope="Kotila.Button" icon="download">Download PDF</x-import>
+      </div>
+    </header>
+
+    <div style="display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 20px; align-items: start">
+      <div style="display: flex; flex-direction: column; gap: 20px">
+        <article aria-label="Set 4 review" style="background: #ffffff; border: 1px solid #e1e8da; border-radius: 24px; padding: 28px 32px; display: flex; flex-direction: column; gap: 22px">
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; align-items: center; gap: 10px">
+              <span style="font-size: 15px; font-weight: 700">Set 4 · day 24</span>
+              <x-import component-from-global-scope="Kotila.StatusChip" status="growing"></x-import>
+              <span class="k-caption">Back pen · 482 live of 500</span>
+            </div>
+            <h2 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 28px; line-height: 34px; letter-spacing: -0.01em">Set 4: weight is slipping and wet litter keeps coming back</h2>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; padding: 16px 0; border-top: 1px solid #e1e8da; border-bottom: 1px solid #e1e8da">
+            <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start">
+              <x-import component-from-global-scope="Kotila.Figure" label="Deaths this week" value="4" sub="avg 2.6 a week" tone="alert"></x-import>
+              <x-import component-from-global-scope="Kotila.Delta" direction="up" tone="bad" tooltip="4 deaths this week against 2 last week. The Set's running average is 2.6 a week.">from 2</x-import>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start">
+              <x-import component-from-global-scope="Kotila.Figure" label="Weight vs standard" value="−10.4%" sub="1.03 kg against 1.15 kg"></x-import>
+              <x-import component-from-global-scope="Kotila.Delta" direction="down" tone="bad" tooltip="Average weight ÷ breed standard at the same age − 1. It was −9.7% at day 21 (0.84 kg against 0.93 kg).">from −9.7% last week</x-import>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start">
+              <x-import component-from-global-scope="Kotila.Figure" label="FCR so far" value="1.61" sub="feed kg ÷ live weight kg"></x-import>
+              <x-import component-from-global-scope="Kotila.Delta" direction="up" tone="bad" tooltip="If feed use and daily gain stay as they are, FCR at day 35 will be about 1.78. Set 3 finished at 1.74.">heading for 1.78</x-import>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start">
+              <x-import component-from-global-scope="Kotila.Figure" label="Feed cost per kg gained" value="₦1,720" sub="Set 3 finished at ₦1,806"></x-import>
+            </div>
+          </div>
+
+          <ol style="margin: 0; padding: 0 0 0 26px; display: flex; flex-direction: column; gap: 16px; font-size: 16px; line-height: 25px; color: #2a3325">
+            <li style="padding-left: 6px">Wet litter was logged 3 days this week, each time by the drinkers. It keeps coming back because water is spilling there. <strong style="color: #10180b">Do this: change the sawdust around the drinkers and raise the drinker line a notch.</strong></li>
+            <li style="padding-left: 6px">Birds are 10.4% under the standard at day 24, from 9.7% at day 21. They gained 63 g a day since day 21; the standard needs about 73 g. At this rate they reach 1.73 kg at day 35, not 2.20 kg. <strong style="color: #10180b">Do this: check feeder space — 1 feeder per 25 birds, so 20 feeders for 482 — and that finisher is in the feeders all day, not only morning and evening.</strong></li>
+            <li style="padding-left: 6px">Finisher is down to 9 bags and the birds eat 2.3 bags a day, so it runs out in about 4 days, around Wednesday. <strong style="color: #10180b">Do this: order 30 bags by Tuesday. At the last price of ₦24,800 a bag that is ₦744,000.</strong></li>
+            <li style="padding-left: 6px">Deaths were 4 this week, up from 2 and above the running average of 2.6. Still low for the Set at 3.6%, but they doubled. <strong style="color: #10180b">Do this: note a cause for every death in the daily log, so a pattern shows early.</strong></li>
+            <li style="padding-left: 6px">The first Gumboro dose was given on day 9, 2 days late. The second went in on time at day 16. <strong style="color: #10180b">Do this: watch this week for dull, huddled birds or watery droppings, and tell Kosi the same day.</strong></li>
+          </ol>
+        </article>
+
+        <article aria-label="Set 5 review" style="background: #ffffff; border: 1px solid #e1e8da; border-radius: 24px; padding: 28px 32px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; align-items: center; gap: 10px">
+            <span style="font-size: 15px; font-weight: 700">Set 5 · day 6</span>
+            <x-import component-from-global-scope="Kotila.StatusChip" status="brooding"></x-import>
+            <span class="k-caption">Front pen · 597 live of 600</span>
+          </div>
+          <h2 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 28px; line-height: 34px; letter-spacing: -0.01em">Set 5: nothing to worry about this week.</h2>
+          <p style="margin: 0; font-size: 16px; line-height: 25px; color: #2a3325">3 deaths in the first 6 days (0.5%), all on day 1–2. Gumboro is due tomorrow.</p>
+        </article>
+      </div>
+
+      <x-import component-from-global-scope="Kotila.Panel" title="How reviews are written" variant="sunken">
+        <ul style="margin: 0; padding: 0 0 0 18px; display: flex; flex-direction: column; gap: 12px">
+          <li class="k-caption" style="font-size: 14px; line-height: 20px">Every point comes from the numbers logged that week: deaths, weights, feed, vaccines and tags like wet litter. Nothing is guessed.</li>
+          <li class="k-caption" style="font-size: 14px; line-height: 20px">A Set that needs attention gets 3 to 6 short points, each ending in something to do.</li>
+          <li class="k-caption" style="font-size: 14px; line-height: 20px">When all is well, it gets one line. No invented concerns.</li>
+          <li class="k-caption" style="font-size: 14px; line-height: 20px">Written every Saturday for the week Sunday to Saturday, one note per running Set.</li>
+        </ul>
+      </x-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      user: { name: 'Kosi', role: 'owner' },
+      sync: { state: 'synced', lastSynced: '2 min ago' },
+      badges: { sales: { count: 3, title: '3 buyers owe money' } },
+      weeks: [{ value: 'this', label: 'This week' }, { value: 'last', label: 'Last week' }]
+    };
+  }
+}
+</script>
+</body>
+</html>

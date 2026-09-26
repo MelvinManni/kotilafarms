@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Feed — Kotila Farms</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kotila/components/bundle.css">
+<script src="ds/kotila/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#eef2ea;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180b}
+a{color:#2f6410}a:hover{color:#1f470a}
+</style>
+</helmet>
+<div class="k-root" style="position: relative; width: 1440px; height: 1100px; display: flex; background: #eef2ea; overflow: hidden">
+  <x-import component-from-global-scope="Kotila.SideRail" active="feed" logo-src="/_blob/5f856855f9b37e32751e00e7d2b65ce0" user="{{user}}" sync="{{sync}}" badges="{{badges}}" style="height: 1100px"></x-import>
+
+  <main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 32px 40px 40px; display: flex; flex-direction: column; gap: 24px">
+    <header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 15px; color: #4e5948">23 bags in the store · 2 Sets eating</span>
+        <h1 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 38px; line-height: 42px; letter-spacing: -0.02em">Feed</h1>
+      </div>
+      <div style="display: flex; gap: 12px">
+        <x-import component-from-global-scope="Kotila.Button" icon="bag">Record ingredients</x-import>
+        <x-import component-from-global-scope="Kotila.Button" variant="primary" icon="plus">Record a feed purchase</x-import>
+      </div>
+    </header>
+
+    <x-import component-from-global-scope="Kotila.Notice" tone="warning" title="Finisher runs out in about 4 days" action="{{noticeAction}}">9 bags left in the store, Set 4 is using 2.3 bags a day. Order by Tuesday to be safe.</x-import>
+
+    <div class="k-grid-3" style="align-items: stretch">
+      <x-import component-from-global-scope="Kotila.Panel" title="Finisher · Ultima" subtitle="Set 4 · since day 22">
+        <x-import component-from-global-scope="Kotila.Figure" value="9 bags" sub="~4 days at 2.3 bags a day" tone="alert"></x-import>
+      </x-import>
+      <x-import component-from-global-scope="Kotila.Panel" title="Starter · Breedwell" subtitle="Set 5 · ₦26,200 a bag last paid">
+        <x-import component-from-global-scope="Kotila.Figure" value="14 bags" sub="~11 days at 1.3 bags a day"></x-import>
+      </x-import>
+      <x-import component-from-global-scope="Kotila.Panel" title="Grower" subtitle="No Set on grower now">
+        <x-import component-from-global-scope="Kotila.Figure" value="0 bags" sub="Set 4 moved to finisher on day 22"></x-import>
+      </x-import>
+    </div>
+
+    <x-import component-from-global-scope="Kotila.Panel" headline="{{yes}}" title="Finisher is ₦3,300 a bag dearer than in June" subtitle="Ultima, 25 kg bag, last six purchases. The latest rise was the biggest.">
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 32px; align-items: center">
+        <div>
+            <svg viewBox="0 0 720 200" role="img" aria-label="Finisher price per bag over the last six purchases, rising from ₦21,500 on 6 June to ₦24,800 on 22 September." style="display: block; width: 100%; height: auto; font-family: 'Plus Jakarta Sans', sans-serif">
+            <line x1="70" y1="170" x2="690" y2="170" stroke="#c9d3c1" stroke-width="1"></line>
+            <text x="58" y="174" font-size="12" fill="#4e5948" text-anchor="end">₦21,000</text>
+            <line x1="70" y1="132" x2="690" y2="132" stroke="#eef2ea" stroke-width="1"></line>
+            <text x="58" y="136" font-size="12" fill="#4e5948" text-anchor="end">₦22,000</text>
+            <line x1="70" y1="95" x2="690" y2="95" stroke="#eef2ea" stroke-width="1"></line>
+            <text x="58" y="99" font-size="12" fill="#4e5948" text-anchor="end">₦23,000</text>
+            <line x1="70" y1="58" x2="690" y2="58" stroke="#eef2ea" stroke-width="1"></line>
+            <text x="58" y="62" font-size="12" fill="#4e5948" text-anchor="end">₦24,000</text>
+            <line x1="70" y1="20" x2="690" y2="20" stroke="#eef2ea" stroke-width="1"></line>
+            <text x="58" y="24" font-size="12" fill="#4e5948" text-anchor="end">₦25,000</text>
+            <polyline points="70,151 190,132 310,102 430,88 550,65" fill="none" stroke="#3d7a12" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"></polyline>
+            <line x1="550" y1="65" x2="670" y2="28" stroke="#b4400b" stroke-width="3" stroke-linecap="round"></line>
+            <circle cx="70" cy="151" r="4.5" fill="#ffffff" stroke="#3d7a12" stroke-width="2.5"></circle>
+            <text x="70" y="139" font-size="13" font-weight="700" fill="#10180b" text-anchor="middle">₦21,500</text>
+            <text x="70" y="192" font-size="12" fill="#4e5948" text-anchor="middle">6 Jun</text>
+            <circle cx="190" cy="132" r="4.5" fill="#ffffff" stroke="#3d7a12" stroke-width="2.5"></circle>
+            <text x="190" y="120" font-size="13" font-weight="700" fill="#10180b" text-anchor="middle">₦22,000</text>
+            <text x="190" y="192" font-size="12" fill="#4e5948" text-anchor="middle">1 Jul</text>
+            <circle cx="310" cy="102" r="4.5" fill="#ffffff" stroke="#3d7a12" stroke-width="2.5"></circle>
+            <text x="310" y="90" font-size="13" font-weight="700" fill="#10180b" text-anchor="middle">₦22,800</text>
+            <text x="310" y="192" font-size="12" fill="#4e5948" text-anchor="middle">28 Jul</text>
+            <circle cx="430" cy="88" r="4.5" fill="#ffffff" stroke="#3d7a12" stroke-width="2.5"></circle>
+            <text x="430" y="76" font-size="13" font-weight="700" fill="#10180b" text-anchor="middle">₦23,200</text>
+            <text x="430" y="192" font-size="12" fill="#4e5948" text-anchor="middle">14 Aug</text>
+            <circle cx="550" cy="65" r="4.5" fill="#ffffff" stroke="#3d7a12" stroke-width="2.5"></circle>
+            <text x="550" y="53" font-size="13" font-weight="700" fill="#10180b" text-anchor="middle">₦23,800</text>
+            <text x="550" y="192" font-size="12" fill="#4e5948" text-anchor="middle">2 Sep</text>
+            <circle cx="670" cy="28" r="6" fill="#b4400b" stroke="#ffffff" stroke-width="2"></circle>
+            <text x="692" y="13" font-size="14" font-weight="800" fill="#b4400b" text-anchor="end">₦24,800</text>
+            <text x="670" y="192" font-size="12" fill="#4e5948" text-anchor="middle">22 Sep</text>
+            </svg>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 18px; padding-left: 24px; border-left: 1px solid #e1e8da">
+          <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start">
+            <x-import component-from-global-scope="Kotila.Figure" label="Latest price per bag" value="₦24,800" sub="22 Sep · Ultima depot" size="xl"></x-import>
+            <x-import component-from-global-scope="Kotila.Delta" direction="up" tooltip="₦23,800 a bag on 2 Sep, ₦24,800 on 22 Sep.">₦1,000 since 2 Sep</x-import>
+          </div>
+          <x-import component-from-global-scope="Kotila.Figure" label="What a ₦1,000 rise costs a Set" value="₦82,000" sub="about 82 bags per 500-bird Set"></x-import>
+        </div>
+      </div>
+    </x-import>
+
+    <x-import component-from-global-scope="Kotila.Panel" flush="{{yes}}" title="Purchases" action="{{allAction}}">
+      <x-import component-from-global-scope="Kotila.LedgerTable" dense="{{yes}}" caption="Feed purchases, newest first" columns="{{columns}}" rows="{{rows}}"></x-import>
+    </x-import>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      yes: true,
+      user: { name: 'Kosi', role: 'owner' },
+      sync: { state: 'synced', lastSynced: '2 min ago' },
+      badges: { sales: { count: 3, title: '3 buyers owe money' } },
+      noticeAction: { label: 'Record a feed purchase' },
+      allAction: { label: 'All purchases' },
+      columns: [
+        { key: 'date', label: 'Date', width: 120 },
+        { key: 'feed', label: 'Feed' },
+        { key: 'bags', label: 'Bags', align: 'right' },
+        { key: 'per', label: 'Per bag', align: 'right' },
+        { key: 'total', label: 'Total', align: 'right' },
+        { key: 'transport', label: 'Transport', align: 'right' },
+        { key: 'supplier', label: 'Supplier' },
+        { key: 'by', label: 'Entered by' }
+      ],
+      rows: [
+        { date: '22 Sep 2026', feed: 'Finisher · Ultima', bags: '20', per: { value: '₦24,800', tone: 'alert' }, total: { value: '₦496,000', figure: true }, transport: '₦7,500', supplier: 'Ultima depot, Nsukka', by: 'Kosi' },
+        { date: '12 Sep 2026', feed: { tag: { tone: 'neutral', label: 'Ingredients' }, sub: 'Maize, 100 kg · Set 4' }, bags: { value: '100 kg', tone: 'muted' }, per: { value: '₦645 a kg', tone: 'muted' }, total: { value: '₦64,500', figure: true }, transport: '₦6,000', supplier: 'Ogige market', by: 'Adaeze' },
+        { date: '2 Sep 2026', feed: 'Finisher · Ultima', bags: '36', per: '₦23,800', total: { value: '₦856,800', figure: true }, transport: '₦8,500', supplier: 'Ultima depot, Nsukka', by: 'Kosi' },
+        { date: '14 Aug 2026', feed: 'Finisher · Ultima', bags: '40', per: '₦23,200', total: { value: '₦928,000', figure: true }, transport: '₦8,000', supplier: 'Ultima depot, Nsukka', by: 'Adaeze' },
+        { date: '28 Jul 2026', feed: 'Finisher · Ultima', bags: '24', per: '₦22,800', total: { value: '₦547,200', figure: true }, transport: '₦6,500', supplier: 'Chuks Feeds, Enugu', by: 'Kosi' },
+        { date: '1 Jul 2026', feed: 'Finisher · Ultima', bags: '32', per: '₦22,000', total: { value: '₦704,000', figure: true }, transport: '₦7,000', supplier: 'Ultima depot, Nsukka', by: 'Kosi' },
+        { date: '6 Jun 2026', feed: 'Finisher · Ultima', bags: '28', per: '₦21,500', total: { value: '₦602,000', figure: true }, transport: '₦6,000', supplier: 'Chuks Feeds, Enugu', by: 'Ifeanyi' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

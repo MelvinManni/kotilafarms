@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Today — Kotila Farms dashboard</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180B;background:#EEF2EA;font-variant-numeric:tabular-nums}
+a{color:#2F6410}a:hover{color:#1F470A}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1360px; display: flex; background: #EEF2EA; position: relative; overflow: hidden">
+
+  <nav aria-label="Main" style="width: 248px; height: 1360px; flex-shrink: 0; box-sizing: border-box; padding: 28px 16px; display: flex; flex-direction: column; gap: 28px; background: rgba(255,255,255,0.72); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-right: 1px solid rgba(16,24,11,0.08)">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 8px">
+      <img src="/_blob/5f856855f9b37e32751e00e7d2b65ce0" alt="Kotila Farms" style="width: 36px; height: auto">
+      <div style="font-family: Signika, sans-serif; font-size: 21px; letter-spacing: -0.02em"><span style="font-weight: 600">Kotila</span> <span style="font-weight: 300; color: #2F6410">Farms</span></div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 2px; font-size: 15px; font-weight: 600">
+      <a href="#" aria-current="page" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 12px; background: #3D7A12; color: #FFFFFF; text-decoration: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"></path><path d="M5 10v10h14V10"></path></svg>Today</a>
+      <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 12px; color: #2A3325; text-decoration: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"></rect><path d="M3 10h18"></path></svg>Sets</a>
+      <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 12px; color: #2A3325; text-decoration: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h12l4 4v12H4z"></path><path d="M8 12h8M8 16h5"></path></svg>Daily log</a>
+      <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 12px; color: #2A3325; text-decoration: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12l-1 18H7z"></path><path d="M6.5 9h11"></path></svg>Feed</a>
+      <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 12px; color: #2A3325; text-decoration: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16"></path><path d="M6 20l2-12h8l2 12"></path><circle cx="12" cy="5" r="2"></circle></svg>Weights</a>
+      <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 12px; color: #2A3325; text-decoration: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-8-4.5-8-11a5 5 0 0 1 8-4 5 5 0 0 1 8 4c0 6.5-8 11-8 11z"></path></svg>Health</a>
+      <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 12px; color: #2A3325; text-decoration: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v12H3z"></path><path d="M16 13h2"></path><path d="M3 11h18"></path></svg>Sales
+        <span title="3 buyers owe money" style="margin-left: auto; min-width: 24px; height: 24px; padding: 0 7px; box-sizing: border-box; border-radius: 999px; background: #F9C930; color: #3A2600; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center">3</span></a>
+      <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 12px; color: #2A3325; text-decoration: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"></path><path d="M9 8h6M9 12h6"></path></svg>Expenses</a>
+      <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 12px; color: #2A3325; text-decoration: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"></path><path d="M5 21V10l7-6 7 6v11"></path><path d="M10 21v-6h4v6"></path></svg>Finance</a>
+      <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 12px; color: #2A3325; text-decoration: none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Reports</a>
+    </div>
+
+    <div style="flex-grow: 1"></div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div title="Every entry on this laptop has reached the server" style="display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 14px; background: #E4F2D8; font-size: 14px; color: #1F470A">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F6410" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
+        <span><strong>All synced</strong> · 2 min ago</span>
+      </div>
+      <a href="#" style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px; border-radius: 12px; color: #2A3325; text-decoration: none; font-size: 15px; font-weight: 600">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 7 19.4a1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3.6 14H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 7a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 9 3.6V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9c.3.6.9 1 1.6 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>Settings</a>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 8px 8px 0; border-top: 1px solid rgba(16,24,11,0.08); padding-top: 16px">
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: #DCEFCB; color: #2F6410; display: flex; align-items: center; justify-content: center; font-family: Signika, sans-serif; font-weight: 600">KO</div>
+        <div style="display: flex; flex-direction: column">
+          <strong style="font-size: 15px">Kosi</strong>
+          <span style="font-size: 13px; color: #4E5948">Owner</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main style="flex-grow: 1; box-sizing: border-box; padding: 32px 40px 40px; display: flex; flex-direction: column; gap: 24px">
+
+    <header style="display: flex; align-items: flex-end; justify-content: space-between; height: 72px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 15px; color: #4E5948">Saturday, 26 September</span>
+        <h1 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 38px; letter-spacing: -0.02em; line-height: 1.1">Today on the farm</h1>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px">
+        <button type="button" aria-label="Search records" title="Search Sets, buyers and records" style="width: 48px; height: 48px; border-radius: 50%; border: 1px solid #D5DECD; background: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2A3325" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+        </button>
+        <button type="button" style="height: 48px; padding: 0 20px; border-radius: 999px; border: 1px solid #D5DECD; background: #FFFFFF; font: 600 15px 'Plus Jakarta Sans', sans-serif; color: #10180B; cursor: pointer">Add expense</button>
+        <button type="button" style="height: 48px; padding: 0 22px 0 18px; border-radius: 999px; border: 0; background: #3D7A12; color: #FFFFFF; font: 700 15px 'Plus Jakarta Sans', sans-serif; display: flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 6px 18px rgba(61,122,18,.22)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Log today</button>
+      </div>
+    </header>
+
+    <section aria-label="Money owed" style="display: flex; align-items: center; gap: 20px; padding: 20px 24px; border-radius: 22px; background: #FFF6D8; border: 1px solid #F0D27A">
+      <div style="width: 48px; height: 48px; border-radius: 50%; background: #F9C930; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+        <span style="font-family: Signika, sans-serif; font-weight: 700; font-size: 22px; color: #3A2600">₦</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 2px; flex-grow: 1">
+        <div style="font-size: 17px; color: #3A2600"><strong style="font-size: 26px; font-weight: 800; letter-spacing: -0.01em">₦412,000</strong> is owed by 3 buyers</div>
+        <span style="font-size: 15px; color: #5C3A00">Oldest: Mama Nkechi, ₦215,000 for 30 birds from Set 3 — 19 days unpaid</span>
+      </div>
+      <div style="display: flex; gap: 28px; font-size: 14px; color: #5C3A00; padding-right: 8px">
+        <div style="display: flex; flex-direction: column; align-items: flex-end"><span>Chidi Poultry Mart</span><strong style="font-size: 16px; color: #3A2600">₦143,400</strong></div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end"><span>Alhaji Sule</span><strong style="font-size: 16px; color: #3A2600">₦53,600</strong></div>
+      </div>
+      <a href="#" style="height: 44px; padding: 0 18px; border-radius: 999px; background: #3A2600; color: #FFF6D8; display: flex; align-items: center; font-size: 15px; font-weight: 700; text-decoration: none">See balances</a>
+    </section>
+
+    <section aria-label="Active Sets" style="border-radius: 24px; background: #FFFFFF; border: 1px solid #E1E8DA; overflow: hidden">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 20px 24px 12px">
+        <h2 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 22px">Active Sets</h2>
+        <a href="#" style="font-size: 15px; font-weight: 600; text-decoration: none">All Sets</a>
+      </div>
+      <div style="display: grid; grid-template-columns: 220px 100px 170px 190px 180px 170px minmax(0, 1fr); align-items: center; padding: 0 24px; height: 40px; font-size: 13px; font-weight: 600; color: #4E5948; border-bottom: 1px solid #E8EEE2">
+        <span>Set</span><span>Age</span><span>Live birds</span><span>Mortality</span><span>Deaths this week</span><span style="text-align: right">Spend to date</span><span></span>
+      </div>
+      <a href="#" style="display: grid; grid-template-columns: 220px 100px 170px 190px 180px 170px minmax(0, 1fr); align-items: center; padding: 0 24px; height: 84px; color: #10180B; text-decoration: none; border-bottom: 1px solid #E8EEE2">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <strong style="font-family: Signika, sans-serif; font-weight: 600; font-size: 20px">Set 4 <span style="font-weight: 400; color: #4E5948; font-size: 16px">· Back pen</span></strong>
+          <span style="align-self: flex-start; padding: 3px 10px; border-radius: 999px; background: #E4F2D8; color: #1F470A; font-size: 13px; font-weight: 700">Growing</span>
+        </div>
+        <span style="font-size: 20px; font-weight: 600">Day 24</span>
+        <div style="display: flex; flex-direction: column"><strong style="font-size: 24px; font-weight: 800">482</strong><span style="font-size: 13px; color: #4E5948">of 500 started</span></div>
+        <div style="display: flex; flex-direction: column"><strong style="font-size: 24px; font-weight: 800">3.6%</strong><span style="font-size: 13px; color: #4E5948">18 birds</span></div>
+        <div style="display: flex; align-items: center; gap: 8px">
+          <strong style="font-size: 24px; font-weight: 800; color: #B4400B">4</strong>
+          <span title="Up from 2 last week. Running average is 2.6 a week." style="padding: 3px 9px; border-radius: 999px; background: #FDE7D8; color: #8A3108; font-size: 13px; font-weight: 700">▲ from 2</span>
+        </div>
+        <strong style="font-size: 20px; font-weight: 700; text-align: right">₦1,742,350</strong>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7564" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="justify-self: end"><path d="M9 6l6 6-6 6"></path></svg>
+      </a>
+      <a href="#" style="display: grid; grid-template-columns: 220px 100px 170px 190px 180px 170px minmax(0, 1fr); align-items: center; padding: 0 24px; height: 84px; color: #10180B; text-decoration: none">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <strong style="font-family: Signika, sans-serif; font-weight: 600; font-size: 20px">Set 5 <span style="font-weight: 400; color: #4E5948; font-size: 16px">· Front pen</span></strong>
+          <span style="align-self: flex-start; padding: 3px 10px; border-radius: 999px; background: #FFF1C2; color: #5C3A00; font-size: 13px; font-weight: 700">Brooding</span>
+        </div>
+        <span style="font-size: 20px; font-weight: 600">Day 6</span>
+        <div style="display: flex; flex-direction: column"><strong style="font-size: 24px; font-weight: 800">597</strong><span style="font-size: 13px; color: #4E5948">of 600 started</span></div>
+        <div style="display: flex; flex-direction: column"><strong style="font-size: 24px; font-weight: 800">0.5%</strong><span style="font-size: 13px; color: #4E5948">3 birds</span></div>
+        <div style="display: flex; align-items: center; gap: 8px">
+          <strong style="font-size: 24px; font-weight: 800">3</strong>
+          <span style="font-size: 13px; color: #4E5948">first week</span>
+        </div>
+        <strong style="font-size: 20px; font-weight: 700; text-align: right">₦812,600</strong>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7564" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="justify-self: end"><path d="M9 6l6 6-6 6"></path></svg>
+      </a>
+    </section>
+
+    <section aria-label="Set 4 growth" style="border-radius: 28px; background: #16300C; color: #FFFFFF; padding: 28px 32px 20px; display: flex; flex-direction: column; gap: 20px">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <h2 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 26px; letter-spacing: -0.01em">Set 4 is 10% under weight — and the gap is widening</h2>
+          <p style="margin: 0; font-size: 16px; color: #CFE3BF; max-width: 720px; line-height: 1.5">It was 5% under at day 14. Check feeder space and finisher intake this week, while there’s still time to close it.</p>
+        </div>
+        <div style="display: flex; gap: 20px; font-size: 14px; color: #E4F0DA; padding-top: 6px">
+          <span style="display: flex; align-items: center; gap: 8px"><span style="width: 22px; height: 4px; border-radius: 2px; background: #8BE55C"></span>Actual</span>
+          <span style="display: flex; align-items: center; gap: 8px"><span style="width: 22px; height: 0; border-top: 3px dashed #F9C930"></span>Breed standard</span>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 2px; padding-right: 16px; border-right: 1px solid rgba(255,255,255,0.12)"><span style="font-size: 13px; color: #B9D3A6">Average today · 24 birds</span><strong style="font-size: 28px; font-weight: 800">1.03 kg</strong></div>
+        <div style="display: flex; flex-direction: column; gap: 2px; padding-right: 16px; border-right: 1px solid rgba(255,255,255,0.12)"><span style="font-size: 13px; color: #B9D3A6">Standard for day 24</span><strong style="font-size: 28px; font-weight: 800; color: #F9C930">1.15 kg</strong></div>
+        <div style="display: flex; flex-direction: column; gap: 2px; padding-right: 16px; border-right: 1px solid rgba(255,255,255,0.12)"><span style="font-size: 13px; color: #B9D3A6">Daily gain since day 21</span><strong style="font-size: 28px; font-weight: 800">63 g</strong></div>
+        <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 13px; color: #B9D3A6">Uniformity (±10%)</span><strong style="font-size: 28px; font-weight: 800">78%</strong></div>
+      </div>
+
+      <svg viewBox="0 0 940 346" width="1048" height="386" role="img" aria-label="Set 4 average weight by day of age against the breed standard. Day 24: 1.03 kilograms against 1.15 standard. Projected 1.73 kilograms at day 35 against 2.20 standard." style="display: block; font-family: 'Plus Jakarta Sans', sans-serif">
+        <rect x="621.3" y="16" width="286.7" height="300" fill="rgba(255,255,255,0.045)"></rect>
+        <text x="632" y="36" font-size="12" fill="#B9D3A6">Hard to recover after day 28</text>
+        <g stroke="rgba(255,255,255,0.09)" stroke-width="1">
+          <line x1="48" y1="16" x2="908" y2="16"></line><line x1="48" y1="66" x2="908" y2="66"></line><line x1="48" y1="116" x2="908" y2="116"></line><line x1="48" y1="166" x2="908" y2="166"></line><line x1="48" y1="216" x2="908" y2="216"></line><line x1="48" y1="266" x2="908" y2="266"></line>
+        </g>
+        <line x1="48" y1="316" x2="908" y2="316" stroke="rgba(255,255,255,0.28)" stroke-width="1"></line>
+        <g font-size="12" fill="#B9D3A6" text-anchor="end">
+          <text x="40" y="20">3.0 kg</text><text x="40" y="120">2.0</text><text x="40" y="220">1.0</text><text x="40" y="320">0</text>
+        </g>
+        <g font-size="12" fill="#B9D3A6" text-anchor="middle">
+          <text x="48" y="338">Day 0</text><text x="191.3" y="338">7</text><text x="334.7" y="338">14</text><text x="478" y="338">21</text><text x="621.3" y="338">28</text><text x="764.7" y="338">35</text><text x="908" y="338">42</text>
+        </g>
+        <path d="M48.0 311.6 C71.9 309.0 143.6 303.7 191.3 296.1 C239.1 288.4 286.9 278.6 334.7 265.6 C382.4 252.6 443.9 230.1 478.0 218.3 C512.1 206.6 515.5 205.2 539.4 195.2 C563.3 185.3 583.8 176.9 621.3 158.5 C658.9 140.1 716.9 108.6 764.7 85.0 C812.4 61.4 884.1 28.1 908.0 16.8 L908.0 45.2 C884.1 55.5 812.4 85.6 764.7 107.0 C716.9 128.4 658.9 156.9 621.3 173.5 C583.8 190.1 563.3 197.7 539.4 206.8 C515.5 215.8 512.1 217.0 478.0 227.7 C443.9 238.3 382.4 258.7 334.7 270.4 C286.9 282.1 239.1 291.0 191.3 297.9 C143.6 304.9 71.9 309.7 48.0 312.0 Z" fill="rgba(249,201,48,0.14)"></path>
+        <path d="M48.0 311.8 C71.9 309.3 143.6 304.3 191.3 297.0 C239.1 289.7 286.9 280.3 334.7 268.0 C382.4 255.7 443.9 234.2 478.0 223.0 C512.1 211.8 515.5 210.5 539.4 201.0 C563.3 191.5 583.8 183.5 621.3 166.0 C658.9 148.5 716.9 118.5 764.7 96.0 C812.4 73.5 884.1 41.8 908.0 31.0" fill="none" stroke="#F9C930" stroke-width="2.5" stroke-dasharray="7 6"></path>
+        <line x1="539.4" y1="16" x2="539.4" y2="316" stroke="rgba(255,255,255,0.4)" stroke-width="1" stroke-dasharray="3 4"></line>
+        <text x="531" y="36" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="end">Today · day 24</text>
+        <line x1="539.4" y1="213" x2="764.7" y2="144" stroke="#8BE55C" stroke-width="3" stroke-dasharray="1 8" stroke-linecap="round"></line>
+        <path d="M48.0 311.8 C71.9 309.6 143.6 305.3 191.3 298.4 C239.1 291.5 286.9 281.6 334.7 270.5 C382.4 259.4 443.9 241.6 478.0 232.0 C512.1 222.4 529.2 216.2 539.4 213.0" fill="none" stroke="#8BE55C" stroke-width="3.5" stroke-linecap="round"></path>
+        <line x1="764.7" y1="100" x2="764.7" y2="139" stroke="#FFB38A" stroke-width="2"></line>
+        <circle cx="764.7" cy="96" r="5" fill="#F9C930"></circle>
+        <circle cx="764.7" cy="144" r="6" fill="#16300C" stroke="#8BE55C" stroke-width="2.5" stroke-dasharray="3 3"></circle>
+        <text x="778" y="116" font-size="13" font-weight="700" fill="#FFB38A">At this rate: 1.73 kg by day 35</text>
+        <text x="778" y="134" font-size="12" fill="#FFD9C4">21% under the 2.20 kg standard</text>
+        <g fill="#16300C" stroke="#8BE55C" stroke-width="3">
+          <circle cx="191.3" cy="298.4" r="5.5"></circle><circle cx="334.7" cy="270.5" r="5.5"></circle><circle cx="478" cy="232" r="5.5"></circle>
+        </g>
+        <circle cx="539.4" cy="213" r="8" fill="#8BE55C" stroke="#16300C" stroke-width="3"></circle>
+        <g>
+          <rect x="552" y="224" width="176" height="56" rx="12" fill="#FFFFFF"></rect>
+          <text x="566" y="247" font-size="14" font-weight="800" fill="#10180B">1.03 kg · day 24</text>
+          <text x="566" y="267" font-size="12" fill="#4E5948">Standard 1.15 kg · −10.4%</text>
+        </g>
+      </svg>
+    </section>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: stretch">
+
+      <section aria-label="Needs doing today" style="border-radius: 24px; background: #FFFFFF; border: 1px solid #E1E8DA; padding: 22px 24px; display: flex; flex-direction: column; gap: 4px">
+        <h2 style="margin: 0 0 8px; font-family: Signika, sans-serif; font-weight: 600; font-size: 20px">Needs doing today</h2>
+        <div style="display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #EEF2EA">
+          <span style="width: 10px; height: 10px; margin-top: 6px; border-radius: 50%; background: #B4400B; flex-shrink: 0"></span>
+          <div style="display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">Log Sets 4 and 5 for today</strong><span style="font-size: 14px; color: #4E5948">Friday’s Set 4 log is on Chinedu’s phone, waiting for signal</span></div>
+        </div>
+        <div style="display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #EEF2EA">
+          <span style="width: 10px; height: 10px; margin-top: 6px; border-radius: 50%; background: #F9C930; flex-shrink: 0"></span>
+          <div style="display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">Gumboro due tomorrow · Set 5</strong><span style="font-size: 14px; color: #4E5948">Day 7 · 600 doses · in drinking water</span></div>
+        </div>
+        <div style="display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #EEF2EA">
+          <span style="width: 10px; height: 10px; margin-top: 6px; border-radius: 50%; background: #F9C930; flex-shrink: 0"></span>
+          <div style="display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">Finisher runs out in about 4 days</strong><span style="font-size: 14px; color: #4E5948">9 bags left, using 2.3 a day · Set 4</span></div>
+        </div>
+        <div style="display: flex; gap: 12px; padding: 12px 0 0">
+          <span style="width: 10px; height: 10px; margin-top: 6px; border-radius: 50%; background: #9AA893; flex-shrink: 0"></span>
+          <div style="display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">Wet litter noted 3 days this week</strong><span style="font-size: 14px; color: #4E5948">Set 4 · change sawdust near the drinkers</span></div>
+        </div>
+      </section>
+
+      <section aria-label="Cash position" style="border-radius: 24px; background: #FFFFFF; border: 1px solid #E1E8DA; padding: 22px 24px; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline">
+          <h2 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 20px">Cash position</h2>
+          <span title="Money in minus money out since Kosi last matched the books to the bank and cash box" style="font-size: 13px; color: #4E5948; border-bottom: 1px dotted #6B7564">Since 1 Sep</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <span style="font-size: 14px; color: #4E5948">Should be on hand</span>
+          <strong style="font-size: 36px; font-weight: 800; letter-spacing: -0.02em">₦1,284,750</strong>
+        </div>
+        <div style="display: flex; flex-direction: column; font-size: 15px">
+          <div style="display: flex; justify-content: space-between; padding: 10px 0; border-top: 1px solid #EEF2EA"><span style="color: #2A3325">Money in</span><strong>₦2,164,300</strong></div>
+          <div style="display: flex; justify-content: space-between; padding: 10px 0; border-top: 1px solid #EEF2EA"><span style="color: #2A3325">Money out</span><strong>−₦879,550</strong></div>
+          <div style="display: flex; justify-content: space-between; padding: 10px 0 0; border-top: 1px solid #EEF2EA"><span style="color: #2A3325">Owed to the farm</span><strong style="color: #7A4B00">₦412,000</strong></div>
+        </div>
+        <div style="flex-grow: 1"></div>
+        <a href="#" style="font-size: 15px; font-weight: 700; text-decoration: none">Reconcile cash</a>
+      </section>
+
+      <section aria-label="Feed" style="border-radius: 24px; background: #FFFFFF; border: 1px solid #E1E8DA; padding: 22px 24px; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline">
+          <h2 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 20px">Feed price</h2>
+          <span style="font-size: 13px; color: #4E5948">Finisher · Ultima · per bag</span>
+        </div>
+        <div style="display: flex; align-items: flex-end; justify-content: space-between">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <strong style="font-size: 36px; font-weight: 800; letter-spacing: -0.02em">₦24,800</strong>
+            <span style="align-self: flex-start; padding: 4px 10px; border-radius: 999px; background: #FDE7D8; color: #8A3108; font-size: 14px; font-weight: 700">▲ ₦1,000 since 2 Sep</span>
+          </div>
+          <svg width="120" height="56" viewBox="0 0 120 56" role="img" aria-label="Price per bag over the last six purchases, rising from 21,500 to 24,800 naira">
+            <polyline points="4,50 26,46 48,40 70,36 92,31 116,8" fill="none" stroke="#3D7A12" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></polyline>
+            <circle cx="116" cy="8" r="4.5" fill="#B4400B"></circle>
+          </svg>
+        </div>
+        <div style="display: flex; flex-direction: column; font-size: 15px">
+          <div style="display: flex; justify-content: space-between; padding: 10px 0; border-top: 1px solid #EEF2EA"><span style="color: #2A3325">Finisher in stock</span><strong>9 bags <span style="font-weight: 500; color: #8A3108">· ~4 days</span></strong></div>
+          <div style="display: flex; justify-content: space-between; padding: 10px 0 0; border-top: 1px solid #EEF2EA"><span style="color: #2A3325">Starter in stock</span><strong>14 bags <span style="font-weight: 500; color: #4E5948">· ~11 days</span></strong></div>
+        </div>
+        <div style="flex-grow: 1"></div>
+        <a href="#" style="font-size: 15px; font-weight: 700; text-decoration: none">Record a feed purchase</a>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1360}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

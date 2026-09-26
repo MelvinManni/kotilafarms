@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Quick expense — manager, phone</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kotila/components/bundle.css">
+<script src="ds/kotila/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#eef2ea;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180b}
+a{color:#2f6410}a:hover{color:#1f470a}
+</style>
+</helmet>
+<div class="k-root" style="position: relative; width: 390px; height: 844px; background: #eef2ea; overflow: hidden">
+  <div style="position: absolute; top: 0; left: 0; width: 390px; height: 220px; background: #2f6410; overflow: hidden">
+    <img src="/_blob/bcc9941ed890ee4dcee545f94223c20f" alt="" style="position: absolute; width: 460px; height: auto; right: -190px; top: -40px; opacity: 0.1">
+  </div>
+
+  <div style="position: absolute; left: 12px; right: 12px; top: 12px; z-index: 2">
+    <x-import component-from-global-scope="Kotila.TopBar" logo-src="/_blob/5f856855f9b37e32751e00e7d2b65ce0" title="Today" sync="{{sync}}" user="{{user}}"></x-import>
+  </div>
+
+  <main style="position: relative; box-sizing: border-box; padding: 92px 16px 120px; display: flex; flex-direction: column; gap: 16px">
+    <div style="padding: 0 4px; display: flex; flex-direction: column; gap: 4px">
+      <span style="font-size: 15px; color: #d6e8c8">Saturday, 26 September</span>
+      <h1 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 34px; line-height: 40px; letter-spacing: -0.02em; color: #ffffff">Today</h1>
+    </div>
+    <div style="background: #ffffff; border-radius: 20px; padding: 18px; box-shadow: 0 1px 2px rgba(16,24,11,.05),0 4px 24px rgba(16,24,11,.08); display: flex; flex-direction: column; gap: 12px; opacity: 0.6">
+      <strong style="font-family: Signika, sans-serif; font-weight: 600; font-size: 19px">Set 4 · Back pen</strong>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+        <x-import component-from-global-scope="Kotila.Figure" label="Live birds" value="482" sub="of 500"></x-import>
+        <x-import component-from-global-scope="Kotila.Figure" label="Spent to date" value="₦1,742,350"></x-import>
+      </div>
+    </div>
+    <div style="background: #ffffff; border-radius: 20px; padding: 18px; box-shadow: 0 1px 2px rgba(16,24,11,.05),0 4px 24px rgba(16,24,11,.08); display: flex; flex-direction: column; gap: 12px; opacity: 0.6">
+      <strong style="font-family: Signika, sans-serif; font-weight: 600; font-size: 19px">Set 5 · Front pen</strong>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+        <x-import component-from-global-scope="Kotila.Figure" label="Live birds" value="597" sub="of 600"></x-import>
+        <x-import component-from-global-scope="Kotila.Figure" label="Spent to date" value="₦812,600"></x-import>
+      </div>
+    </div>
+  </main>
+
+  <x-import component-from-global-scope="Kotila.Sheet" variant="sheet" title="Add an expense" description="Saved to the farm records with your name.">
+    <x-import component-from-global-scope="Kotila.MoneyInput" label="Amount" default-value="{{amount}}" required="{{yes}}"></x-import>
+    <x-import component-from-global-scope="Kotila.Select" label="Category" options="{{categories}}" default-value="litter" required="{{yes}}"></x-import>
+    <x-import component-from-global-scope="Kotila.TextInput" label="What for" default-value="12 bags of sawdust for Set 4"></x-import>
+    <x-import component-from-global-scope="Kotila.AttributionField" sets="{{sets}}" default-value="s4"></x-import>
+    <div style="display: flex">
+      <x-import component-from-global-scope="Kotila.Button" icon="camera">Add receipt photo</x-import>
+    </div>
+    <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 8px; border-top: 1px solid #eef2ea">
+      <x-import component-from-global-scope="Kotila.Button" variant="primary" size="lg" full="{{yes}}">Save expense</x-import>
+    </div>
+  </x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      yes: true,
+      no: false,
+      sync: { state: 'synced', lastSynced: '2 min ago' },
+      user: { name: 'Adaeze Nwankwo', role: 'manager' },
+      amount: 18500,
+      categories: [
+        { value: 'feed', label: 'Feed' },
+        { value: 'chicks', label: 'Day-old chicks' },
+        { value: 'drugs', label: 'Drugs and vaccines' },
+        { value: 'transport', label: 'Transport' },
+        { value: 'brooding', label: 'Brooding (charcoal, kerosene, fuel)' },
+        { value: 'litter', label: 'Litter (sawdust)' },
+        { value: 'labour', label: 'Labour' },
+        { value: 'processing', label: 'Processing' },
+        { value: 'equipment', label: 'Equipment and structures' },
+        { value: 'other', label: 'Other' }
+      ],
+      sets: [
+        { id: 's4', label: 'Set 4', meta: 'Growing · day 24' },
+        { id: 's5', label: 'Set 5', meta: 'Brooding · day 6' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

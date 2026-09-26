@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Set report — Kotila Farms</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kotila/components/bundle.css">
+<script src="ds/kotila/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#eef2ea;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180b}
+a{color:#2f6410}a:hover{color:#1f470a}
+</style>
+</helmet>
+<div class="k-root" style="position: relative; width: 1440px; height: 1800px; background: #eef2ea; overflow: hidden">
+  <div style="position: absolute; left: 220px; top: 20px; width: 1000px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px">
+    <span style="font-size: 15px; color: #4e5948">Reports › Set report</span>
+    <div style="display: flex; align-items: center; gap: 12px">
+      <span style="font-size: 14px; font-weight: 600; color: #4e5948">Sets</span>
+      <x-import component-from-global-scope="Kotila.Segmented" options="{{setOptions}}" default-value="s3" style="width: 260px"></x-import>
+      <x-import component-from-global-scope="Kotila.Button" icon="download">Download PDF</x-import>
+    </div>
+  </div>
+
+  <article aria-label="Set 3 report" style="position: absolute; left: 220px; top: 100px; width: 1000px; height: 1680px; box-sizing: border-box; padding: 64px; background: #ffffff; border: 1px solid #e1e8da; border-radius: 8px; box-shadow: 0 1px 2px rgba(16,24,11,.05), 0 8px 32px rgba(16,24,11,.06); display: flex; flex-direction: column; gap: 24px; overflow: hidden">
+    <header style="display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <img src="/_blob/5f856855f9b37e32751e00e7d2b65ce0" alt="" style="width: 36px; height: auto">
+        <span style="font-family: Signika, sans-serif; font-size: 22px; letter-spacing: -0.02em"><span style="font-weight: 600">Kotila</span> <span style="font-weight: 300; color: #2f6410">Farms</span></span>
+      </div>
+      <span style="font-size: 15px; line-height: 22px; color: #4e5948">Set 3 report · 20 July – 14 September 2026 · prepared 26 Sep 2026</span>
+    </header>
+
+    <h1 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 34px; line-height: 40px; letter-spacing: -0.02em">Set 3 made ₦568,750 on 500 day-olds</h1>
+
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px 24px; padding: 16px 0; border-top: 1.5px solid #10180b; border-bottom: 1px solid #e1e8da">
+      <x-import component-from-global-scope="Kotila.Figure" label="Intake" value="500" sub="day-olds, 20 Jul"></x-import>
+      <x-import component-from-global-scope="Kotila.Figure" label="Deaths" value="35" sub="7.0% of intake"></x-import>
+      <x-import component-from-global-scope="Kotila.Figure" label="Birds sold" value="465" sub="of 500 started"></x-import>
+      <x-import component-from-global-scope="Kotila.Figure" label="Average weight at sale" value="2.46 kg" sub="day 42"></x-import>
+      <x-import component-from-global-scope="Kotila.Figure" label="Revenue" value="₦3,563,550" sub="birds and manure"></x-import>
+      <x-import component-from-global-scope="Kotila.Figure" label="Expenses" value="₦2,994,800" sub="9 categories"></x-import>
+      <x-import component-from-global-scope="Kotila.Figure" label="Profit" value="₦568,750" sub="revenue − expenses"></x-import>
+      <x-import component-from-global-scope="Kotila.Figure" label="Margin" value="15.96%" sub="profit ÷ revenue"></x-import>
+    </div>
+
+    <div class="k-grid-2" style="gap: 40px">
+      <section style="display: flex; flex-direction: column; gap: 8px">
+        <h2 class="k-title" style="font-size: 17px; line-height: 22px">Per bird</h2>
+        <x-import component-from-global-scope="Kotila.Rows" items="{{perBird}}"></x-import>
+      </section>
+      <section style="display: flex; flex-direction: column; gap: 8px">
+        <h2 class="k-title" style="font-size: 17px; line-height: 22px">Performance</h2>
+        <x-import component-from-global-scope="Kotila.Rows" items="{{performance}}"></x-import>
+      </section>
+    </div>
+
+    <div class="k-grid-2" style="gap: 40px">
+      <section style="display: flex; flex-direction: column; gap: 12px">
+        <h2 class="k-title" style="font-size: 17px; line-height: 22px">Expenses by category</h2>
+        <x-import component-from-global-scope="Kotila.BarList" items="{{expenses}}" format="naira"></x-import>
+      </section>
+      <section style="display: flex; flex-direction: column; gap: 12px">
+        <h2 class="k-title" style="font-size: 17px; line-height: 22px">Weight against the breed standard</h2>
+        <x-import component-from-global-scope="Kotila.GrowthChart" samples="{{samples}}" theme="light" late-from="{{none}}" aria-label="Set 3 average weight by day of age: 2.46 kg at day 42, against a 2.85 kg standard"></x-import>
+        <div style="display: flex; gap: 16px; font-size: 13px; color: #4e5948">
+          <span style="display: flex; align-items: center; gap: 6px"><span style="width: 18px; height: 3px; border-radius: 2px; background: #3d7a12"></span>Set 3 average</span>
+          <span style="display: flex; align-items: center; gap: 6px"><span style="width: 18px; height: 0; border-top: 2.5px dashed #c99a00"></span>Breed standard ±5%</span>
+        </div>
+        <p class="k-caption" style="margin: 0">Weighed 6 times. Set 3 stayed within 5% of the standard to day 28, then fell behind and finished 14% under it.</p>
+      </section>
+    </div>
+
+    <section style="display: flex; flex-direction: column; gap: 8px">
+      <div style="display: flex; align-items: baseline; justify-content: space-between">
+        <h2 class="k-title" style="font-size: 17px; line-height: 22px">Expenses by date</h2>
+        <span class="k-caption">The 7 largest of 58 entries</span>
+      </div>
+      <x-import component-from-global-scope="Kotila.LedgerTable" caption="Set 3 expenses by date" dense="{{yes}}" columns="{{expCols}}" rows="{{expRows}}"></x-import>
+    </section>
+
+    <p class="k-caption" style="margin: auto 0 0; padding-top: 14px; border-top: 1px solid #e1e8da">Figures from the farm records as of 26 Sep 2026. Set 3 had 3 unpaid balances (₦412,000) at closing; they are counted in revenue.</p>
+  </article>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      yes: true,
+      none: null,
+      setOptions: [{ value: 's3', label: 'Set 3' }, { value: 'all', label: 'Sets 1–3' }],
+      perBird: [
+        { label: 'Cost per bird started', value: '₦5,990' },
+        { label: 'Cost per bird sold', value: '₦6,440' },
+        { label: 'Revenue per bird', value: '₦7,629' },
+        { label: 'Margin per bird', value: '₦1,189', total: true }
+      ],
+      performance: [
+        { label: 'Feed conversion ratio', value: '1.74' },
+        { label: 'Feed cost per kg live weight', value: '₦1,806', sub: '₦2,066,412 ÷ 1,144 kg' },
+        { label: 'Mortality', value: '7.0%', sub: '35 of 500' }
+      ],
+      expenses: [
+        { label: 'Feed', value: 2066412 },
+        { label: 'Day-old chicks', value: 445000 },
+        { label: 'Drugs and vaccines', value: 131600 },
+        { label: 'Brooding', value: 96500 },
+        { label: 'Labour', value: 90000 },
+        { label: 'Transport', value: 84000 },
+        { label: 'Litter (sawdust)', value: 36000 },
+        { label: 'Other', value: 22788 },
+        { label: 'Processing', value: 22500 }
+      ],
+      samples: [{ day: 7, kg: 0.19 }, { day: 14, kg: 0.47 }, { day: 21, kg: 0.91 }, { day: 28, kg: 1.44 }, { day: 35, kg: 2.05 }, { day: 42, kg: 2.46 }],
+      expCols: [
+        { key: 'date', label: 'Date', width: 110 },
+        { key: 'what', label: 'What' },
+        { key: 'cat', label: 'Category', width: 170 },
+        { key: 'amt', label: 'Amount', align: 'right', width: 130 }
+      ],
+      expRows: [
+        { date: '20 Jul', what: '500 day-olds', cat: 'Day-old chicks', amt: '₦445,000' },
+        { date: '20 Jul', what: 'Starter, 16 bags at ₦24,600', cat: 'Feed', amt: '₦393,600' },
+        { date: '28 Jul', what: 'Finisher, 20 bags at ₦22,800', cat: 'Feed', amt: '₦456,000' },
+        { date: '14 Aug', what: 'Finisher, 24 bags at ₦23,200', cat: 'Feed', amt: '₦556,800' },
+        { date: '31 Aug', what: 'Farm hand, August', cat: 'Labour', amt: '₦45,000' },
+        { date: '2 Sep', what: 'Finisher, 20 bags at ₦23,800', cat: 'Feed', amt: '₦476,000' },
+        { date: '12 Sep', what: 'Dressing 45 birds for buyers', cat: 'Processing', amt: '₦22,500' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

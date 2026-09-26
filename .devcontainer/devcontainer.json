@@ -1,0 +1,17 @@
+{
+  "name": "Kotila Farm",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:24",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  },
+  "postCreateCommand": "corepack enable && cp -n .env.example .env && docker compose up -d db",
+  "forwardPorts": [3000, 5432],
+  "customizations": {
+    "vscode": {
+      "extensions": ["dbaeumer.vscode-eslint", "bradlc.vscode-tailwindcss", "anthropic.claude-code"]
+    }
+  },
+  "remoteEnv": {
+    "DATABASE_URL": "postgres://kotila:kotila@host.docker.internal:5432/kotila"
+  }
+}

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Partner capital — Kotila Farms</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kotila/components/bundle.css">
+<script src="ds/kotila/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#eef2ea;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180b}
+a{color:#2f6410}a:hover{color:#1f470a}
+</style>
+</helmet>
+<div class="k-root" style="position: relative; width: 1440px; height: 1200px; display: flex; background: #eef2ea; overflow: hidden">
+  <x-import component-from-global-scope="Kotila.SideRail" active="finance" logo-src="/_blob/5f856855f9b37e32751e00e7d2b65ce0" user="{{user}}" sync="{{sync}}" badges="{{badges}}" style="height: 1200px"></x-import>
+
+  <main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 32px 40px 24px; display: flex; flex-direction: column; gap: 20px">
+    <header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 15px; color: #4e5948">Owners only</span>
+        <h1 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 38px; line-height: 42px; letter-spacing: -0.02em">Partner capital and loans</h1>
+      </div>
+      <div style="display: flex; gap: 12px">
+        <x-import component-from-global-scope="Kotila.Button" icon="plus">Record a contribution</x-import>
+        <x-import component-from-global-scope="Kotila.Button" variant="primary" icon="plus">Record a loan</x-import>
+      </div>
+    </header>
+
+    <x-import component-from-global-scope="Kotila.Notice" tone="neutral" icon="lock" compact="{{yes}}">Only owners can see this page. It needs a connection to change anything.</x-import>
+
+    <x-import component-from-global-scope="Kotila.Panel" title="Ownership" subtitle="Ownership is fixed by the share register. Contributions and withdrawals change each person's money in the company, not their shares." flush="{{yes}}">
+      <x-import component-from-global-scope="Kotila.LedgerTable" caption="Shareholders, their shares and their money in the company" columns="{{ownCols}}" rows="{{ownRows}}" footer="{{ownFoot}}"></x-import>
+    </x-import>
+
+    <div class="k-grid-2" style="align-items: stretch">
+      <div style="display: flex; flex-direction: column; gap: 20px">
+        <x-import component-from-global-scope="Kotila.Panel" title="Shareholder loans" subtitle="16% a year, simple interest · 10% withholding tax on interest" flush="{{yes}}">
+          <x-import component-from-global-scope="Kotila.LedgerTable" caption="Loans from shareholders to the farm" columns="{{loanCols}}" rows="{{loanRows}}"></x-import>
+        </x-import>
+
+        <section aria-label="Borrowing capacity" style="background: #ffffff; border: 1px solid #e1e8da; border-radius: 24px; padding: 22px 24px; display: flex; flex-direction: column; gap: 16px; flex-grow: 1">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2 class="k-title">Borrowing capacity</h2>
+            <p style="margin: 0; font-size: 15px; line-height: 22px; color: #4e5948">Loans may not pass 50% of equity (₦2,810,000). 36% of that cap is used.</p>
+          </div>
+          <div role="img" aria-label="Loans outstanding ₦500,000 of a ₦1,405,000 cap, 36% used" style="display: flex; flex-direction: column; gap: 6px">
+            <div style="position: relative; height: 14px; border-radius: 999px; background: #f4f7f1; box-shadow: inset 0 0 0 1px #e1e8da; overflow: hidden">
+              <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 36%; border-radius: 999px; background: #3d7a12"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px; color: #4e5948">
+              <span>₦0</span>
+              <span style="font-weight: 700; color: #10180b">36% used</span>
+              <span>Cap ₦1,405,000</span>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+            <x-import component-from-global-scope="Kotila.Figure" label="Loans outstanding" value="₦500,000" sub="Kosi, since 2 Sep"></x-import>
+            <x-import component-from-global-scope="Kotila.Figure" label="Cap" value="₦1,405,000" sub="50% of equity"></x-import>
+            <x-import component-from-global-scope="Kotila.Figure" label="Room left" value="₦905,000" sub="before the cap"></x-import>
+          </div>
+        </section>
+      </div>
+
+      <section aria-label="Emeka's loan" style="background: #ffffff; border: 1px solid #e1e8da; border-radius: 24px; padding: 22px 24px; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h2 class="k-title-lg">Emeka's loan: what is paid</h2>
+        </div>
+        <x-import component-from-global-scope="Kotila.Rows" items="{{emekaRows}}"></x-import>
+        <p class="k-caption" style="margin: 0">Gross interest, withholding tax and net interest are three different numbers. The company pays the tax to FIRS.</p>
+        <div style="display: flex; flex-direction: column; gap: 8px; padding: 14px 18px; border-radius: 16px; background: #f4f7f1">
+          <h3 class="k-title" style="font-size: 17px">Kosi's loan, interest so far (24 days)</h3>
+          <x-import component-from-global-scope="Kotila.Rows" items="{{kosiRows}}"></x-import>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      yes: true,
+      user: { name: 'Kosi', role: 'owner' },
+      sync: { state: 'synced', lastSynced: '2 min ago' },
+      badges: { sales: { count: 3, title: '3 buyers owe money' } },
+      ownCols: [
+        { key: 'who', label: 'Shareholder', width: 220 },
+        { key: 'shares', label: 'Shares', align: 'right' },
+        { key: 'pct', label: 'Ownership', align: 'right' },
+        { key: 'in', label: 'Contributed', align: 'right' },
+        { key: 'out', label: 'Withdrawn', align: 'right' },
+        { key: 'net', label: 'Net position', align: 'right' }
+      ],
+      ownRows: [
+        { who: 'Kosi', shares: '633,858', pct: '63.39%', in: '₦1,900,000', out: '₦150,000', net: { value: '₦1,750,000', figure: true } },
+        { who: 'Queen', shares: '122,985', pct: '12.30%', in: '₦370,000', out: { value: '₦0', tone: 'muted' }, net: { value: '₦370,000', figure: true } },
+        { who: 'ThankGod', shares: '122,984', pct: '12.30%', in: '₦370,000', out: { value: '₦0', tone: 'muted' }, net: { value: '₦370,000', figure: true } },
+        { who: 'Emeka', shares: '120,173', pct: '12.02%', in: '₦360,000', out: '₦40,000', net: { value: '₦320,000', figure: true } }
+      ],
+      ownFoot: { who: 'Total', shares: '1,000,000', pct: '100.00%', in: '₦3,000,000', out: '₦190,000', net: '₦2,810,000' },
+      loanCols: [
+        { key: 'who', label: 'Lender' },
+        { key: 'amt', label: 'Amount', align: 'right' },
+        { key: 'adv', label: 'Advanced' },
+        { key: 'rep', label: 'Repaid' },
+        { key: 'days', label: 'Days', align: 'right' },
+        { key: 'status', label: 'Status' }
+      ],
+      loanRows: [
+        { who: 'Kosi', amt: { value: '₦500,000', figure: true }, adv: '2 Sep 2026', rep: { value: '—', tone: 'muted' }, days: '24 so far', status: { tag: { tone: 'warning', label: 'Outstanding' } } },
+        { who: 'Emeka', amt: { value: '₦250,000', figure: true }, adv: '15 Jun 2026', rep: '14 Sep 2026', days: '91', status: { tag: { tone: 'success', label: 'Repaid' } } }
+      ],
+      emekaRows: [
+        { label: 'Principal, lent 15 Jun, repaid 14 Sep', value: '₦250,000' },
+        { label: 'Interest at 16% for 91 days (gross)', value: '₦9,973' },
+        { label: 'Withholding tax (10%)', value: '−₦997' },
+        { label: 'Net interest to Emeka', value: '₦8,976' },
+        { label: 'Paid to Emeka', value: '₦258,976', total: true }
+      ],
+      kosiRows: [
+        { label: 'Interest at 16% for 24 days (gross)', value: '₦5,260' },
+        { label: 'Withholding tax (10%)', value: '−₦526' },
+        { label: 'Net interest so far', value: '₦4,734', total: true }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

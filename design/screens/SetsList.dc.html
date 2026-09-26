@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sets — Kotila Farms</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kotila/components/bundle.css">
+<script src="ds/kotila/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#eef2ea;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180b}
+a{color:#2f6410}a:hover{color:#1f470a}
+</style>
+</helmet>
+<div class="k-root" style="position: relative; width: 1440px; height: 1000px; display: flex; background: #eef2ea; overflow: hidden">
+  <x-import component-from-global-scope="Kotila.SideRail" active="sets" logo-src="/_blob/5f856855f9b37e32751e00e7d2b65ce0" user="{{user}}" sync="{{sync}}" badges="{{badges}}" style="height: 1000px"></x-import>
+
+  <main style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 32px 40px 40px; display: flex; flex-direction: column; gap: 24px">
+    <header style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 15px; color: #4e5948">5 Sets since March · 2 running now</span>
+        <h1 style="margin: 0; font-family: Signika, sans-serif; font-weight: 600; font-size: 38px; line-height: 42px; letter-spacing: -0.02em">Sets</h1>
+      </div>
+      <div style="display: flex; gap: 12px">
+        <x-import component-from-global-scope="Kotila.Button" icon="compare">Compare Sets</x-import>
+        <x-import component-from-global-scope="Kotila.Button" variant="primary" icon="plus">Start a new Set</x-import>
+      </div>
+    </header>
+
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; padding: 20px 24px; background: #ffffff; border: 1px solid #e1e8da; border-radius: 24px">
+      <x-import component-from-global-scope="Kotila.Figure" label="Live birds now" value="1,079" sub="Sets 4 and 5" size="lg"></x-import>
+      <x-import component-from-global-scope="Kotila.Figure" label="Birds sold, all Sets" value="927" sub="Sets 1 to 3" size="lg"></x-import>
+      <x-import component-from-global-scope="Kotila.Figure" label="Profit on closed Sets" value="₦1,028,650" sub="after all Set expenses" size="lg"></x-import>
+      <x-import component-from-global-scope="Kotila.Figure" label="Best margin" value="17.65%" sub="Set 2 · 300 birds" size="lg"></x-import>
+    </div>
+
+    <section style="background: #ffffff; border: 1px solid #e1e8da; border-radius: 24px; overflow: hidden">
+      <div style="padding: 8px 24px 0">
+        <x-import component-from-global-scope="Kotila.Tabs" active="all" items="{{tabs}}"></x-import>
+      </div>
+      <x-import component-from-global-scope="Kotila.LedgerTable" caption="Every Set, newest first" columns="{{columns}}" rows="{{rows}}"></x-import>
+    </section>
+
+    <p style="margin: 0; font-size: 13px; color: #4e5948">Profit and margin appear when a Set is closed. Running Sets show spend to date. Select a row to open the Set.</p>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      user: { name: 'Kosi', role: 'owner' },
+      sync: { state: 'synced', lastSynced: '2 min ago' },
+      badges: { sales: { count: 3, title: '3 buyers owe money' } },
+      tabs: [{ value: 'all', label: 'All', count: 5 }, { value: 'active', label: 'Running', count: 2 }, { value: 'closed', label: 'Closed', count: 3 }],
+      columns: [
+        { key: 'set', label: 'Set', width: 200 },
+        { key: 'status', label: 'Status' },
+        { key: 'started', label: 'Started' },
+        { key: 'birds', label: 'Live or sold', align: 'right' },
+        { key: 'mort', label: 'Mortality', align: 'right' },
+        { key: 'spend', label: 'Spent', align: 'right' },
+        { key: 'rev', label: 'Revenue', align: 'right' },
+        { key: 'profit', label: 'Profit', align: 'right' }
+      ],
+      rows: [
+        { set: { value: 'Set 5', sub: 'Front pen · Ultima' }, status: { status: 'brooding', day: 6 }, started: { value: '20 Sep 2026', sub: '600 day-olds' }, birds: { value: '597 live', sub: 'of 600' }, mort: { value: '0.5%', sub: '3 birds' }, spend: { value: '₦812,600', sub: 'to date' }, rev: { value: '—', tone: 'muted' }, profit: { value: '—', tone: 'muted' } },
+        { set: { value: 'Set 4', sub: 'Back pen · Breedwell' }, status: { status: 'growing', day: 24 }, started: { value: '2 Sep 2026', sub: '500 day-olds' }, birds: { value: '482 live', sub: 'of 500' }, mort: { value: '3.6%', sub: '18 birds', delta: { direction: 'up', label: '4 this week' } }, spend: { value: '₦1,742,350', sub: 'to date' }, rev: { value: '—', tone: 'muted' }, profit: { value: '—', tone: 'muted' } },
+        { set: { value: 'Set 3', sub: 'Back pen' }, status: { status: 'closed' }, started: { value: '20 Jul 2026', sub: 'closed 14 Sep' }, birds: { value: '465 sold', sub: 'of 500' }, mort: { value: '7.0%', sub: '35 birds' }, spend: '₦2,994,800', rev: '₦3,563,550', profit: { value: '₦568,750', sub: '15.96% margin' } },
+        { set: { value: 'Set 2', sub: 'Back pen' }, status: { status: 'closed' }, started: { value: '11 May 2026', sub: 'closed 2 Jul' }, birds: { value: '281 sold', sub: 'of 300' }, mort: { value: '6.3%', sub: '19 birds' }, spend: '₦1,712,400', rev: '₦2,079,400', profit: { value: '₦367,000', sub: '17.65% margin' } },
+        { set: { value: 'Set 1', sub: 'Back pen · first Set' }, status: { status: 'closed' }, started: { value: '9 Mar 2026', sub: 'closed 24 Apr' }, birds: { value: '181 sold', sub: 'of 200' }, mort: { value: '9.5%', sub: '19 birds' }, spend: '₦1,196,300', rev: '₦1,289,200', profit: { value: '₦92,900', sub: '7.21% margin' } }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

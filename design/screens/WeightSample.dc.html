@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Weight sample — phone</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kotila/components/bundle.css">
+<script src="ds/kotila/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#eef2ea;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#10180b}
+a{color:#2f6410}a:hover{color:#1f470a}
+</style>
+</helmet>
+<div class="k-root" style="position: relative; width: 390px; height: 1480px; background: #eef2ea; overflow: hidden">
+  <div style="position: absolute; top: 0; left: 0; width: 390px; height: 220px; background: #2f6410; overflow: hidden">
+    <img src="/_blob/bcc9941ed890ee4dcee545f94223c20f" alt="" style="position: absolute; width: 460px; height: auto; right: -190px; top: -40px; opacity: 0.1">
+  </div>
+
+  <div style="position: absolute; left: 12px; right: 12px; top: 12px; z-index: 2">
+    <x-import component-from-global-scope="Kotila.TopBar" back="Back to Today" title="Weigh Set 4" sync="{{sync}}"></x-import>
+  </div>
+
+  <main style="position: relative; box-sizing: border-box; padding: 88px 16px 160px; display: flex; flex-direction: column; gap: 16px">
+    <p style="margin: 0; padding: 0 4px; font-size: 15px; font-weight: 600; color: #d6e8c8">Set 4 · Back pen · day 24 · Sat 26 Sep</p>
+
+    <x-import component-from-global-scope="Kotila.Panel" variant="raised" title="10.4% under the standard for day 24" subtitle="Updates as you add each bird">
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 12px">
+        <x-import component-from-global-scope="Kotila.Figure" label="Average" value="1.03 kg" size="lg"></x-import>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <x-import component-from-global-scope="Kotila.Figure" label="Standard, day 24" value="1.15 kg"></x-import>
+          <x-import component-from-global-scope="Kotila.Delta" direction="down" tone="bad" tooltip="1.03 kg average ÷ 1.15 kg breed standard at day 24 − 1 = −10.4%">10.4% under</x-import>
+        </div>
+        <x-import component-from-global-scope="Kotila.Figure" label="Uniformity" value="78%" sub="within ±10% of the average"></x-import>
+        <x-import component-from-global-scope="Kotila.Figure" label="Birds weighed" value="24" sub="of 482 live"></x-import>
+      </div>
+    </x-import>
+
+    <x-import component-from-global-scope="Kotila.Notice" tone="neutral" compact="{{yes}}">Weigh at least 10 birds from different corners.</x-import>
+
+    <x-import component-from-global-scope="Kotila.Panel" variant="raised" title="Weights" subtitle="In grams, one bird at a time">
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>1,018</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>964</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>1,088</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>862</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>1,041</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>1,004</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>1,148</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>982</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>1,055</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>905</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>1,033</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>1,096</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>995</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>1,062</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>1,187</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>948</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>1,027</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>1,109</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>918</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>1,071</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>1,012</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>1,058</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>1,034</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <div class="k-input" style="min-height: 44px; height: 44px; padding: 0 10px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; font-size: 16px"><span>1,103</span><span style="font-size: 12px; color: #4e5948">g</span></div>
+        <input class="k-input" type="text" inputmode="numeric" placeholder="Add weight (g)" aria-label="Add weight in grams" style="grid-column: span 2; min-height: 44px; height: 44px; padding: 0 12px; font-size: 16px; border-color: #3d7a12; background: #ffffff; box-shadow: 0 0 0 4px rgba(61,122,18,0.22)">
+      </div>
+      <span class="k-caption">Tap a weight to change it. Scale reads in grams — type the number only.</span>
+    </x-import>
+
+    <x-import component-from-global-scope="Kotila.Panel" variant="raised" title="Against the breed standard" subtitle="Projected 1.73 kg at day 35 against 2.20 kg standard">
+      <x-import component-from-global-scope="Kotila.GrowthChart" theme="light" samples="{{samples}}" today="{{today}}" project-to="{{projectTo}}" late-from="{{lateFrom}}" aria-label="Set 4 averages 1.03 kg at day 24, 10.4% under the 1.15 kg standard"></x-import>
+    </x-import>
+  </main>
+
+  <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 16px 16px 28px; background: #ffffff; border-top: 1px solid #e1e8da; box-shadow: 0 -4px 24px rgba(16,24,11,.08); display: flex; flex-direction: column; gap: 10px; align-items: stretch">
+    <x-import component-from-global-scope="Kotila.Button" variant="primary" size="xl" full="{{yes}}" icon="check">Save sample (24 birds)</x-import>
+    <span style="font-size: 13px; line-height: 18px; font-weight: 500; color: #4e5948; text-align: center">Weighed by Chinedu · Sat 26 Sep</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1480}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      yes: true,
+      no: false,
+      sync: { state: 'synced', lastSynced: '2 min ago' },
+      samples: [{ day: 7, kg: 0.176 }, { day: 14, kg: 0.455 }, { day: 21, kg: 0.84 }, { day: 24, kg: 1.03 }],
+      today: 24,
+      projectTo: 35,
+      lateFrom: 28
+    };
+  }
+}
+</script>
+</body>
+</html>
