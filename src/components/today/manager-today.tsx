@@ -1,5 +1,7 @@
-// Today for owners and managers: what is owed, missed days, active Sets, and what needs doing
+// Today for owners and managers: what is owed, missed days, active Sets, growth, what needs doing, cash and feed price
 import { ActiveSetsTable } from "@/components/today/active-sets-table";
+import { CashCard } from "@/components/today/cash-card";
+import { FeedCard } from "@/components/today/feed-card";
 import { MissedDaysAll } from "@/components/today/missed-days-all";
 import { OwedBand } from "@/components/today/owed-band";
 import { TaskList } from "@/components/today/task-list";
@@ -39,9 +41,13 @@ export function ManagerToday({ data }: { data: TodayPayload }) {
             </Panel>
             {growth ? <GrowthPanel setId={growth.id} setNumber={growth.number} dayOfAge={growth.dayOfAge} running named /> : null}
           </div>
-          <Panel title="Needs doing today" className="self-start">
-            <TaskList tasks={data.tasks} />
-          </Panel>
+          <div className="flex min-w-0 flex-col gap-5">
+            <Panel title="Needs doing today">
+              <TaskList tasks={data.tasks} />
+            </Panel>
+            <CashCard />
+            <FeedCard />
+          </div>
         </div>
       )}
     </>

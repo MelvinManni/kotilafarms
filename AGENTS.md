@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Set P&L, cash position and cash counts
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P2.5
+- **Summary:** `/finance`: cash position since the last count (money in: sale money received, deposits, payments, manure, capital, loans; money out: every expense by category, withdrawals, loan repayments with gross interest), what should be on hand, and what buyers owe (not cash yet). Owners record a count (cash box + bank; needs a connection): the difference against the books is saved and the count becomes the new starting point; same-day entries made after the count still count. Set P&L for one Set or all closed Sets: revenue, expenses, profit, margin, per-bird figures, feed share, spend by category; capital items spread over Sets count their share. Reproduces Set 3 (₦568,750, 15.96%, ₦6,440 a bird). Today gets cash and feed price cards.
+- **Files:** `src/server/services/finance/*`, `src/app/api/finance/{cash,pnl,reconciliations}/route.ts`, `src/components/finance/*`, `src/components/today/{cash-card,feed-card,manager-today}.tsx`, `src/app/(app)/finance/page.tsx`, `src/schemas/finance.ts`, `src/types/finance.ts`, `src/utils/metrics/{cash-since,finance-headlines}.ts`, `src/utils/sets/pnl-choices.ts`, `src/hooks/queries/use-finance.ts`, `e2e/finance.spec.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** Capital and loans screens (P3.3) add the Partner capital and Shareholder loans tabs; their money already flows into the cash position. Any Set combination beyond "all closed" comes with Compare Sets (P3.2).
+
 ### 2026-09-26 — Health and vaccines
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P2.4
 - **Summary:** `/health`: the most pressing dose leads (late, then due today, then tomorrow, with doses = live birds and how to give it) with Mark as given; each running Set's schedule shows due day and date, when given and by whom, and a status (given, given N days late, N days late, due today or tomorrow, upcoming); a dose can be marked given on a day or cleared (audited). Treatments: Set, date, item (quick picks from the spec's list), amount, cost and why; a cost becomes a Drugs and vaccines expense on the Set in the same transaction; saved once per clientId. Settings › Vaccine schedule edits the defaults new Sets copy. Today's vaccine tasks use the same status rule and link to Health for roles that can open it.
