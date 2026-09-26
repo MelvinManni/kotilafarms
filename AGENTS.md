@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Compare Sets
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P3.2
+- **Summary:** `/reports/compare`: one dropdown per Set (First Set, Second Set, …); a Set picked in one list leaves the others; at least two; Add a Set, and remove from the third on. The table runs intake, mortality, birds sold, FCR, weight at sale, cost/revenue/margin per bird, net margin, feed share and profit, with the best named per row (only Sets with that figure take part; running Sets count for mortality only; a tie names nobody). Three findings under it: lowest mortality, best margin, revenue per bird from the first closed Set to the last. PDF download. Each Set's line comes from its Set report, so the numbers match everywhere. The three PDF routes now share one helper.
+- **Files:** `src/utils/metrics/compare.ts`, `src/utils/format/compare-value.ts`, `src/utils/sets/default-compare.ts`, `src/server/services/reports/{compare,print-pdf}.ts`, `src/app/api/reports/compare/{route.ts,pdf/route.ts}`, `src/app/(print)/print/reports/compare/page.tsx`, `src/app/(app)/reports/compare/page.tsx`, `src/components/reports/compare-*.tsx`, `src/schemas/finance.ts` (`compareQuerySchema`), `src/types/compare.ts`, `src/constants/report-tabs.ts`, `e2e/compare.spec.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** Checked separately that `apk add chromium` works on `node:24-alpine` (it's large and slow to fetch; the earlier image build failed on the fetch). A full image build is still worth running before deploying.
+
 ### 2026-09-26 — Weekly review
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P3.1
 - **Summary:** `/reports/weekly` (Reports now opens here): one note per Set running that week (Sunday to Saturday), this week or last. A rules engine over the metrics writes 3–6 short points, worst first, each ending in "Do this": late vaccines (grouped), weight under the standard (widening or not, gain against what the standard needs, where it's heading at day 35, feeders needed), feed running out (bags to order and by when, at the last price), deaths above last week and the running average (brooding week left out), pen tags seen 3+ days (advice per tag), vaccines given late, missing logs. When nothing is wrong: one line. Figures: deaths, weight vs standard, FCR so far and where it's heading, feed cost per kg. PDF download like the Set report. Reports pages share tabs.

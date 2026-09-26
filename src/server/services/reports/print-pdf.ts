@@ -25,3 +25,9 @@ export async function printPdf(base: string, path: string, cookies: Cookie[]): P
     await browser.close();
   }
 }
+
+// The PDF download for a print page, as the person asking; never the request's Host header, so the browser only visits this app
+export async function pdfResponse(req: Request, path: string, filename: string): Promise<Response> {
+  const pdf = await printPdf(env().INTERNAL_APP_URL ?? env().NEXTAUTH_URL, path, parseCookies(req.headers.get("cookie")));
+  return new Response(new Uint8Array(pdf), { headers: { "content-type": "application/pdf", "content-disposition": `attachment; filename="${filename}"`, "cache-control": "no-store" } });
+}

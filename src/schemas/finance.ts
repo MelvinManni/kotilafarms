@@ -14,3 +14,8 @@ export const pnlQuerySchema = z.object({
 });
 
 export type ReconciliationInput = z.input<typeof reconciliationSchema>;
+
+// Compare needs at least two Sets
+export const compareQuerySchema = z.object({
+  setIds: z.string().transform((v) => [...new Set(v.split(",").filter(Boolean))]).pipe(z.array(z.uuid()).min(2, "Pick at least two Sets to compare.").max(10)),
+});
