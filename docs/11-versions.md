@@ -52,6 +52,8 @@ See AGENTS.md › Version policy. Look up every version with `pnpm view <pkg> ve
 | react-hook-form | 7.89.0 | P1.1 | Forms (v8 is alpha/beta only) |
 | @hookform/resolvers | 5.9.1 | P1.1 | zod resolver |
 | @playwright/test | 1.63.0 | P1.1 | Browser e2e tests (dev); uses installed Chrome when present |
+| @aws-sdk/client-s3 | 3.1141.0 | P1.5 | Receipt photos in the private S3 bucket |
+| @aws-sdk/s3-request-presigner | 3.1141.0 | P1.5 | Short-lived signed links to read receipts |
 | shadcn | 4.21.0 | P0.4 | CLI; also provides `shadcn/tailwind.css` imported by globals.css |
 | @base-ui/react | 1.8.0 | P0.4 | Primitives under shadcn components |
 | cn | 0.4.0 | P0.4 | Tailwind class merge used by shadcn (replaces clsx + tailwind-merge) |

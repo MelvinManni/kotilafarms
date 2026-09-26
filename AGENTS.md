@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Expenses
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P1.5
+- **Summary:** `/expenses` with Set / category / month / Set-costs-or-overhead filters, figures (spent, on Sets, overhead; capital items kept apart), the list (ledger on desktop, rows on phones) and a by-category chart. Add / change sheet (bottom sheet on phones, opened by the + tab or `?add=1&set=`): amount, category, what for, Set or overhead (required: schema, API and database), paid on, capital item (only in capital categories), receipt photo. Same clientId twice adds it once; a matching expense entered separately is saved and flagged "looks like a repeat". Changing an old amount needs a reason; owners remove with a reason (soft delete); all audited. Receipts upload through the server to the private S3 bucket and open through 5-minute signed links. Settings › Expense categories (add, rename, capital-eligible).
+- **Files:** `src/server/services/expenses/*`, `src/server/storage/receipts.ts`, `src/app/api/{expenses,expense-categories,uploads/receipt}/**`, `src/components/expenses/*`, `src/components/settings/{categories-screen,category-sheet}.tsx`, `src/app/(app)/{expenses,settings/categories}/page.tsx`, `src/schemas/expense.ts`, `src/types/expense.ts`, `src/utils/metrics/expense-summary.ts`, `src/utils/dates/recent-months.ts`, `e2e/expenses.spec.ts`
+- **Packages:** @aws-sdk/client-s3@3.1141.0, @aws-sdk/s3-request-presigner@3.1141.0 (added)
+- **Migrations:** none
+- **Follow-ups:** Receipt upload is covered by API tests with S3 stubbed; it needs real S3 settings (and an answer on local dev) to try in the browser. Receipts need a connection; offline expenses (P1.8) save without one and the photo is added later.
+
 ### 2026-09-26 — Daily log
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P1.4
 - **Summary:** Phone-first entry at `/log/[setId]/[date]`: deaths stepper first with the live count as it changes (alert colour above yesterday or the daily average), optional cause, feed (bags/kg, type), water, tags ("wet litter logged on the two days before too"), temperature, note. `/log` picks a Set; `/log/[setId]` lists the last 14 days with missed days named ("Set 5 has no log for Friday" → Fill in Friday); `/log/history` for recorders; the Set page shows the last week. Saving upserts by Set and day: the same clientId again returns the same log, someone else's log for that day answers 409 pointing at it (offline sync will record a conflict instead), a stale version answers 409. Changing deaths or feed after the day needs a reason; recorders may only change their own log on the same day. Every change is audited; the edit history sheet shows who, when, old → new and why.
