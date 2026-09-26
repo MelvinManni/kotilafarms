@@ -1,12 +1,15 @@
 // Route guards: who is signed in, and whether their role may do this
 import "server-only";
 import { getServerSession } from "next-auth";
+import { connection } from "next/server";
 import { authOptions } from "@/server/auth-options";
 import { forbidden, unauthorized } from "@/server/errors";
 import type { Role } from "@/types/role";
 import type { SessionUser } from "@/types/session";
 
 export async function getSessionUser(): Promise<SessionUser | null> {
+  // Sessions are per request: never prerender a page that reads one
+  await connection();
   const session = await getServerSession(authOptions());
   return session?.user?.id ? session.user : null;
 }

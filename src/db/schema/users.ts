@@ -21,8 +21,10 @@ export const users = pgTable(
   (t) => [uniqueIndex("users_email_unique").on(sql`lower(${t.email})`)],
 );
 
+// An invite adds someone new, or resets the password of someone who already has an account
 export const invites = pgTable("invites", {
   id: uuid().primaryKey().defaultRandom(),
+  name: text().notNull(),
   email: text().notNull(),
   role: roleEnum().notNull(),
   // Only a hash of the emailed token is kept

@@ -137,6 +137,7 @@ pnpm install
 pnpm dev                            # Next.js on :3000
 pnpm db:generate && pnpm db:migrate # drizzle-kit
 pnpm db:setup                       # first owner (FIRST_OWNER_*) + fixed lists; never farm data
+pnpm test:e2e                       # Playwright against a dev server on :3200 and a throwaway kotila_e2e database
 pnpm test                           # unit + db tests; db tests need `docker compose up -d db` and use a throwaway kotila_test database
 pnpm lint && pnpm typecheck && pnpm test
 docker compose --profile app up --build  # full stack in containers (db + migrate + app)
@@ -168,6 +169,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 ```
 
 ## Change log
+
+### 2026-09-26 — Auth: sign-in, invites, proxy, users and roles
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P1.1
+- **Summary:** `/sign-in` (desktop split, phone band; offline "Open offline as <name>" for the last person on the device), invites with a link to share (copy or WhatsApp; no email service), `/invite/[token]` to set a password (also used as the password reset), `src/proxy.ts` (Next 16's middleware) sending signed-out people to sign-in and roles away from pages they can't use, Settings › Users and roles (list, change role, deactivate/reactivate; never below one active owner; audited). Sign-in is limited to 5 tries per email + IP per 15 minutes (in memory). Submit buttons wait for hydration so an early tap can't reload the page. First Playwright e2e: invite → accept → recorder kept out of Settings.
+- **Files:** `src/components/auth/*`, `src/components/settings/*`, `src/app/(auth)/*`, `src/app/(app)/settings/*`, `src/app/api/{invites,users}/**`, `src/proxy.ts`, `src/constants/{route-access,role-abilities,settings-tabs}.ts`, `src/server/services/{invites,users,sign-in}.ts`, `src/server/{rate-limit,tokens}.ts`, `src/schemas/auth.ts`, `e2e/*`, `playwright.config.ts`, `test/api/*`
+- **Packages:** react-hook-form@7.89.0, @hookform/resolvers@5.9.1 (added); @playwright/test@1.63.0 (added, dev)
+- **Migrations:** `0001_invite_name.sql` (invites get the person's name)
+- **Follow-ups:** "Keep me signed in" was left out: sessions last 30 days so the phone works offline. Route tests call the real handlers with a stand-in session and the test transaction (`test/api/*`). Other Settings tabs arrive with their features.
 
 ### 2026-09-26 — API plumbing
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P0.8

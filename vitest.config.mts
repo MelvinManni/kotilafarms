@@ -22,6 +22,7 @@ export default defineConfig({
           name: "db",
           include: ["src/**/*.db.test.ts"],
           globalSetup: ["./test/db/global-setup.ts"],
+          setupFiles: ["./test/api/mocks.ts"],
           fileParallelism: false,
           testTimeout: 20_000,
           hookTimeout: 60_000,

@@ -4,6 +4,8 @@ import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { z } from "zod";
 import { env } from "@/lib/env";
+import { getDb } from "@/server/db";
+import { allowAttempt, clearAttempts } from "@/server/rate-limit";
 import { checkCredentials, currentStatus } from "@/server/services/sign-in";
 
 const REFRESH_MS = 5 * 60 * 1000;
@@ -20,10 +22,17 @@ export function authOptions(): NextAuthOptions {
       CredentialsProvider({
         name: "Email and password",
         credentials: { email: { label: "Email", type: "email" }, password: { label: "Password", type: "password" } },
-        async authorize(raw) {
+        async authorize(raw, req) {
           const parsed = credentialsSchema.safeParse(raw);
           if (!parsed.success) return null;
-          return checkCredentials(parsed.data.email, parsed.data.password);
+          const forwarded = req?.headers?.["x-forwarded-for"];
+          const ip = (Array.isArray(forwarded) ? forwarded[0] : forwarded)?.split(",")[0]?.trim() ?? "local";
+          const key = `${parsed.data.email.toLowerCase()}|${ip}`;
+          // Surfaces as the "rate_limited" error on the sign-in page
+          if (!allowAttempt(key)) throw new Error("rate_limited");
+          const user = await checkCredentials(getDb(), parsed.data.email, parsed.data.password);
+          if (user) clearAttempts(key);
+          return user;
         },
       }),
     ],
@@ -31,7 +40,7 @@ export function authOptions(): NextAuthOptions {
       async jwt({ token, user }) {
         if (user) return { ...token, id: user.id, role: user.role, active: true, checkedAt: Date.now() };
         if (token.id && Date.now() - (token.checkedAt ?? 0) > REFRESH_MS) {
-          const status = await currentStatus(token.id);
+          const status = await currentStatus(getDb(), token.id);
           return { ...token, role: status?.role, name: status?.name ?? token.name, active: Boolean(status?.active), checkedAt: Date.now() };
         }
         return token;
