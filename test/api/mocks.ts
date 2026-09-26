@@ -9,6 +9,8 @@ vi.mock("@/server/db", () => ({
   },
 }));
 
+vi.mock("@/server/farm-today", () => ({ farmToday: () => apiState.today }));
+
 vi.mock("@/server/auth", async (importOriginal) => {
   const original = await importOriginal<typeof import("@/server/auth")>();
   const { unauthorized } = await import("@/server/errors");

@@ -11,6 +11,7 @@ export async function withApi(fn: (tx: Tx) => Promise<void>) {
     } finally {
       apiState.tx = null;
       apiState.user = null;
+      apiState.today = "2026-09-26";
     }
   });
 }

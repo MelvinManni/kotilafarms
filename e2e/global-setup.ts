@@ -4,6 +4,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { Client } from "pg";
 import { createDb } from "@/db";
+import { users } from "@/db/schema";
 import { createFirstOwner } from "@/db/setup/create-first-owner";
 import { insertReferenceData } from "@/db/setup/insert-reference-data";
 import { E2E } from "./e2e-env";
@@ -24,5 +25,9 @@ export default async function globalSetup() {
   const db = createDb(E2E.databaseUrl);
   const owner = await createFirstOwner(db, { name: E2E.owner.name, email: E2E.owner.email, passwordHash: await hash(E2E.owner.password) });
   await insertReferenceData(db, owner.id);
+  // Test accounts for the other roles (the e2e database is thrown away each run)
+  for (const [person, role] of [[E2E.manager, "manager"], [E2E.recorder, "recorder"]] as const) {
+    await db.insert(users).values({ name: person.name, email: person.email, role, passwordHash: await hash(person.password), invitedBy: owner.id });
+  }
   await db.$client.end();
 }

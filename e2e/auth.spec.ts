@@ -21,8 +21,8 @@ test("owner invites a recorder who sets a password and can't open Settings", asy
   await page.goto("/settings/users");
   await expect(page.getByRole("heading", { name: "Settings" })).toBeVisible();
   await page.getByRole("button", { name: "Invite someone" }).first().click();
-  await page.getByLabel("Name").fill("Chinedu Okafor");
-  await page.getByLabel("Email").fill("chinedu@e2e.test");
+  await page.getByLabel("Name").fill("Ifeanyi Obi");
+  await page.getByLabel("Email").fill("ifeanyi@e2e.test");
   await page.getByRole("button", { name: "Recorder" }).click();
   await page.getByRole("button", { name: "Make invite link" }).click();
   const link = await page.locator("code").textContent();
@@ -32,8 +32,8 @@ test("owner invites a recorder who sets a password and can't open Settings", asy
   const phone = await recorder.newPage();
   await phone.goto(link!);
   await expect(phone.getByText("Kosi added you as a recorder")).toBeVisible();
-  await phone.getByLabel("New password").fill("chinedu-password");
-  await phone.getByLabel("Type it again").fill("chinedu-password");
+  await phone.getByLabel("New password").fill("ifeanyi-password");
+  await phone.getByLabel("Type it again").fill("ifeanyi-password");
   await phone.getByRole("button", { name: "Set password and continue" }).click();
   await expect(phone).toHaveURL(/\/today/);
   await phone.goto("/settings/users");
@@ -41,5 +41,5 @@ test("owner invites a recorder who sets a password and can't open Settings", asy
   await recorder.close();
 
   await page.reload();
-  await expect(page.getByRole("row", { name: /Chinedu Okafor/ })).toBeVisible();
+  await expect(page.getByRole("row", { name: /Ifeanyi Obi/ })).toBeVisible();
 });

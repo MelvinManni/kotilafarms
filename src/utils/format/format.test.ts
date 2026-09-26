@@ -5,7 +5,7 @@ import { naira } from "@/utils/format/naira";
 import { pct } from "@/utils/format/percent";
 import { kg } from "@/utils/format/weight";
 import { decimal } from "@/utils/format/decimal";
-import { clockTime, farmDay, longDate } from "@/utils/format/dates";
+import { clockTime, farmDay, longDate, shortDate } from "@/utils/format/dates";
 
 describe("naira", () => {
   it("formats whole naira with separators", () => expect(naira(3563550)).toBe("₦3,563,550"));
@@ -37,6 +37,7 @@ describe("kg and decimal", () => {
 
 describe("dates", () => {
   it("formats a farm day", () => expect(farmDay("2026-09-26")).toBe("Sat 26 Sep"));
+  it("formats a short date", () => expect(shortDate("2026-09-02")).toBe("2 Sep 2026"));
   it("formats a long date", () => expect(longDate("2026-09-26")).toBe("26 September 2026"));
   it("formats time in Lagos, 12-hour, no space", () =>
     expect(clockTime("2026-09-26T17:40:00Z")).toBe("6:40pm"));

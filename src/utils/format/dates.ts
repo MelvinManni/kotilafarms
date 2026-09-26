@@ -33,3 +33,10 @@ export function clockTime(at: Date | string, timeZone = FARM_TIMEZONE): string {
   const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
   return `${get("hour")}:${get("minute")}${get("dayPeriod").toLowerCase().replace(/\./g, "")}`;
 }
+
+// "20 Sep 2026" for tables; "20 Sep" when the year is obvious
+export function shortDate(day: string, withYear = true): string {
+  const date = farmDayToDate(day);
+  const text = `${date.getUTCDate()} ${MONTHS[date.getUTCMonth()]}`;
+  return withYear ? `${text} ${date.getUTCFullYear()}` : text;
+}

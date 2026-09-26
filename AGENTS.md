@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Sets
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P1.3
+- **Summary:** Sets list (figures, All / Running / Closed, ledger on desktop, cards on phones), start a Set (sheet; same clientId twice returns the same Set; adds the vaccine schedule from the defaults and the day-olds as a Day-old chicks expense, in one transaction), Set detail (figures with this-week vs last-week mortality, deaths by day, spend by category), stage changes with a closing date (audited). Recorders get counts without money; the server strips money fields. All numbers from `utils/metrics` (new: mortality trend, day of age, Sets overview, category share).
+- **Files:** `src/server/services/sets/*`, `src/app/api/sets/**`, `src/components/sets/*`, `src/app/(app)/sets/**`, `src/hooks/queries/use-sets.ts`, `src/schemas/set.ts`, `src/types/sets.ts`, `src/utils/metrics/{mortality-trend,sets-overview,category-share}.ts`, `e2e/sets.spec.ts`, `test/db/farm.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** Growth chart (P2.2), feed left (P2.3) and the logs / weights / health / sales / expenses tabs arrive with those features. e2e setup now also creates a manager and a recorder test account in the throwaway e2e database.
+
 ### 2026-09-26 — App shell
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P1.2
 - **Summary:** `(app)` layout with the frame from the designs: side rail on desktop (role-filtered, active section, sync status, person); on phones a green band, glass top bar (sync status, account) and glass tab bar. Recorders always get the phone frame. Owners/managers on a phone: Today, Sets, + (add expense), Sales, More (sheet with every section). Account sheet signs out and forgets the person for offline use. The app remembers who signed in on the device. Page headings go white over the band on phones.

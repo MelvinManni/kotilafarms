@@ -15,6 +15,8 @@ export const E2E = {
   databaseUrl: databaseUrl(),
   baseUrl: `http://localhost:${E2E_PORT}`,
   owner: { name: "Kosi", email: "kosi@e2e.test", password: "e2e-owner-password" },
+  manager: { name: "Adaeze Nwankwo", email: "adaeze@e2e.test", password: "e2e-manager-password" },
+  recorder: { name: "Chinedu Okafor", email: "chinedu@e2e.test", password: "e2e-recorder-password" },
 };
 
 export const E2E_APP_ENV = {
