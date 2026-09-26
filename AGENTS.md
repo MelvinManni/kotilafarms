@@ -129,13 +129,13 @@ src/
 ## Commands
 
 ```bash
-docker compose up -d db            # Postgres only
+docker compose up -d db            # Postgres only (set DB_PORT if 5432 is taken)
 pnpm install
 pnpm dev                            # Next.js on :3000
 pnpm db:generate && pnpm db:migrate # drizzle-kit
 pnpm db:seed                        # farm data from docs/12-seed-data.md
 pnpm lint && pnpm typecheck && pnpm test
-docker compose up --build           # full stack in containers
+docker compose --profile app up --build  # full stack in containers (db + migrate + app)
 ```
 
 Add these scripts to `package.json` when scaffolding if the CLIs didn't.
@@ -164,6 +164,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 ```
 
 ## Change log
+
+### 2026-09-26 — Container versions pinned
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P0.2
+- **Summary:** Pinned Node 24 (Active LTS; 26 becomes LTS on 28 Oct 2026) and PostgreSQL 18 (19 is still beta). Postgres 18 keeps data under `/var/lib/postgresql/18/docker`, so the volume now mounts `/var/lib/postgresql`. Host DB port is `DB_PORT` (default 5432). Docker build copies `pnpm-workspace.yaml` and turns off the corepack prompt. Checked: `docker compose up -d db` is healthy (18.6); the app image builds and serves on Node 24.21.0.
+- **Files:** `Dockerfile`, `docker-compose.yml`, `.env.example`, `AGENTS.md`
+- **Packages:** none (images: `node:24-alpine`, `postgres:18-alpine`)
+- **Migrations:** none
+- **Follow-ups:** the full `--profile app` stack needs `pnpm db:migrate`, which lands in P0.6; check it there. Dev container config unchanged (Node 24 image) and not opened here.
 
 ### 2026-09-26 — Harden offline sync against duplicates
 - **Agent:** Claude Code (Opus 5.5) · **Task:** docs (shapes P0.6, P1.4, P1.5, P1.8, P2.1)

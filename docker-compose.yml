@@ -1,4 +1,4 @@
-# Kotila Farm — local stack. POSTGRES_VERSION / NODE_VERSION: set to current stable majors before first use (AGENTS.md).
+# Kotila Farm — local stack. PostgreSQL 18 and Node 24 LTS (checked 2026-09-26; see AGENTS.md version policy).
 services:
   db:
     image: postgres:${POSTGRES_VERSION:-18}-alpine
@@ -8,9 +8,11 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kotila}
       POSTGRES_DB: ${POSTGRES_DB:-kotila}
     ports:
-      - "5432:5432"
+      # Host port; change DB_PORT (and DATABASE_URL) if 5432 is taken
+      - "${DB_PORT:-5432}:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      # Postgres 18+ keeps data in a versioned folder under this path
+      - pgdata:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-kotila} -d ${POSTGRES_DB:-kotila}"]
       interval: 5s

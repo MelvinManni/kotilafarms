@@ -1,13 +1,14 @@
 # Kotila Farm — production image (Next.js standalone output).
-# NODE_VERSION: set to the current Node.js Active LTS major before the first build (AGENTS.md version policy).
+# NODE_VERSION: Node.js Active LTS major (24, checked 2026-09-26; 26 becomes LTS on 2026-10-28).
 ARG NODE_VERSION=24
 
 FROM node:${NODE_VERSION}-alpine AS base
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable
 WORKDIR /app
 
 FROM base AS deps
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 FROM base AS build
