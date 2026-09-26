@@ -1,5 +1,5 @@
 // GET /api/feed/prices?feedTypeId= — price per bag for one feed, oldest first (owners and managers)
-import { z } from "zod";
+import * as z from "zod/mini";
 import { OWNER_MANAGER } from "@/lib/auth/roles";
 import { requireRole, requireSession } from "@/server/auth";
 import { getDb } from "@/server/db";

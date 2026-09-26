@@ -7,12 +7,13 @@ import { dailyLogConflicts, dailyLogs, sets, users } from "@/db/schema";
 import { recordResolve } from "@/server/audit";
 import { conflict as conflictError, notFound } from "@/server/errors";
 import { editDailyLog } from "@/server/services/daily-logs/edit";
+import * as z from "zod/mini";
 import { dailyLogFieldsSchema } from "@/schemas/daily-log";
 import type { LogConflict } from "@/types/conflict";
 import type { SessionUser } from "@/types/session";
 
 // The entry that couldn't be applied, as the phone sent it (checked when it arrived)
-const incomingSchema = dailyLogFieldsSchema.partial().extend({ deaths: dailyLogFieldsSchema.shape.deaths });
+const incomingSchema = z.extend(z.partial(dailyLogFieldsSchema), { deaths: dailyLogFieldsSchema.shape.deaths });
 
 export async function openConflicts(db: Executor): Promise<LogConflict[]> {
   const author = alias(users, "author");

@@ -2,7 +2,7 @@
 import "server-only";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { z } from "zod";
+import * as z from "zod/mini";
 import { env } from "@/lib/env";
 import { getDb } from "@/server/db";
 import { allowAttempt, clearAttempts } from "@/server/rate-limit";
@@ -11,7 +11,7 @@ import { checkCredentials, currentStatus } from "@/server/services/sign-in";
 const REFRESH_MS = 5 * 60 * 1000;
 const THIRTY_DAYS = 30 * 24 * 60 * 60;
 
-const credentialsSchema = z.object({ email: z.email(), password: z.string().min(1) });
+const credentialsSchema = z.object({ email: z.email(), password: z.string().check(z.minLength(1)) });
 
 export function authOptions(): NextAuthOptions {
   return {

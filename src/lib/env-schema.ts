@@ -1,16 +1,10 @@
 // Env schema and parser; pure so scripts and tests can use it
-import { z } from "zod";
+import * as z from "zod/mini";
 
 // Empty values in .env count as "not set"
-const optionalText = z.preprocess(
-  (value) => (value === "" ? undefined : value),
-  z.string().optional(),
-);
-
-const optionalUrl = z.preprocess(
-  (value) => (value === "" ? undefined : value),
-  z.url().optional(),
-);
+const blankToUndefined = z.transform((value: unknown) => (value === "" ? undefined : value));
+const optionalText = z.pipe(blankToUndefined, z.optional(z.string()));
+const optionalUrl = z.pipe(blankToUndefined, z.optional(z.url()));
 
 const isTimeZone = (zone: string) => {
   try {
@@ -23,18 +17,18 @@ const isTimeZone = (zone: string) => {
 
 export const envSchema = z
   .object({
-    NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+    NODE_ENV: z._default(z.enum(["development", "test", "production"]), "development"),
     DATABASE_URL: z.url({
       protocol: /^postgres(ql)?$/,
       error: "DATABASE_URL must be a postgres:// address",
     }),
     NEXTAUTH_URL: z.url({ error: "NEXTAUTH_URL must be the app address, like http://localhost:3000" }),
-    NEXTAUTH_SECRET: z
-      .string({ error: "NEXTAUTH_SECRET is required" })
-      .min(32, "NEXTAUTH_SECRET must be at least 32 characters. Make one with: openssl rand -base64 32")
-      .refine((value) => !value.startsWith("replace-with"), "NEXTAUTH_SECRET is still the example value"),
-    S3_BUCKET: z.string({ error: "S3_BUCKET is required" }).min(3, "S3_BUCKET is too short"),
-    S3_REGION: z.string({ error: "S3_REGION is required" }).min(1, "S3_REGION is required"),
+    NEXTAUTH_SECRET: z.string({ error: "NEXTAUTH_SECRET is required" }).check(
+      z.minLength(32, "NEXTAUTH_SECRET must be at least 32 characters. Make one with: openssl rand -base64 32"),
+      z.refine<string>((value) => !value.startsWith("replace-with"), "NEXTAUTH_SECRET is still the example value"),
+    ),
+    S3_BUCKET: z.string({ error: "S3_BUCKET is required" }).check(z.minLength(3, "S3_BUCKET is too short")),
+    S3_REGION: z.string({ error: "S3_REGION is required" }).check(z.minLength(1, "S3_REGION is required")),
     S3_ACCESS_KEY_ID: optionalText,
     S3_SECRET_ACCESS_KEY: optionalText,
     S3_ENDPOINT: optionalUrl,
@@ -42,16 +36,15 @@ export const envSchema = z
     CHROMIUM_PATH: optionalText,
     // Where the headless browser reaches this app (empty uses NEXTAUTH_URL)
     INTERNAL_APP_URL: optionalUrl,
-    FARM_TIMEZONE: z
-      .string()
-      .default("Africa/Lagos")
-      .refine(isTimeZone, "FARM_TIMEZONE must be a time zone name, like Africa/Lagos"),
+    FARM_TIMEZONE: z._default(z.string().check(z.refine(isTimeZone, "FARM_TIMEZONE must be a time zone name, like Africa/Lagos")), "Africa/Lagos"),
   })
   // Keys come as a pair, or not at all (then the SDK uses the machine's role)
-  .refine((env) => Boolean(env.S3_ACCESS_KEY_ID) === Boolean(env.S3_SECRET_ACCESS_KEY), {
-    message: "Set both S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY, or neither",
-    path: ["S3_SECRET_ACCESS_KEY"],
-  });
+  .check(
+    z.refine<{ S3_ACCESS_KEY_ID?: string; S3_SECRET_ACCESS_KEY?: string }>((env) => Boolean(env.S3_ACCESS_KEY_ID) === Boolean(env.S3_SECRET_ACCESS_KEY), {
+      message: "Set both S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY, or neither",
+      path: ["S3_SECRET_ACCESS_KEY"],
+    }),
+  );
 
 export type Env = z.infer<typeof envSchema>;
 

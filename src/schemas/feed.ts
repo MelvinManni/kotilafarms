@@ -1,13 +1,16 @@
 // Feed purchases, ingredient purchases and feed types, shared by the forms and the API
-import { z } from "zod";
+import * as z from "zod/mini";
+import { text, whole } from "@/schemas/checks";
 import { farmDateSchema } from "@/schemas/set";
 import { linkedAmountsAgree } from "@/utils/metrics/linked-amounts-agree";
 
-const naira = (what: string) => z.number({ error: `Enter ${what}.` }).int("Whole naira only.").positive(`Enter ${what}.`);
-const amount = (what: string) => z.number({ error: `Enter ${what}.` }).positive(`Enter ${what}.`).max(100_000).multipleOf(0.01, "Two decimal places at most.");
-const agree = (q: "bags" | "quantity", u: "pricePerBag" | "unitCost") => (v: Record<string, unknown>) =>
-  typeof v[q] !== "number" || typeof v[u] !== "number" || typeof v.total !== "number" || linkedAmountsAgree(v[q], v[u], v.total);
-const setOrOverhead = (v: { setId?: string | null; overhead?: boolean }) => Boolean(v.setId) !== Boolean(v.overhead);
+const naira = (what: string) => z.number({ error: `Enter ${what}.` }).check(whole("Whole naira only."), z.positive(`Enter ${what}.`));
+const amount = (what: string) => z.number({ error: `Enter ${what}.` }).check(z.positive(`Enter ${what}.`), z.lte(100_000), z.multipleOf(0.01, "Two decimal places at most."));
+const bagKg = z.number({ error: "Enter the weight per bag." }).check(z.positive("Enter the weight per bag."), z.lte(100));
+
+type Linked = Record<string, unknown>;
+const agree = (q: "bags" | "quantity", u: "pricePerBag" | "unitCost", message: string) =>
+  z.refine<Linked>((v) => typeof v[q] !== "number" || typeof v[u] !== "number" || typeof v.total !== "number" || linkedAmountsAgree(v[q], v[u], v.total), { message, path: ["total"] });
 
 export const feedPurchaseCreateSchema = z
   .object({
@@ -15,40 +18,42 @@ export const feedPurchaseCreateSchema = z
     date: farmDateSchema,
     feedTypeId: z.uuid({ error: "Choose the feed." }),
     bags: amount("the number of bags"),
-    kgPerBag: z.number({ error: "Enter the weight per bag." }).positive("Enter the weight per bag.").max(100),
+    kgPerBag: bagKg,
     pricePerBag: naira("the price per bag"),
     total: naira("the total cost"),
-    transportCost: z.number().int("Whole naira only.").min(0).default(0),
-    supplier: z.string().trim().min(2, "Who sold it?").max(120),
-    setId: z.uuid().nullable(),
+    transportCost: z._default(z.number().check(whole("Whole naira only."), z.gte(0)), 0),
+    supplier: text(120, { length: 2, message: "Who sold it?" }),
+    setId: z.nullable(z.uuid()),
     overhead: z.boolean(),
   })
-  .refine(agree("bags", "pricePerBag"), { message: "Bags × price per bag doesn't match the total.", path: ["total"] })
-  .refine(setOrOverhead, { message: "Choose the Set that will eat it, or the farm store.", path: ["setId"] });
+  .check(
+    agree("bags", "pricePerBag", "Bags × price per bag doesn't match the total."),
+    z.refine<{ setId: string | null; overhead: boolean }>((v) => Boolean(v.setId) !== Boolean(v.overhead), { message: "Choose the Set that will eat it, or the farm store.", path: ["setId"] }),
+  );
+
+export const INGREDIENT_UNITS = ["kg", "litres", "bags", "pieces"] as const;
 
 export const ingredientPurchaseCreateSchema = z
   .object({
     clientId: z.uuid(),
     date: farmDateSchema,
     setId: z.uuid({ error: "Choose the Set it feeds." }),
-    ingredient: z.string().trim().min(2, "Name the ingredient.").max(60),
+    ingredient: text(60, { length: 2, message: "Name the ingredient." }),
     quantity: amount("the quantity"),
-    unit: z.enum(["kg", "litres", "bags", "pieces"], { error: "Choose the unit." }),
+    unit: z.enum(INGREDIENT_UNITS, { error: "Choose the unit." }),
     unitCost: naira("the cost each"),
     total: naira("the total cost"),
-    supplier: z.string().trim().max(120).nullable().optional(),
+    supplier: z.optional(z.nullable(text(120))),
   })
-  .refine(agree("quantity", "unitCost"), { message: "Quantity × cost each doesn't match the total.", path: ["total"] });
+  .check(agree("quantity", "unitCost", "Quantity × cost each doesn't match the total."));
 
 export const feedTypeCreateSchema = z.object({
   kind: z.enum(["starter", "grower", "finisher"], { error: "Choose starter, grower or finisher." }),
-  brand: z.string().trim().min(2, "Name the brand.").max(60),
-  kgPerBag: z.number({ error: "Enter the weight per bag." }).positive("Enter the weight per bag.").max(100),
+  brand: text(60, { length: 2, message: "Name the brand." }),
+  kgPerBag: bagKg,
 });
 
-export const feedTypeUpdateSchema = feedTypeCreateSchema.partial().extend({ active: z.boolean().optional() });
-
-export const INGREDIENT_UNITS = ["kg", "litres", "bags", "pieces"] as const;
+export const feedTypeUpdateSchema = z.extend(z.partial(feedTypeCreateSchema), { active: z.optional(z.boolean()) });
 
 export type FeedPurchaseCreateInput = z.input<typeof feedPurchaseCreateSchema>;
 export type FeedPurchaseCreate = z.output<typeof feedPurchaseCreateSchema>;

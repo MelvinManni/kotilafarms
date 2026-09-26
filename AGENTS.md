@@ -31,7 +31,7 @@ An internal web app for Kotila Farms, a broiler poultry farm in Nigeria owned by
 | ORM | Drizzle ORM + drizzle-kit | Schema in `src/db/schema/*`, migrations committed |
 | Auth | NextAuth (Auth.js), latest **stable** | Credentials (email + password), JWT sessions, roles in the token. See version note below. |
 | Client data | TanStack Query (React Query), latest stable | All client reads and writes go through it |
-| Forms | react-hook-form + @hookform/resolvers + zod | One zod schema per entity, shared by form and API |
+| Forms | react-hook-form + @hookform/resolvers + zod (`zod/mini`) | One zod schema per entity, shared by form and API. Import `* as z from "zod/mini"`, never `"zod"` |
 | UI | shadcn/ui CLI (latest) with **Base UI** primitives (`@base-ui/react`), Tailwind CSS v4 | Themed with the Kotila tokens. All styling is Tailwind v4 (see Styling rule) |
 | File storage | Private S3 bucket (AWS S3 or S3-compatible) | Receipt photos. Server uploads; DB stores the object key; reads use short-lived signed URLs. No files on local disk or volumes |
 | Package manager | pnpm (via corepack) | |
@@ -169,6 +169,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 ```
 
 ## Change log
+
+### 2026-09-26 — Schemas on zod/mini
+- **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P3.5)
+- **Summary:** Melvin asked to switch to `zod/mini`. Every schema, form schema, route query and env check now uses its functional style (`.check(z.trim(), z.minLength(…))`, `z.optional`, `z.extend`, `z.partial`, `z.pipe`); shared `whole()` and `text()` checks live in `src/schemas/checks.ts`. Validation errors are caught as `z.core.$ZodError`. Messages are unchanged. First-visit JS on a phone fell from 348 KB to 279 KB and sign-in is ready about 0.4 s sooner on slow 4G. Also adds the schemas for the next two changes (a Set's own vaccine schedule, fixing the share register).
+- **Files:** `src/schemas/*` (new `checks.ts`), `src/components/{expenses/expense-form-schema,daily-log/log-form-schema,auth/accept-invite-form,settings/breed-form}.tsx`, `src/server/{http,auth-options}.ts`, `src/server/services/{conflicts,sync/apply,sync/classify}.ts`, `src/app/api/{expenses/[id],health,conflicts/[id],audit,feed/prices}/route.ts`, `src/lib/env-schema.ts`, `src/db/setup/setup-env.ts`, `docs/02-architecture.md`, `AGENTS.md` (stack row)
+- **Packages:** none (zod 4.6.5 ships `zod/mini`)
+- **Migrations:** none
+- **Follow-ups:** none.
 
 ### 2026-09-26 — App image checked with Chromium
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P3.5 (follow-up)

@@ -1,6 +1,6 @@
 // Apply one queued mutation with the same services the online API uses
 import "server-only";
-import { z } from "zod";
+import * as z from "zod/mini";
 import type { Tx } from "@/db";
 import { OWNER_MANAGER } from "@/lib/auth/roles";
 import { dailyLogUpsertSchema } from "@/schemas/daily-log";
@@ -15,7 +15,7 @@ import { weightSampleCreateSchema } from "@/schemas/weight";
 import type { SessionUser } from "@/types/session";
 
 // Log and weight payloads carry the Set they belong to
-const setPayload = z.object({ setId: z.uuid() }).passthrough();
+const setPayload = z.looseObject({ setId: z.uuid() });
 
 type Applied = Omit<SyncResult, "mutationId">;
 

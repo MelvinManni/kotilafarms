@@ -1,5 +1,5 @@
 // GET /api/health?setId= — drugs and supplements given, newest first; POST — record one (owners and managers)
-import { z } from "zod";
+import * as z from "zod/mini";
 import { OWNER_MANAGER } from "@/lib/auth/roles";
 import { healthRecordCreateSchema } from "@/schemas/health";
 import { requireRole, requireSession } from "@/server/auth";
@@ -8,7 +8,7 @@ import { farmToday } from "@/server/farm-today";
 import { route } from "@/server/http";
 import { createHealthRecord, listHealthRecords } from "@/server/services/health/records";
 
-const filters = z.object({ setId: z.uuid().optional() });
+const filters = z.object({ setId: z.optional(z.uuid()) });
 
 export const GET = route(async (req) => {
   requireRole(await requireSession(), OWNER_MANAGER);

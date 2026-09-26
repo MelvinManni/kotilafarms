@@ -75,10 +75,10 @@ Production build, Pixel 7 profile, CPU slowed 4×, slow 4G (1.6 Mb/s down, 150 m
 
 | Visit | Time |
 | --- | --- |
-| Sign-in, first visit (no cache, no service worker) | about 2.7 s to tap-ready; 348 KB JS compressed |
+| Sign-in, first visit (no cache, no service worker) | about 2.3 s to tap-ready; 279 KB JS compressed (was 2.7 s and 348 KB before `zod/mini`) |
 | Sign in → Today on screen | about 2.2 s |
-| `/log`, `/today` with no cache | about 2.8 s and 3.7 s to interactive |
+| `/log` with no cache | about 2.4 s to interactive (was 2.8 s) |
 | Any phone page once the service worker has it | 0.3–0.4 s |
 
-The largest chunk is zod (about 87 KB compressed). Moving the forms to `zod/mini` would cut it; not done yet.
+Schemas use `zod/mini` (functional checks: `z.string().check(z.trim(), z.minLength(2, "…"))`, `z.optional(…)`, `z.extend(…)`); it took zod from about 87 KB to about 20 KB compressed. Shared checks live in `src/schemas/checks.ts`.
 

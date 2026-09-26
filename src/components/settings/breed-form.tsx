@@ -9,7 +9,7 @@ import { Panel } from "@/components/kotila/panel";
 import { BreedRow } from "@/components/settings/breed-row";
 import type { BreedCurve, useSaveBreedCurve } from "@/hooks/queries/use-weights";
 import { breedCurveSchema } from "@/schemas/weight";
-import type { z } from "zod";
+import type * as z from "zod/mini";
 
 type Values = z.input<typeof breedCurveSchema>;
 

@@ -1,6 +1,6 @@
 // PATCH /api/expenses/:id — change an expense; DELETE — remove it (owners, with a reason)
 import { eq } from "drizzle-orm";
-import { z } from "zod";
+import * as z from "zod/mini";
 import { expenses } from "@/db/schema";
 import { OWNER_MANAGER } from "@/lib/auth/roles";
 import { expenseEditSchema } from "@/schemas/expense";
@@ -19,7 +19,7 @@ export const PATCH = route<RouteContext<"/api/expenses/[id]">>(async (req, ctx) 
   return Response.json(row);
 });
 
-const removeSchema = z.object({ reason: z.string().trim().min(3, "Say why it's being removed.") });
+const removeSchema = z.object({ reason: z.string().check(z.trim(), z.minLength(3, "Say why it's being removed.")) });
 
 export const DELETE = route<RouteContext<"/api/expenses/[id]">>(async (req, ctx) => {
   const user = requireRole(await requireSession(), ["owner"]);

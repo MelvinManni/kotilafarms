@@ -1,6 +1,6 @@
 // Wrap a route handler: known errors become { error } JSON with the right status, the rest become 500
 import "server-only";
-import { ZodError } from "zod";
+import * as z from "zod/mini";
 import { ApiError } from "@/server/errors";
 import type { ApiErrorBody } from "@/types/api";
 
@@ -18,7 +18,7 @@ function postgresCode(error: unknown): { code?: string; constraint?: string } {
 
 export function toErrorResponse(error: unknown): Response {
   if (error instanceof ApiError) return Response.json(body(error.code, error.message, error.issues), { status: error.status });
-  if (error instanceof ZodError) {
+  if (error instanceof z.core.$ZodError) {
     const issues = error.issues.map((i) => ({ path: i.path.join("."), message: i.message }));
     return Response.json(body("validation", issues[0]?.message ?? "Check the form and try again.", issues), { status: 422 });
   }

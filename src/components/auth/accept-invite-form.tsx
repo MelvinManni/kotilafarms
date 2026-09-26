@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import { z } from "zod";
+import * as z from "zod/mini";
 import { RoleAbilities } from "@/components/auth/role-abilities";
 import { Button } from "@/components/kotila/button";
 import { PasswordInput } from "@/components/kotila/fields/password-input";
@@ -18,7 +18,7 @@ import { ROLE_LABEL } from "@/types/role";
 
 const formSchema = z
   .object({ password: passwordSchema, confirm: z.string() })
-  .refine((v) => v.password === v.confirm, { message: "The two passwords don't match.", path: ["confirm"] });
+  .check(z.refine<{ password: string; confirm: string }>((v) => v.password === v.confirm, { message: "The two passwords don't match.", path: ["confirm"] }));
 
 export function AcceptInviteForm({ token, invite }: { token: string; invite: InviteDetails }) {
   const router = useRouter();

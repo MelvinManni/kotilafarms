@@ -1,6 +1,6 @@
 // The route wrapper turns every kind of failure into the right status and { error } body
 import { describe, expect, it } from "vitest";
-import { z } from "zod";
+import * as z from "zod/mini";
 import { forbidden, notFound, unauthorized } from "@/server/errors";
 import { route } from "@/server/http";
 

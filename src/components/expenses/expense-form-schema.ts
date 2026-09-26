@@ -1,15 +1,16 @@
 // The expense sheet's values: attribution is one choice, a Set id or "overhead"
-import { z } from "zod";
+import * as z from "zod/mini";
+import { whole } from "@/schemas/checks";
 import { farmDateSchema } from "@/schemas/set";
 
 export const expenseFormSchema = z.object({
-  amount: z.number({ error: "Enter the amount." }).int().positive("Enter the amount."),
-  categoryId: z.string().min(1, "Choose a category."),
-  description: z.string().trim().min(1, "Say what it was for."),
-  attribution: z.string({ error: "Choose a Set or farm overhead before saving." }).min(1, "Choose a Set or farm overhead before saving."),
+  amount: z.number({ error: "Enter the amount." }).check(whole("Whole naira only."), z.positive("Enter the amount.")),
+  categoryId: z.string().check(z.minLength(1, "Choose a category.")),
+  description: z.string().check(z.trim(), z.minLength(1, "Say what it was for.")),
+  attribution: z.string({ error: "Choose a Set or farm overhead before saving." }).check(z.minLength(1, "Choose a Set or farm overhead before saving.")),
   date: farmDateSchema,
   capitalItem: z.boolean(),
-  receiptKey: z.string().nullable(),
+  receiptKey: z.nullable(z.string()),
   reason: z.string(),
 });
 

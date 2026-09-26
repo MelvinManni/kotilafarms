@@ -1,5 +1,5 @@
 // POST /api/conflicts/:id — keep the logged version or the one from the phone
-import { z } from "zod";
+import * as z from "zod/mini";
 import { OWNER_MANAGER } from "@/lib/auth/roles";
 import { requireRole, requireSession } from "@/server/auth";
 import { getDb } from "@/server/db";
