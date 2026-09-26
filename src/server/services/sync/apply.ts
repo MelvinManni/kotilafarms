@@ -10,16 +10,19 @@ import { requireRole } from "@/server/auth";
 import { unprocessable } from "@/server/errors";
 import { upsertDailyLog } from "@/server/services/daily-logs/upsert";
 import { createExpense } from "@/server/services/expenses/create";
+import { createWeightSample } from "@/server/services/weights";
+import { weightSampleCreateSchema } from "@/schemas/weight";
 import type { SessionUser } from "@/types/session";
 
-const dailyLogPayload = z.object({ setId: z.uuid() }).passthrough();
+// Log and weight payloads carry the Set they belong to
+const setPayload = z.object({ setId: z.uuid() }).passthrough();
 
 type Applied = Omit<SyncResult, "mutationId">;
 
 export async function applyMutation(tx: Tx, m: SyncMutation, user: SessionUser, today: string, deviceId: string): Promise<Applied> {
   const withClient = { ...(m.payload as object), clientId: m.clientId, enteredOfflineAt: m.enteredOfflineAt };
   if (m.type === "dailyLog.upsert") {
-    const { setId } = dailyLogPayload.parse(m.payload);
+    const { setId } = setPayload.parse(m.payload);
     const input = dailyLogUpsertSchema.parse(withClient);
     const r = await upsertDailyLog(tx, setId, input, user, today, { onConflict: "record", mutationId: m.mutationId, deviceId });
     if (r.status === "conflict") return { status: "conflict", conflictId: r.conflictId, id: r.existingId };
@@ -29,6 +32,11 @@ export async function applyMutation(tx: Tx, m: SyncMutation, user: SessionUser, 
     requireRole(user, OWNER_MANAGER);
     const { expense, created } = await createExpense(tx, expenseCreateSchema.parse(withClient), user, { deviceId });
     return { status: created ? "applied" : "duplicate", id: expense.id, version: expense.version, possibleDuplicateOf: expense.possibleDuplicateOf };
+  }
+  if (m.type === "weightSample.create") {
+    const { setId } = setPayload.parse(m.payload);
+    const { sample, created } = await createWeightSample(tx, setId, weightSampleCreateSchema.parse(withClient), user, today, { deviceId });
+    return { status: created ? "applied" : "duplicate", id: sample.id, version: sample.version, possibleDuplicateOf: sample.possibleDuplicateOf };
   }
   throw unprocessable("This kind of entry can't be sent yet.");
 }

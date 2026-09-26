@@ -10,7 +10,7 @@ export function SettingsTabs({ active, role, counts = {} }: { active: string; ro
   const tabs = SETTINGS_TABS.filter((t) => t.roles.includes(role));
   // On phones the tabs sit on a white strip so they read over the green band
   return (
-    <div className="max-lg:rounded-lg max-lg:bg-surface max-lg:px-2 max-lg:shadow-raise">
+    <div className="min-w-0 max-lg:rounded-lg max-lg:bg-surface max-lg:px-2 max-lg:shadow-raise">
       <Tabs
       items={tabs.map((t) => ({ value: t.value, label: t.label, count: counts[t.value] }))}
       active={active}

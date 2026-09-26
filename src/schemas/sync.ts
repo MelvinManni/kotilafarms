@@ -1,7 +1,7 @@
 // POST /api/sync: up to 25 queued mutations from one device, plus what is still waiting there
 import { z } from "zod";
 
-export const MUTATION_TYPES = ["dailyLog.upsert", "expense.create"] as const;
+export const MUTATION_TYPES = ["dailyLog.upsert", "expense.create", "weightSample.create"] as const;
 export type MutationType = (typeof MUTATION_TYPES)[number];
 
 export const MAX_BATCH = 25;

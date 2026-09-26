@@ -9,8 +9,8 @@ type TabsProps = { items: TabItem[]; active?: string; onChange?: (value: string)
 
 export function Tabs({ items, active, onChange }: TabsProps) {
   return (
-    <TabsRoot value={active} onValueChange={(v) => onChange?.(String(v))}>
-      <TabsList variant="line" className="h-auto w-full justify-start gap-1 rounded-none border-b border-line p-0">
+    <TabsRoot value={active} onValueChange={(v) => onChange?.(String(v))} className="min-w-0">
+      <TabsList variant="line" className="h-auto w-full justify-start gap-1 overflow-x-auto overflow-y-hidden rounded-none border-b border-line p-0 [scrollbar-width:none]">
         {items.map((item) => {
           const opt = toOption(typeof item === "string" ? item : { value: item.value, label: item.label });
           const itemCount = typeof item === "string" ? undefined : item.count;

@@ -7,5 +7,6 @@ export function describeItem(item: OutboxItem, setNumber: (setId: string) => num
   const p = item.payload;
   const set = typeof p.setId === "string" ? setNumber(p.setId) : undefined;
   if (item.type === "dailyLog.upsert") return `${set ? `Set ${set}` : "Daily"} log · ${farmDay(String(p.date))}`;
+  if (item.type === "weightSample.create") return `${set ? `Set ${set}` : ""} weights · ${Array.isArray(p.weightsGrams) ? p.weightsGrams.length : 0} birds · ${farmDay(String(p.date))}`;
   return `Expense · ${naira(Number(p.amount))} · ${String(p.description ?? "")}`;
 }

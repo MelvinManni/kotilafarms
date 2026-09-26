@@ -4,7 +4,7 @@ import { useCurrentUser } from "@/lib/auth/current-user";
 import { useState } from "react";
 import { HistorySheet } from "@/components/audit/history-sheet";
 import { LogForm } from "@/components/daily-log/log-form";
-import { SavedOnPhone } from "@/components/daily-log/saved-on-phone";
+import { SavedOnPhone } from "@/components/offline/saved-on-phone";
 import { IconButton } from "@/components/kotila/icon-button";
 import { Notice } from "@/components/kotila/notice";
 import { PageHeader } from "@/components/layout/page-header";
@@ -48,7 +48,7 @@ export function LogEntryScreen({ setId, date }: { setId: string; date: string })
         actions={existing && can.manageOperations(user.role) ? <IconButton icon="history" label={`Edit history for ${farmDay(date)}`} onClick={() => setHistory(true)} /> : null}
       />
       {savedHere ? (
-        <SavedOnPhone setId={setId} setNumber={s.number} date={date} />
+        <SavedOnPhone what={`Set ${s.number}, ${farmDay(date)}`} more={{ href: `/log/${setId}`, label: `All days for Set ${s.number}` }} />
       ) : (
         <LogForm
           key={`${existing?.version ?? "new"}-${onPhone?.clientId ?? ""}`}

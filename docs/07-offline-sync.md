@@ -160,6 +160,7 @@ Online-only creates (sales, feed purchases, payments, …) still send a `clientI
 - Saving with no signal confirms in place ("Saved on this phone") instead of loading another page.
 - Managers settle clashes from the sync sheet: both versions side by side, keep one; the choice is audited.
 - The React Query cache is kept in IndexedDB for 7 days and refreshed as soon as the app opens; signing out clears it and the cached pages.
+- Weight samples (P2.1) use the same path: `weightSample.create`, payload carries `setId`; the phone warns before saving the same weights twice on one day, and the server flags a match with `possibleDuplicateOf`.
 - Code: `src/lib/offline/*` (outbox, worker, submit), `src/server/services/sync/*`, `src/app/api/sync`, `src/app/api/conflicts`, `src/components/offline/*`.
 
 ## Tests that must exist

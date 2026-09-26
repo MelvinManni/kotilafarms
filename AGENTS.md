@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Weights and the breed standard
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P2.1
+- **Summary:** Weigh screen (`/weigh`, `/weigh/[setId]`): type each bird in grams; average, gap to standard, uniformity and bird count update as you type; tap a weight to change it; fewer than 10 birds warns but never blocks; chart against the standard. Samples save through the outbox (new `weightSample.create` type); a same-day sample with the same weights is flagged as a likely repeat on the phone and on the server, never dropped. Settings › Breed standard edits the curve (owners and managers, audited).
+- **Files:** `src/app/api/sets/[id]/weights`, `src/app/api/settings/breed-curve`, `src/server/services/{weights,breed-curve}.ts`, `src/schemas/weight.ts`, `src/utils/metrics/{sample-stats,find-repeat}.ts`, `src/hooks/queries/use-weights.ts`, `src/components/weights/*`, `src/components/settings/breed-*.tsx`, `src/components/offline/saved-on-phone.tsx` (moved and made general), `src/components/kotila/tabs.tsx` (tabs scroll instead of widening the page on phones), `e2e/weights.spec.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** removing a flagged repeat sample (Keep both / Remove) comes with the manager review screens; growth chart on Set detail and Today is P2.2.
+
 ### 2026-09-26 — Offline v1 and duplicate-free sync
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P1.8
 - **Summary:** Built `docs/07-offline-sync.md`. Daily logs and new expenses always go through an IndexedDB outbox (online too): ids fixed per form, pending entries changed in place, per-record order, stuck sends reset after 2 minutes, backoff 30s → 30 min, pause on 401, one runner across tabs (Web Locks), triggers on signal back / app to front / after a save / every 60s. `/api/sync` applies each entry in its own transaction with a ledger row (`sync_mutations`): replays return `duplicate`, a reused id with a different payload is refused, a race of two copies makes one row, two people logging one day become one conflict for a manager (settled side by side, audited), a matching expense is flagged. Device heartbeat feeds Today ("Friday's Set 4 log is on Chinedu's phone"). Serwist service worker, manifest and icons, `/~offline`; the query cache kept in IndexedDB; sync status is real, with a sheet (waiting, turned down, clashes, Send now); sign-out warns about unsent entries; nobody else can sign in on a phone holding someone's unsent entries.
