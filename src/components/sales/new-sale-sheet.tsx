@@ -19,14 +19,14 @@ import { todayInZone } from "@/utils/dates/today-in-zone";
 import { naira } from "@/utils/format/naira";
 import { saleBalance } from "@/utils/metrics/money";
 
-export function NewSaleSheet({ onClose, bulkRate }: { onClose: () => void; bulkRate: number | null }) {
+export function NewSaleSheet({ onClose, bulkRate, buyerId = "" }: { onClose: () => void; bulkRate: number | null; buyerId?: string }) {
   const sets = useSets();
   const buyers = useBuyers();
   const addSale = useAddSale();
   const addBuyer = useAddBuyer();
   // Ids fixed per open form, so a retry can't record the sale (or the new buyer) twice
   const [ids] = useState(() => ({ sale: crypto.randomUUID(), buyer: crypto.randomUUID() }));
-  const [form, setForm] = useState<SaleFormState>({ setId: "", date: todayInZone(FARM_TIMEZONE), buyerId: "", newBuyer: { name: "", phone: "" }, birds: null, pricePerBird: null, total: null, paidAtSale: null, deposit: null, method: "cash" });
+  const [form, setForm] = useState<SaleFormState>({ setId: "", date: todayInZone(FARM_TIMEZONE), buyerId, newBuyer: { name: "", phone: "" }, birds: null, pricePerBird: null, total: null, paidAtSale: null, deposit: null, method: "cash" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const set = (patch: Partial<SaleFormState>) => setForm((f) => ({ ...f, ...patch }));
   const chosenSet = sets.data?.find((s) => s.id === form.setId);

@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Buyer analytics
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P3.4
+- **Summary:** The buyer page now reads like the design: phone and "buying since", Record a payment and New sale to them; birds (sales, Sets), average per bird with its gap to the bulk rate, total bought since, still owed (from which sale, how many days); a warning when a buyer pays ₦100+ a bird under the bulk rate, with what that came to over the year's birds; every sale with a totals row (opens the sale, payments and edit history); and every payment including deposits and money paid at the sale. The buyers list shows who pays under the bulk rate. One metric (`buyerInsight`) feeds both pages.
+- **Files:** `src/utils/metrics/buyer-insight.ts`, `src/utils/sales/buyer-payments.ts`, `src/components/sales/{buyer-screen,buyer-figures,buyer-payments-panel,buyers-screen,sales-table,new-sale-sheet}.tsx`, `src/server/services/buyers.ts`, `src/types/sale.ts` (`vsBulk`), `e2e/buyer.spec.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** none.
+
 ### 2026-09-26 — Partner capital and shareholder loans
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P3.3
 - **Summary:** `/finance/capital` (owners only; Finance now has tabs): the share register with ownership from shares, and each person's money contributed, withdrawn and net; shareholder loans (lender, amount, advanced, repaid, days) with interest as three separate numbers — gross at 16% simple for the actual days, 10% withholding tax, net — and what is paid; borrowing capacity (loans outstanding against the agreed share of equity from Settings, room left, a warning when a new loan would pass the cap). Owners add shareholders, record money in or out, record a loan and mark it repaid; every write needs a connection, is saved once per clientId and audited. Capital and loans flow into the cash position (repayments out at principal + gross interest). Reproduces Emeka's loan (₦9,973 / ₦997 / ₦8,976) and Kosi's 24 days (₦5,260 / ₦526 / ₦4,734).

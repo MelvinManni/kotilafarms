@@ -9,24 +9,15 @@ import { saleRows } from "@/server/services/sales/rows";
 import type { BuyerCreate } from "@/schemas/sale";
 import type { BuyerRow } from "@/types/sale";
 import type { SessionUser } from "@/types/session";
+import { getSetting } from "@/server/services/settings";
+import { buyerInsight } from "@/utils/metrics/buyer-insight";
 
 export async function listBuyers(db: Executor, today: string): Promise<BuyerRow[]> {
-  const [rows, sales] = await Promise.all([db.select().from(buyers).where(isNull(buyers.deletedAt)).orderBy(asc(buyers.name)), saleRows(db, [], today)]);
+  const [rows, sales, bulkRate] = await Promise.all([db.select().from(buyers).where(isNull(buyers.deletedAt)).orderBy(asc(buyers.name)), saleRows(db, [], today), getSetting<number>(db, "bulkRatePerBird")]);
   return rows.map((b) => {
     const mine = sales.filter((s) => s.buyer.id === b.id);
-    const birds = mine.reduce((n, s) => n + s.birds, 0);
-    const spent = mine.reduce((n, s) => n + s.total, 0);
-    return {
-      id: b.id,
-      name: b.name,
-      phone: b.phone,
-      note: b.note,
-      birds,
-      spent,
-      balance: mine.reduce((n, s) => n + s.balance, 0),
-      averagePrice: birds > 0 ? Math.round(spent / birds) : null,
-      lastSale: mine[0]?.date ?? null,
-    };
+    const x = buyerInsight(mine, bulkRate, today);
+    return { id: b.id, name: b.name, phone: b.phone, note: b.note, birds: x.birds, spent: x.total, balance: x.owed, averagePrice: x.averagePrice, vsBulk: x.vsBulk, lastSale: mine[0]?.date ?? null };
   });
 }
 

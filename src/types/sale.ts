@@ -32,4 +32,4 @@ export type SalesList = { sales: SaleRow[]; other: OtherSaleRow[]; bulkRate: num
 
 export type Outstanding = { rows: SaleRow[]; total: { sales: number; paid: number; balance: number }; buyers: number };
 
-export type BuyerRow = { id: string; name: string; phone: string | null; note: string | null; birds: number; spent: number; balance: number; averagePrice: number | null; lastSale: string | null };
+export type BuyerRow = { id: string; name: string; phone: string | null; note: string | null; birds: number; spent: number; balance: number; averagePrice: number | null; vsBulk: number | null; lastSale: string | null };

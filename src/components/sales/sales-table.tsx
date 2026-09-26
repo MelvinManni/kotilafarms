@@ -20,7 +20,16 @@ const columns = [
   { key: "method", label: "Method" },
 ];
 
-export function SalesTable({ sales, onOpen }: { sales: (SaleRow | OtherSaleRow)[]; onOpen: (sale: SaleRow) => void }) {
+type SalesTableProps = {
+  sales: (SaleRow | OtherSaleRow)[];
+  onOpen: (sale: SaleRow) => void;
+  // On a buyer's page the buyer column is the same on every row
+  hideBuyer?: boolean;
+  caption?: string;
+  footer?: Parameters<typeof LedgerTable>[0]["footer"];
+};
+
+export function SalesTable({ sales, onOpen, hideBuyer, caption = "Sales, newest first", footer }: SalesTableProps) {
   const rows = sales.map((s) =>
     s.kind === "manure"
       ? { id: s.id, date: farmDay(s.date), buyer: { value: "Manure and droppings", sub: "Other sale" }, set: `Set ${s.set.number}`, birds: none, per: none, total: naira(s.amount), paid: naira(s.amount), bal: none, method: none }
@@ -40,8 +49,9 @@ export function SalesTable({ sales, onOpen }: { sales: (SaleRow | OtherSaleRow)[
   return (
     <LedgerTable
       dense
-      caption="Sales, newest first"
-      columns={columns}
+      caption={caption}
+      columns={hideBuyer ? columns.filter((c) => c.key !== "buyer") : columns}
+      footer={footer}
       rows={rows}
       onRowClick={(r) => {
         const sale = sales.find((s) => s.id === r.id);

@@ -1,5 +1,5 @@
 "use client";
-// /sales/buyers: every buyer with birds bought, average price and what they owe
+// /sales/buyers: every buyer with birds bought, average price (against the bulk rate) and what they owe
 import { useRouter } from "next/navigation";
 import { LedgerTable } from "@/components/kotila/ledger-table";
 import { Notice } from "@/components/kotila/notice";
@@ -19,7 +19,7 @@ export function BuyersScreen() {
     id: b.id,
     name: { value: b.name, sub: b.phone ?? undefined },
     birds: count(b.birds),
-    avg: b.averagePrice === null ? none : naira(b.averagePrice),
+    avg: b.averagePrice === null ? none : b.vsBulk !== null && b.vsBulk < 0 ? { value: naira(b.averagePrice), sub: `${naira(-b.vsBulk)} under bulk rate`, tone: "alert" as const } : naira(b.averagePrice),
     spent: naira(b.spent),
     owed: b.balance > 0 ? { value: naira(b.balance), tone: "owed" as const } : none,
     last: b.lastSale ? shortDate(b.lastSale) : none,
