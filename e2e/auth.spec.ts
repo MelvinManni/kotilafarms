@@ -1,7 +1,7 @@
 // Sign in, invite a recorder, they set a password and land on Today; roles keep pages closed
 import { expect, test } from "@playwright/test";
 import { E2E } from "./e2e-env";
-import { signIn } from "./helpers";
+import { openSignIn, signIn } from "./helpers";
 
 test("signed-out people are sent to sign in", async ({ page }) => {
   await page.goto("/settings/users");
@@ -9,9 +9,9 @@ test("signed-out people are sent to sign in", async ({ page }) => {
 });
 
 test("a wrong password says so plainly", async ({ page }) => {
-  await page.goto("/sign-in");
-  await page.getByLabel("Email").fill(E2E.owner.email);
-  await page.getByLabel("Password", { exact: true }).fill("not-the-password");
+  await openSignIn(page);
+  await page.getByRole("textbox", { name: "Email" }).fill(E2E.owner.email);
+  await page.getByRole("textbox", { name: "Password" }).fill("not-the-password");
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page.getByText("That email and password don't match an active account.")).toBeVisible();
 });
@@ -32,6 +32,7 @@ test("owner invites a recorder who sets a password and can't open Settings", asy
   const phone = await recorder.newPage();
   await phone.goto(link!);
   await expect(phone.getByText("Kosi added you as a recorder")).toBeVisible();
+  await expect(phone.getByRole("button", { name: "Set password and continue" })).toBeEnabled();
   await phone.getByLabel("New password").fill("ifeanyi-password");
   await phone.getByLabel("Type it again").fill("ifeanyi-password");
   await phone.getByRole("button", { name: "Set password and continue" }).click();

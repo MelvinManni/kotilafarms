@@ -1,4 +1,4 @@
-// Playwright e2e: a dev server on :3200 against the throwaway kotila_e2e database
+// Playwright e2e: a production build served on :3200 against the throwaway kotila_e2e database
 import { existsSync } from "node:fs";
 import { defineConfig, devices } from "@playwright/test";
 import { E2E, E2E_APP_ENV, E2E_PORT } from "./e2e/e2e-env";
@@ -20,10 +20,11 @@ export default defineConfig({
     { name: "phone", use: { ...devices["Pixel 7"], ...(hasChrome ? { channel: "chrome" } : {}) }, grep: /@phone/ },
   ],
   webServer: {
-    command: `pnpm exec next dev --port ${E2E_PORT}`,
+    // Build then serve the standalone output, so tests see what production runs (no dev compile delays)
+    command: `pnpm build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/ && PORT=${E2E_PORT} node .next/standalone/server.js`,
     url: `${E2E.baseUrl}/sign-in`,
     env: E2E_APP_ENV,
-    timeout: 180_000,
+    timeout: 300_000,
     reuseExistingServer: false,
   },
 });

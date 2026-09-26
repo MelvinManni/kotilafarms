@@ -5,6 +5,7 @@ import { useState } from "react";
 import { DeathsByDay } from "@/components/sets/deaths-by-day";
 import { SetFigures } from "@/components/sets/set-figures";
 import { StageSheet } from "@/components/sets/stage-sheet";
+import { SetLogsPanel } from "@/components/sets/set-logs-panel";
 import { Button } from "@/components/kotila/button";
 import { BarList } from "@/components/kotila/charts/bar-list";
 import { EmptyState } from "@/components/kotila/empty-state";
@@ -68,6 +69,7 @@ export function SetDetailScreen({ id }: { id: string }) {
           </Panel>
         ) : null}
       </div>
+      <SetLogsPanel set={s} today={today} />
       {staging ? <StageSheet set={s} onClose={() => setStaging(false)} /> : null}
     </>
   );

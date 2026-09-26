@@ -15,7 +15,9 @@ test("manager starts a Set and moves it to growing", async ({ page }) => {
   await page.getByRole("button", { name: "Start the Set" }).click();
 
   await expect(page).toHaveURL(/\/sets\/[0-9a-f-]{36}$/);
-  await expect(page.getByRole("heading", { name: /Set 1 · Back pen/ })).toBeVisible();
+  const heading = page.getByRole("heading", { name: /Set \d+ · Back pen/ });
+  await expect(heading).toBeVisible();
+  const setName = (await heading.textContent())!.match(/Set \d+/)![0];
   await expect(page.getByText("of 500 started")).toBeVisible();
   await expect(page.getByText("₦475,000").first()).toBeVisible();
   await expect(page.getByText("Day-old chicks")).toBeVisible();
@@ -26,13 +28,13 @@ test("manager starts a Set and moves it to growing", async ({ page }) => {
   await expect(page.getByText(/Growing · day \d+/).first()).toBeVisible();
 
   await page.goto("/sets");
-  await expect(page.getByRole("row", { name: /Set 1/ })).toContainText("500 live");
+  await expect(page.getByRole("row", { name: new RegExp(`${setName} `) })).toContainText("500 live");
 });
 
 test("recorder sees Sets without money", async ({ page }) => {
   await signIn(page, E2E.recorder.email, E2E.recorder.password);
   await page.goto("/sets");
-  await expect(page.getByRole("row", { name: /Set 1/ })).toBeVisible();
+  await expect(page.getByRole("row", { name: /Set \d+/ }).first()).toBeVisible();
   await expect(page.getByRole("columnheader", { name: "Spent" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Start a new Set" })).toHaveCount(0);
 });

@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Daily log
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P1.4
+- **Summary:** Phone-first entry at `/log/[setId]/[date]`: deaths stepper first with the live count as it changes (alert colour above yesterday or the daily average), optional cause, feed (bags/kg, type), water, tags ("wet litter logged on the two days before too"), temperature, note. `/log` picks a Set; `/log/[setId]` lists the last 14 days with missed days named ("Set 5 has no log for Friday" → Fill in Friday); `/log/history` for recorders; the Set page shows the last week. Saving upserts by Set and day: the same clientId again returns the same log, someone else's log for that day answers 409 pointing at it (offline sync will record a conflict instead), a stale version answers 409. Changing deaths or feed after the day needs a reason; recorders may only change their own log on the same day. Every change is audited; the edit history sheet shows who, when, old → new and why.
+- **Files:** `src/server/services/daily-logs/*`, `src/server/services/{audit-trail,feed-types}.ts`, `src/app/api/{sets/[id]/logs,sets/[id]/missing-days,logs/[id],audit,feed/types}/**`, `src/components/daily-log/*`, `src/components/audit/history-sheet.tsx`, `src/components/sets/set-logs-panel.tsx`, `src/app/(app)/log/**`, `src/schemas/daily-log.ts`, `src/constants/{observation-tags,death-causes}.ts`, `src/utils/metrics/missing-days.ts`, `src/utils/format/audit-value.ts`, `e2e/daily-log.spec.ts`, `playwright.config.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** Fixed a bug the tests caught: the edit schema carried defaults (`tags: []`), so editing only deaths wiped the tags. e2e now runs against a production build (no dev compile delays) and waits for hydration before typing. Feed types can't be added until Settings › Feed types (P2.3), so the feed field shows how to add them. Offline saving arrives in P1.8. Restored `src/server/db.ts` after an outside typo (`creaeDb`), with Melvin's OK.
+
 ### 2026-09-26 — Sets
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P1.3
 - **Summary:** Sets list (figures, All / Running / Closed, ledger on desktop, cards on phones), start a Set (sheet; same clientId twice returns the same Set; adds the vaccine schedule from the defaults and the day-olds as a Day-old chicks expense, in one transaction), Set detail (figures with this-week vs last-week mortality, deaths by day, spend by category), stage changes with a closing date (audited). Recorders get counts without money; the server strips money fields. All numbers from `utils/metrics` (new: mortality trend, day of age, Sets overview, category share).
