@@ -27,7 +27,8 @@ All JSON. All require a session except `auth/*` and `invites/accept`. Roles: **O
 | `GET /api/sales/outstanding` | O M | Balances owed |
 | `POST /api/other-sales` | O M | Manure |
 | `GET/POST /api/expenses`, `PATCH /api/expenses/:id` | O M | Filters: `setId`, `overhead`, `categoryId`, `from`, `to` |
-| `POST /api/uploads/receipt` | O M | Receipt photo (store on a volume; return URL) |
+| `POST /api/uploads/receipt` | O M | Receipt photo. Server checks role, type and size, puts it in the private S3 bucket, returns the object key |
+| `GET /api/uploads/receipt/:key` | O M | Redirects to a short-lived signed S3 URL for the photo |
 | `GET /api/finance/cash` , `POST /api/finance/reconciliations` | O (M read cash) | Cash position |
 | `GET /api/finance/pnl?setIds=` | O M | P&L for one or more Sets |
 | `GET/POST /api/finance/capital` | O | Shareholders, entries |

@@ -33,6 +33,7 @@ An internal web app for Kotila Farms, a broiler poultry farm in Nigeria owned by
 | Client data | TanStack Query (React Query), latest stable | All client reads and writes go through it |
 | Forms | react-hook-form + @hookform/resolvers + zod | One zod schema per entity, shared by form and API |
 | UI | shadcn/ui CLI (latest) with **Base UI** primitives (`@base-ui/react`), Tailwind CSS v4 | Themed with the Kotila tokens. All styling is Tailwind v4 (see Styling rule) |
+| File storage | Private S3 bucket (AWS S3 or S3-compatible) | Receipt photos. Server uploads; DB stores the object key; reads use short-lived signed URLs. No files on local disk or volumes |
 | Package manager | pnpm (via corepack) | |
 | Tests | Vitest (unit: metrics, zod, API handlers); Playwright later for flows | |
 | Container | Docker + docker compose (app + postgres), `.devcontainer/` for agent work | |
@@ -163,6 +164,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 ```
 
 ## Change log
+
+### 2026-09-26 — Receipt photos go to S3
+- **Agent:** Claude Code (Opus 5.5) · **Task:** docs (affects P0.3, P1.5)
+- **Summary:** Melvin decided files are stored in an S3 bucket, not on a disk volume. Bucket is private: the upload route puts the photo in S3 and saves the object key; photos are shown through short-lived signed URLs.
+- **Files:** `AGENTS.md`, `docs/03-data-model.md` (`receiptUrl` → `receiptKey`), `docs/04-api.md`, `.env.example` (`UPLOADS_DIR` → `S3_*`), `docker-compose.yml` (dropped `uploads` volume), `.gitignore`, `.dockerignore`
+- **Packages:** none (S3 client is added in P1.5)
+- **Migrations:** none
+- **Follow-ups:** P0.3 validates the `S3_*` vars in `src/lib/env.ts`. P1.5 adds the S3 client. Open: which provider (AWS or S3-compatible), region, and how local dev gets a bucket.
 
 ### 2026-09-26 — Scaffold Next.js app
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P0.1

@@ -49,8 +49,8 @@ other_sales      id, setId, date, kind enum(manure), amount int
 
 expense_categories id, key, name, isCapitalEligible bool       -- the 10 categories from the spec
 expenses         id, date, categoryId, description, amount int, setId uuid?, overhead bool, paidByUserId?,
-                 receiptUrl?, capitalItem bool default false, spreadOverSets int?,
-                 CHECK ((setId IS NOT NULL) <> overhead)
+                 receiptKey?, capitalItem bool default false, spreadOverSets int?,
+                 CHECK ((setId IS NOT NULL) <> overhead)   -- receiptKey = S3 object key, never a public URL
 
 shareholders     id, name, shares int                            -- 633,858 / 122,985 / 122,984 / 120,173
 capital_entries  id, shareholderId, date, amount int (+ contributed, − withdrawn), note

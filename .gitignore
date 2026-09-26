@@ -34,9 +34,6 @@ yarn-error.log*
 .env*
 !.env.example
 
-# uploaded receipts
-/uploads
-
 # test output
 /playwright-report
 /test-results
