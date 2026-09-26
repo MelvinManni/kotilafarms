@@ -1,0 +1,6 @@
+// Farm day plus n days (YYYY-MM-DD in, YYYY-MM-DD out)
+export function addDays(day: string, n: number): string {
+  const date = new Date(`${day}T12:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + n);
+  return date.toISOString().slice(0, 10);
+}

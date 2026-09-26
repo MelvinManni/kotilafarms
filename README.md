@@ -20,6 +20,6 @@ Handoff repo for building the Kotila Farm management app with Claude Code.
 | `docs/09-screens.md` | Every screen: route, role, data, components, acceptance criteria |
 | `docs/10-build-plan.md` | Ordered tasks P0 → P3 |
 | `docs/11-versions.md` | Version log (observed at handoff; re-verify) |
-| `docs/12-seed-data.md` | Realistic farm data for the seed script and tests |
+| `docs/12-seed-data.md` | Reference farm numbers for test fixtures (never loaded into the database) |
 | `design/` | Tokens, Tailwind v4 theme, reference React components, brand book, logos, screen designs |
 | `Dockerfile`, `docker-compose.yml`, `.devcontainer/` | Container setup |

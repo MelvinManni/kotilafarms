@@ -70,6 +70,14 @@ audit_events     id, table, rowId, action enum(create|update|delete|resolve), fi
                  reason text?, userId, deviceId?, at timestamptz, enteredOfflineAt?
 ```
 
+## Decisions made while building (P0.6)
+
+- **Every naira out is an `expenses` row.** Feed purchases, ingredient purchases and health records with a cost each point at their expense (`expenseId`, unique), and a feed purchase's transport is a second expense (`transportExpenseId`). Set-or-overhead lives on the expense. P&L and cash read only `expenses`, so nothing is counted twice.
+- **Amounts agree, allowing for a worked-out value.** `sales`: `|total − birds × price| × 2 ≤ max(birds, 2)` (price rounded to the naira from the total). `feed_purchases`: `|total − bags × price| ≤ max(1, bags ÷ 2, price × 0.005)`. A flat ±1 would refuse real entries (465 birds for ₦3,563,550 → ₦7,664 each).
+- `daily_log_conflicts`, `devices`, `sync_mutations`, `audit_events`, `settings`, `users`, `invites` do not use the common columns.
+- Every unique constraint has an explicit snake_case name (`<table>_client_id_unique` …), so errors name it plainly.
+- Columns are camelCase in code and snake_case in Postgres (`casing: "snake_case"`).
+
 ## Rules enforced in the database
 
 - `expenses`: exactly one of `setId` / `overhead` (CHECK). This is the core rule of the product.

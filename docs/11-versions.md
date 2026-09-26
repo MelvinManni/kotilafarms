@@ -41,6 +41,11 @@ See AGENTS.md › Version policy. Look up every version with `pnpm view <pkg> ve
 | vitest | 5.0.2 | P0.1 | Unit tests |
 | zod | 4.6.5 | P0.3 | Validation (env now; forms and API later) |
 | server-only | 0.0.1 | P0.3 | Stops server modules being bundled for the browser |
+| drizzle-orm | 0.45.3 | P0.6 | ORM (1.0 is beta only) |
+| drizzle-kit | 0.31.11 | P0.6 | Migrations (dev) |
+| pg / @types/pg | 8.23.0 / 8.23.1 | P0.6 | Postgres driver (node-postgres) |
+| @node-rs/argon2 | 2.2.1 | P0.6 | Argon2id password hashing; prebuilt binaries incl. Alpine (musl) |
+| tsx | 4.23.15 | P0.6 | Runs `db:setup` (dev) |
 | shadcn | 4.21.0 | P0.4 | CLI; also provides `shadcn/tailwind.css` imported by globals.css |
 | @base-ui/react | 1.8.0 | P0.4 | Primitives under shadcn components |
 | cn | 0.4.0 | P0.4 | Tailwind class merge used by shadcn (replaces clsx + tailwind-merge) |

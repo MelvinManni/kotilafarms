@@ -9,8 +9,8 @@ Work top to bottom. One task per commit. Each task ends with the Definition of d
 - **P0.3 Env.** `src/lib/env.ts` validates `.env` with zod.
 - **P0.4 UI base.** `shadcn init` with Base UI; apply `design/theme.css`; fonts; add the shadcn primitives listed in `docs/08-design-system.md`.
 - **P0.5 Design components.** Port the Kotila components (props from `design/reference-components/index.d.ts`) into `components/kotila` and `components/layout`. A dev-only `/dev/components` page renders each with the reference preview data.
-- **P0.6 Database.** Drizzle client, schema from `docs/03-data-model.md`, first migration, `db:seed` from `docs/12-seed-data.md`.
-- **P0.7 Metrics.** `src/utils/metrics/*` with Vitest tests that reproduce the Set 3 calibration numbers from seed data and the loan interest examples.
+- **P0.6 Database.** Drizzle client, schema from `docs/03-data-model.md`, first migration, `db:setup` (first owner + fixed lists only; no farm data), db tests for every database rule.
+- **P0.7 Metrics.** `src/utils/metrics/*` with Vitest tests that reproduce the Set 3 calibration numbers from `docs/12-seed-data.md` (as test fixtures) and the loan interest examples.
 - **P0.8 API plumbing.** `server/http.ts` (error mapping), `server/auth.ts` (`requireSession`, `requireRole`), `server/audit.ts`, query client, key factory, fetcher.
 
 ## P1 — Replaces the notebook

@@ -1,6 +1,6 @@
 # Seed data
 
-Realistic data for `pnpm db:seed`, the dev database and tests. It matches the screen designs in `design/screens/`. The designs assume **today is Saturday 26 September 2026**; the seed script should shift all dates so "today" is the current date (keep day-of-age relationships).
+**Never loaded into the database** (the app starts blank; see AGENTS.md › No seed data). These are reference numbers for test fixtures and for reading the screen designs. It matches the screen designs in `design/screens/`. The designs assume **today is Saturday 26 September 2026**; the seed script should shift all dates so "today" is the current date (keep day-of-age relationships).
 
 Known gaps to resolve while seeding (the designs were drawn before the books were reconciled):
 - Cash position shows ₦879,550 out since 1 Sep, but Set 4 and Set 5 spend to date together is about ₦2.55M. Generate expenses from the per-Set totals and let the cash position be computed; don't hard-code it.

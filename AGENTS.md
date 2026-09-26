@@ -60,6 +60,7 @@ An internal web app for Kotila Farms, a broiler poultry farm in Nigeria owned by
 - **Every write is audited.** Updates and deletes write an `audit_events` row in the same transaction (see `docs/03-data-model.md`).
 - **Styling is Tailwind v4 only.** All classes and styling use Tailwind v4 utilities and its CSS-first config (`@theme` in CSS, no `tailwind.config.js`). No CSS modules, styled-components or inline `style` for things a utility can do. Custom CSS only for tokens and theme in `globals.css`.
 - **Use `cn` from `@/utils/cn`**, never from the `cn` package directly (it is configured for our theme). After `shadcn add`, fix the import in the new files.
+- **No seed data.** The database starts blank. Never load demo farm records (Sets, logs, sales, people). Tests build the rows they need inside a rolled-back transaction (`test/db/factories.ts`); `docs/12-seed-data.md` is reference numbers for those fixtures.
 - **Money is integer naira** (no floats). Weights are integer grams. Format only for display, with `src/utils/format`.
 - **Dates:** `date` for farm days, `timestamptz` for events. Farm timezone is `Africa/Lagos`.
 - **Accessibility:** 4.5:1 text contrast (the tokens already meet it), 44px minimum touch targets, 56px on entry screens, every icon-only control has `aria-label` and a tooltip.
@@ -124,7 +125,8 @@ src/
   db/
     schema/                     # one file per table group
     index.ts                    # Drizzle client
-    seed/                       # seed data split by area
+    setup/                      # db:setup: first owner + the spec's fixed lists (no farm records)
+    migrations/                 # drizzle-kit output, committed
 ```
 
 ## Commands
@@ -134,7 +136,8 @@ docker compose up -d db            # Postgres only (set DB_PORT if 5432 is taken
 pnpm install
 pnpm dev                            # Next.js on :3000
 pnpm db:generate && pnpm db:migrate # drizzle-kit
-pnpm db:seed                        # farm data from docs/12-seed-data.md
+pnpm db:setup                       # first owner (FIRST_OWNER_*) + fixed lists; never farm data
+pnpm test                           # unit + db tests; db tests need `docker compose up -d db` and use a throwaway kotila_test database
 pnpm lint && pnpm typecheck && pnpm test
 docker compose --profile app up --build  # full stack in containers (db + migrate + app)
 ```
@@ -165,6 +168,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 ```
 
 ## Change log
+
+### 2026-09-26 — Database: schema, first migration, db:setup, db tests
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P0.6
+- **Summary:** Drizzle schema for every table in the data model plus `devices` and `sync_mutations`, first migration, pg client. Melvin asked for a clean, blank database and tests instead of seed data: `pnpm db:setup` adds only the first owner (`FIRST_OWNER_*`) and the spec's fixed lists (10 expense categories, broiler, vaccine schedule, breed curve, settings), idempotently. 23 db tests run against a throwaway `kotila_test` database built from the committed migrations, each in a rolled-back transaction: Set-or-overhead, one log per Set per day, sale and feed amounts, clientId and mutationId duplicates, case-blind emails, setup idempotency. Checked end to end: `db:setup` twice on the dev DB, and `docker compose --profile app up --build` (migrate exits 0, app serves).
+- **Files:** `src/db/schema/*`, `src/db/index.ts`, `src/db/migrations/0000_init.sql`, `src/db/setup/*`, `src/server/{db,password}.ts`, `src/utils/dates/*`, `drizzle.config.ts`, `vitest.config.mts` (unit + db projects), `test/db/*`, `test/server-only-stub.ts`, `tsconfig.json` (`@test/*`), `.env.example` (`FIRST_OWNER_*` replaces `SEED_OWNER_*`), `docs/03`, `docs/10`, `docs/11`, `docs/12`, `README.md`
+- **Packages:** drizzle-orm@0.45.3, pg@8.23.0, @node-rs/argon2@2.2.1 (added); drizzle-kit@0.31.11, @types/pg@8.23.1, tsx@4.23.15 (added, dev)
+- **Migrations:** `0000_init.sql`
+- **Follow-ups:** Decisions recorded in `docs/03-data-model.md` › Decisions (expenses hold every naira out; amount-agreement tolerances fixed, the doc's ±1 would refuse real sales; named constraints). The db tests caught drizzle-kit naming column uniques in camelCase; all are named explicitly now. Your `.env` needs `DATABASE_URL`, `NEXTAUTH_*`, `S3_*`, `FIRST_OWNER_*` (see `.env.example`).
 
 ### 2026-09-26 — Kotila design components and /dev/components
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P0.5
