@@ -7,10 +7,12 @@ import { Button } from "@/components/kotila/button";
 import { EmptyState } from "@/components/kotila/empty-state";
 import { Panel } from "@/components/kotila/panel";
 import { PageHeader } from "@/components/layout/page-header";
+import { GrowthPanel } from "@/components/weights/growth-panel";
 import type { TodayPayload } from "@/types/today";
 import { fullDay } from "@/utils/format/dates";
 
 export function ManagerToday({ data }: { data: TodayPayload }) {
+  const growth = data.sets.find((s) => s.id === data.growthSetId);
   return (
     <>
       <PageHeader
@@ -31,10 +33,13 @@ export function ManagerToday({ data }: { data: TodayPayload }) {
         </EmptyState>
       ) : (
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
-          <Panel flush title="Active Sets" action={{ label: "All Sets", href: "/sets" }}>
-            <ActiveSetsTable sets={data.sets} />
-          </Panel>
-          <Panel title="Needs doing today">
+          <div className="flex min-w-0 flex-col gap-5">
+            <Panel flush title="Active Sets" action={{ label: "All Sets", href: "/sets" }}>
+              <ActiveSetsTable sets={data.sets} />
+            </Panel>
+            {growth ? <GrowthPanel setId={growth.id} setNumber={growth.number} dayOfAge={growth.dayOfAge} running named /> : null}
+          </div>
+          <Panel title="Needs doing today" className="self-start">
             <TaskList tasks={data.tasks} />
           </Panel>
         </div>

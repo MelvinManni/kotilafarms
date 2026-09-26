@@ -11,6 +11,8 @@ import type { Role } from "@/types/role";
 import type { TodayPayload } from "@/types/today";
 import { addDays } from "@/utils/dates/add-days";
 import { todayTasks } from "@/utils/metrics/today-tasks";
+import { listWeights } from "@/server/services/weights";
+import { growthSummary } from "@/utils/metrics/growth-summary";
 
 export async function todayFor(db: Executor, role: Role, today: string): Promise<TodayPayload> {
   const sets = (await listSets(db, role, today)).filter((s) => s.status !== "closed");
@@ -30,11 +32,18 @@ export async function todayFor(db: Executor, role: Role, today: string): Promise
       .filter((i) => i.type === "dailyLog.upsert" && i.setId && i.date && !arrived.has(`${i.setId}|${i.date}`))
       .map((i) => ({ person: d.person, setId: i.setId!, date: i.date! })),
   );
+  // The running Set furthest under its standard leads the growth panel
+  const gaps = await Promise.all(sets.filter((s) => samples.some((w) => w.setId === s.id)).map(async (s) => {
+    const w = await listWeights(db, s.id);
+    return { setId: s.id, gap: growthSummary(w.samples, w.standard)?.gap ?? 0 };
+  }));
+  const growthSetId = gaps.sort((a, b) => a.gap - b.gap)[0]?.setId ?? null;
   const payload: TodayPayload = {
     date: today,
     sets,
     missed: missing.flat().sort((a, b) => b.date.localeCompare(a.date)),
     loggedToday,
+    growthSetId,
     tasks: todayTasks({ today, sets, loggedToday, vaccines, weekLogs: logs, samples, waiting }),
   };
   return can.seeMoney(role) ? { ...payload, owed: await outstanding(db, today) } : payload;

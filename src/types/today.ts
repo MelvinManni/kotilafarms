@@ -15,6 +15,8 @@ export type TodayPayload = {
   sets: SetSummary[];
   missed: { setId: string; setNumber: number; date: string }[];
   loggedToday: string[];
+  // Set shown in the growth panel (furthest under the standard), if any Set has been weighed
+  growthSetId: string | null;
   tasks: TodayTask[];
   owed?: Outstanding;
 };

@@ -21,7 +21,8 @@ const VALUE_SIZE = {
 const VALUE_TONE = { alert: "text-alert", owed: "text-owed", ondeep: "text-on-deep", standard: "text-yellow-500" };
 
 export function Figure({ label, value, sub, delta, size = "md", tone }: FigureProps) {
-  const muted = tone === "ondeep" ? "text-on-deep-muted" : "text-ink-muted";
+  // Labels on the deep panel (including the yellow standard figure) use the light muted text
+  const muted = tone === "ondeep" || tone === "standard" ? "text-on-deep-muted" : "text-ink-muted";
   return (
     <div className="flex min-w-0 flex-col gap-0.5">
       {label ? <span className={cn("text-caption font-medium", muted)}>{label}</span> : null}

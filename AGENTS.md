@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Growth chart on Set detail and Today
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P2.2
+- **Summary:** Deep growth panel on Set detail and on Today (for the Set furthest under its standard): a headline that states the finding and what to do, the chart with ±5% band, today marker, late zone from day 28 and projection to day 35, and figures for the latest average, standard, daily gain and uniformity. The growth story is worked out in one metric (`growthSummary`, `growthHeadline`), tested on Set 4's numbers. Also fixed: panel links on the deep panel were dark on dark; duplicate keys in Today's task list when two vaccine doses share a name.
+- **Files:** `src/utils/metrics/{growth-summary,growth-headline}.ts`, `src/components/weights/{growth-panel,growth-figures}.tsx`, `src/components/kotila/charts/growth-legend.tsx`, `src/components/sets/set-detail-screen.tsx`, `src/components/today/{manager-today,task-list}.tsx`, `src/server/services/today.ts`, `src/types/today.ts`, `src/components/kotila/{panel-action,figure}.tsx`, `e2e/weights.spec.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** none.
+
 ### 2026-09-26 — Weights and the breed standard
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P2.1
 - **Summary:** Weigh screen (`/weigh`, `/weigh/[setId]`): type each bird in grams; average, gap to standard, uniformity and bird count update as you type; tap a weight to change it; fewer than 10 birds warns but never blocks; chart against the standard. Samples save through the outbox (new `weightSample.create` type); a same-day sample with the same weights is flagged as a likely repeat on the phone and on the server, never dropped. Settings › Breed standard edits the curve (owners and managers, audited).

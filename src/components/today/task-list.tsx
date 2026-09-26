@@ -26,7 +26,7 @@ export function TaskList({ tasks }: { tasks: TodayTask[] }) {
           </>
         );
         return (
-          <li key={t.title} className="border-t border-line-soft first:border-t-0">
+          <li key={`${t.title}|${t.detail}`} className="border-t border-line-soft first:border-t-0">
             {t.href ? (
               <Link href={t.href} className="flex items-center gap-3 py-3 no-underline outline-none focus-visible:shadow-focus">{body}</Link>
             ) : (

@@ -1,5 +1,5 @@
 "use client";
-// /sets/:id: header with actions, figures, deaths by day and spend by category
+// /sets/:id: header with actions, figures, growth, deaths by day and spend by category
 import { useCurrentUser } from "@/lib/auth/current-user";
 import { useState } from "react";
 import { DeathsByDay } from "@/components/sets/deaths-by-day";
@@ -13,6 +13,7 @@ import { Notice } from "@/components/kotila/notice";
 import { Panel } from "@/components/kotila/panel";
 import { StatusChip } from "@/components/kotila/status-chip";
 import { PageHeader } from "@/components/layout/page-header";
+import { GrowthPanel } from "@/components/weights/growth-panel";
 import { FARM_TIMEZONE } from "@/constants/farm";
 import { useSet } from "@/hooks/queries/use-sets";
 import { can } from "@/lib/auth/roles";
@@ -55,6 +56,7 @@ export function SetDetailScreen({ id }: { id: string }) {
         }
       />
       <SetFigures set={s} />
+      <GrowthPanel setId={s.id} setNumber={s.number} dayOfAge={s.dayOfAge} running={s.status !== "closed"} />
       <div className="grid gap-5 lg:grid-cols-2">
         <Panel title="Deaths by day" subtitle={s.status === "closed" ? `${s.deaths} in all` : `${s.trend.thisWeek} this week, ${s.trend.lastWeek} last week`}>
           <DeathsByDay set={s} today={today} />
