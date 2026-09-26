@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Sales, buyers and balances
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P1.6
+- **Summary:** `/sales`: owed notice ("₦X is owed by N buyers", oldest balance), outstanding balances oldest first with a total line, every sale (bird and manure) by All / Owed / per-Set tabs. New sale sheet: Set (closed-Set warning), date, buyer or add one inline, linked birds × price = total (any two, price may be rounded from the total), paid now, still owed (worked out), method, deposit. Never more birds than are alive. Payments can't exceed the balance; manure sales; sale details with payments and history; late changes to a sale's birds or money need a reason. Buyers list and buyer page (average per bird against the bulk rate in Settings). Rail badge on Sales counts buyers who owe. Same clientId twice records a sale, payment or buyer once.
+- **Files:** `src/server/services/{sales/*,buyers,settings}.ts`, `src/app/api/{sales,other-sales,buyers}/**`, `src/components/sales/*`, `src/app/(app)/sales/**`, `src/schemas/sale.ts`, `src/types/sale.ts`, `src/utils/metrics/{sale-amounts,sales-headline}.ts`, `src/constants/payment-methods.ts`, `src/components/layout/app-shell.tsx`, `e2e/sales.spec.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** The owed banner on Today comes with P1.7. Buyer analytics beyond average vs bulk rate: P3.4.
+
 ### 2026-09-26 — Expenses
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P1.5
 - **Summary:** `/expenses` with Set / category / month / Set-costs-or-overhead filters, figures (spent, on Sets, overhead; capital items kept apart), the list (ledger on desktop, rows on phones) and a by-category chart. Add / change sheet (bottom sheet on phones, opened by the + tab or `?add=1&set=`): amount, category, what for, Set or overhead (required: schema, API and database), paid on, capital item (only in capital categories), receipt photo. Same clientId twice adds it once; a matching expense entered separately is saved and flagged "looks like a repeat". Changing an old amount needs a reason; owners remove with a reason (soft delete); all audited. Receipts upload through the server to the private S3 bucket and open through 5-minute signed links. Settings › Expense categories (add, rename, capital-eligible).

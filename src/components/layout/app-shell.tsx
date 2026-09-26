@@ -9,7 +9,9 @@ import { SideRail } from "@/components/layout/side-rail";
 import { TabBar } from "@/components/layout/tab-bar";
 import { TopBar } from "@/components/layout/top-bar";
 import { MANAGER_TABS, RAIL_NAV, RECORDER_TABS, activeNavId } from "@/constants/nav";
+import { useOutstanding } from "@/hooks/queries/use-sales";
 import { useSyncSummary } from "@/hooks/use-sync-summary";
+import { can } from "@/lib/auth/roles";
 import { rememberUser } from "@/lib/offline/remembered-user";
 import type { SessionUser } from "@/types/session";
 import { cn } from "@/utils/cn";
@@ -20,6 +22,10 @@ export function AppShell({ user, children }: { user: SessionUser; children: Reac
   const [sheet, setSheet] = useState<"account" | "more" | null>(null);
   const phoneOnly = user.role === "recorder";
   const active = activeNavId(pathname);
+  // Owed balances show as a badge on Sales for people who see money
+  const owed = useOutstanding(can.seeMoney(user.role));
+  const buyersOwing = owed.data?.buyers ?? 0;
+  const badges = buyersOwing ? { sales: { count: buyersOwing, title: `${buyersOwing} ${buyersOwing === 1 ? "buyer owes" : "buyers owe"} money` } } : undefined;
 
   // Keep this person available for offline sign-in on this device
   useEffect(() => rememberUser({ id: user.id, name: user.name, role: user.role }), [user.id, user.name, user.role]);
@@ -28,7 +34,7 @@ export function AppShell({ user, children }: { user: SessionUser; children: Reac
     <div className="relative flex min-h-dvh bg-ground">
       {phoneOnly ? null : (
         <div className="sticky top-0 hidden h-dvh shrink-0 lg:block">
-          <SideRail items={RAIL_NAV} active={active} user={user} sync={sync} />
+          <SideRail items={RAIL_NAV} active={active} user={user} sync={sync} badges={badges} />
         </div>
       )}
       <div className={cn("relative min-w-0 grow", phoneOnly && "mx-auto max-w-120")}>
