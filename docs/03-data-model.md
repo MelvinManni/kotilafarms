@@ -4,7 +4,8 @@ Money: integer naira (`bigint` mode `number`). Weights: integer grams. Feed quan
 
 ```ts
 id uuid pk default gen_random_uuid()
-clientId uuid unique not null        // generated on the device; makes sync idempotent
+clientId uuid unique not null        // generated on the device when the form opens; record identity for sync
+version int not null default 1        // + 1 on every update; offline edits send baseVersion (see offline doc)
 createdBy uuid -> users.id not null
 createdAt timestamptz default now()
 updatedAt timestamptz default now()
@@ -29,9 +30,10 @@ daily_logs       id, setId, date, deaths int, deathCause enum?(unknown|disease|h
                  feedTypeId?, feedQty numeric, feedUnit enum(bags|kg), waterLevel enum?(low|normal|high), waterLitres int?,
                  tempC numeric?, tags text[] (coughing|green_stool|lethargy|panting|wet_litter|poor_appetite), note text?,
                  enteredOfflineAt timestamptz?, UNIQUE(setId, date) WHERE deletedAt IS NULL
-daily_log_conflicts id, setId, date, incoming jsonb, existingId, raisedBy, resolvedBy?, resolvedAt?, resolution enum?
+daily_log_conflicts id, setId, date, incoming jsonb, existingId, mutationId uuid unique, raisedBy, resolvedBy?, resolvedAt?,
+                 resolution enum?
 
-weight_samples   id, setId, date, ageDays int, weightsGrams int[]      -- avg, cv, uniformity computed
+weight_samples   id, setId, date, ageDays int, weightsGrams int[], possibleDuplicateOf uuid?   -- avg, cv, uniformity computed
 feed_types       id, kind enum(starter|grower|finisher), brand, kgPerBag numeric default 25, active
 feed_purchases   id, date, feedTypeId, bags numeric, kgPerBag numeric, pricePerBag int, total int,
                  transportCost int default 0, supplier, setId? , overhead bool   -- CHECK bags*pricePerBag ≈ total (±1)
@@ -49,7 +51,7 @@ other_sales      id, setId, date, kind enum(manure), amount int
 
 expense_categories id, key, name, isCapitalEligible bool       -- the 10 categories from the spec
 expenses         id, date, categoryId, description, amount int, setId uuid?, overhead bool, paidByUserId?,
-                 receiptKey?, capitalItem bool default false, spreadOverSets int?,
+                 receiptKey?, capitalItem bool default false, spreadOverSets int?, possibleDuplicateOf uuid?,
                  CHECK ((setId IS NOT NULL) <> overhead)   -- receiptKey = S3 object key, never a public URL
 
 shareholders     id, name, shares int                            -- 633,858 / 122,985 / 122,984 / 120,173
@@ -59,6 +61,10 @@ loans            id, lenderShareholderId, amount int, advancedOn date, repaidOn 
 settings         key text pk, value jsonb                         -- borrowingCapPct (0.5), farm timezone, bulk rate
 
 cash_reconciliations id, date, countedCash int, bankBalance int, expected int, difference int, note, by
+
+devices          id uuid (made on the device), userId, userAgent, lastSeenAt, pendingCount int, pendingSummary jsonb
+sync_mutations   mutationId uuid pk, deviceId, userId, type, payloadHash text, status enum(applied|conflict|rejected),
+                 entityTable text?, entityId uuid?, result jsonb, receivedAt timestamptz  -- sync ledger, kept 180 days
 
 audit_events     id, table, rowId, action enum(create|update|delete|resolve), field?, oldValue jsonb?, newValue jsonb?,
                  reason text?, userId, deviceId?, at timestamptz, enteredOfflineAt?
@@ -71,6 +77,8 @@ audit_events     id, table, rowId, action enum(create|update|delete|resolve), fi
 - `feed_purchases`: bags, pricePerBag, total all NOT NULL.
 - `daily_logs`: one live row per Set per day (partial unique index).
 - Sequential `sets.number` (use a sequence).
+- `clientId` unique on every table; `sync_mutations.mutationId` primary key; `daily_log_conflicts.mutationId` unique. These are the duplicate backstops (see `docs/07-offline-sync.md`).
+- `devices`, `sync_mutations` do not use the common columns.
 
 ## Audit
 

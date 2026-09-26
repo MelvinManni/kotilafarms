@@ -165,6 +165,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Harden offline sync against duplicates
+- **Agent:** Claude Code (Opus 5.5) · **Task:** docs (shapes P0.6, P1.4, P1.5, P1.8, P2.1)
+- **Summary:** Melvin asked for a robust offline sync that avoids duplicates. Rewrote the offline doc as seven layers: fixed ids per form, an outbox that edits pending items in place, one sync runner across tabs, a server ledger (`sync_mutations`) written in the same transaction, unique `clientId`, one daily log per Set per day, and a likely-repeat flag for expenses and weight samples. Added the retry, conflict and user-switch rules and the tests that must exist.
+- **Files:** `docs/07-offline-sync.md`, `docs/03-data-model.md` (`version` column, `devices`, `sync_mutations`, `possibleDuplicateOf`, `daily_log_conflicts.mutationId`), `docs/04-api.md`
+- **Packages:** none
+- **Migrations:** none (the schema lands in P0.6)
+- **Follow-ups:** none
+
 ### 2026-09-26 — Receipt photos go to S3
 - **Agent:** Claude Code (Opus 5.5) · **Task:** docs (affects P0.3, P1.5)
 - **Summary:** Melvin decided files are stored in an S3 bucket, not on a disk volume. Bucket is private: the upload route puts the photo in S3 and saves the object key; photos are shown through short-lived signed URLs.

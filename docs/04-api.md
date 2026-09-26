@@ -37,7 +37,7 @@ All JSON. All require a session except `auth/*` and `invites/accept`. Roles: **O
 | `GET /api/reports/weekly?week=` | O M | Weekly review per active Set |
 | `GET /api/reports/compare?setIds=` | O M | Comparison (≥2 ids) |
 | `GET /api/audit?table=&rowId=` | O M | Edit history |
-| `POST /api/sync` | O M R | Batch of queued offline mutations (see offline doc) |
+| `POST /api/sync` | O M R | Up to 25 queued mutations; per-item result `applied` / `duplicate` / `conflict` / `rejected`; also the device heartbeat (see offline doc) |
 | `GET /api/settings/*` , `PATCH` | O (M for feed types, categories, buyers, schedule, curve) | Settings |
 
 ## Conventions
