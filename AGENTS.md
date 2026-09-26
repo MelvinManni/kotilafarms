@@ -165,6 +165,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Env validation
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P0.3
+- **Summary:** `.env` is checked with zod when the server starts (`src/instrumentation.ts`), not at build time, so Docker builds need no secrets. A bad env stops the server with one list of every problem. The schema is pure (`env-schema.ts`) so seed scripts and tests can use it; `env.ts` is the server-only getter.
+- **Files:** `src/lib/env-schema.ts`, `src/lib/env-schema.test.ts`, `src/lib/env.ts`, `src/instrumentation.ts`, `docs/11-versions.md`
+- **Packages:** zod@4.6.5 (added), server-only@0.0.1 (added)
+- **Migrations:** none
+- **Follow-ups:** S3 keys are optional as a pair (none = use the machine's role). Seed-only vars (`SEED_OWNER_*`) get their own schema in P0.6.
+
 ### 2026-09-26 — Container versions pinned
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P0.2
 - **Summary:** Pinned Node 24 (Active LTS; 26 becomes LTS on 28 Oct 2026) and PostgreSQL 18 (19 is still beta). Postgres 18 keeps data under `/var/lib/postgresql/18/docker`, so the volume now mounts `/var/lib/postgresql`. Host DB port is `DB_PORT` (default 5432). Docker build copies `pnpm-workspace.yaml` and turns off the corepack prompt. Checked: `docker compose up -d db` is healthy (18.6); the app image builds and serves on Node 24.21.0.

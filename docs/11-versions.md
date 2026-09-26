@@ -39,3 +39,5 @@ See AGENTS.md › Version policy. Look up every version with `pnpm view <pkg> ve
 | @types/node | 24.19.0 | P0.1 | Matches Node 24 LTS runtime (26.x is `latest`) |
 | @types/react / @types/react-dom | 19.3.0 | P0.1 | React types |
 | vitest | 5.0.2 | P0.1 | Unit tests |
+| zod | 4.6.5 | P0.3 | Validation (env now; forms and API later) |
+| server-only | 0.0.1 | P0.3 | Stops server modules being bundled for the browser |
