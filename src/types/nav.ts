@@ -4,4 +4,5 @@ import type { Role } from "@/types/role";
 
 export type NavItem = { id: string; label: string; icon: IconName; href: string; roles?: Role[] };
 
-export type TabItem = { id: string; label: string; icon?: IconName; href: string; primary?: boolean };
+// A tab links to a page, or (with `href` left out) is pressed to open something like a sheet
+export type TabItem = { id: string; label: string; icon?: IconName; href?: string; primary?: boolean };

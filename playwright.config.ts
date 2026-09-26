@@ -16,7 +16,7 @@ export default defineConfig({
   reporter: [["list"]],
   use: { baseURL: E2E.baseUrl, trace: "retain-on-failure", ...(hasChrome ? { channel: "chrome" } : {}) },
   projects: [
-    { name: "desktop", use: { ...devices["Desktop Chrome"], ...(hasChrome ? { channel: "chrome" } : {}) } },
+    { name: "desktop", use: { ...devices["Desktop Chrome"], ...(hasChrome ? { channel: "chrome" } : {}) }, grepInvert: /@phone/ },
     { name: "phone", use: { ...devices["Pixel 7"], ...(hasChrome ? { channel: "chrome" } : {}) }, grep: /@phone/ },
   ],
   webServer: {

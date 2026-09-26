@@ -20,3 +20,18 @@ export const RECORDER_TABS: TabItem[] = [
   { id: "weigh", label: "Weigh", icon: "weight", href: "/weigh" },
   { id: "history", label: "History", icon: "clock", href: "/log/history" },
 ];
+
+// Owners and managers on a phone: the rest of the nav sits under More
+export const MANAGER_TABS: TabItem[] = [
+  { id: "today", label: "Today", icon: "home", href: "/today" },
+  { id: "sets", label: "Sets", icon: "sets", href: "/sets" },
+  { id: "add", label: "Add an expense", icon: "plus", href: "/expenses?add=1", primary: true },
+  { id: "sales", label: "Sales", icon: "sales", href: "/sales" },
+  { id: "more", label: "More", icon: "more" },
+];
+
+// Which nav item a path belongs to (longest prefix wins)
+export function activeNavId(pathname: string): string | undefined {
+  const all = [...RAIL_NAV.map((n) => [n.id, n.href]), ["settings", "/settings"], ["history", "/log/history"]] as [string, string][];
+  return all.filter(([, href]) => pathname === href || pathname.startsWith(`${href}/`)).sort((a, b) => b[1].length - a[1].length)[0]?.[0];
+}

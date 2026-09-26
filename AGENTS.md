@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — App shell
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P1.2
+- **Summary:** `(app)` layout with the frame from the designs: side rail on desktop (role-filtered, active section, sync status, person); on phones a green band, glass top bar (sync status, account) and glass tab bar. Recorders always get the phone frame. Owners/managers on a phone: Today, Sets, + (add expense), Sales, More (sheet with every section). Account sheet signs out and forgets the person for offline use. The app remembers who signed in on the device. Page headings go white over the band on phones.
+- **Files:** `src/components/layout/{app-shell,account-sheet,more-sheet,phone-band,tab-bar,page-header}.tsx`, `src/app/(app)/layout.tsx`, `src/hooks/use-sync-summary.ts`, `src/constants/nav.ts`, `src/types/nav.ts`, `e2e/shell.spec.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** Sync status shows online/offline only until P1.8 reads the outbox. Tab bar items without `href` are buttons.
+
 ### 2026-09-26 — Auth: sign-in, invites, proxy, users and roles
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P1.1
 - **Summary:** `/sign-in` (desktop split, phone band; offline "Open offline as <name>" for the last person on the device), invites with a link to share (copy or WhatsApp; no email service), `/invite/[token]` to set a password (also used as the password reset), `src/proxy.ts` (Next 16's middleware) sending signed-out people to sign-in and roles away from pages they can't use, Settings › Users and roles (list, change role, deactivate/reactivate; never below one active owner; audited). Sign-in is limited to 5 tries per email + IP per 15 minutes (in memory). Submit buttons wait for hydration so an early tap can't reload the page. First Playwright e2e: invite → accept → recorder kept out of Settings.
