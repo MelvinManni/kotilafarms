@@ -30,4 +30,12 @@ See AGENTS.md › Version policy. Look up every version with `pnpm view <pkg> ve
 
 | Package | Version | Added in task | Why |
 | --- | --- | --- | --- |
-| | | | |
+| next | 16.3.6 | P0.1 | Framework |
+| react / react-dom | 19.3.0 | P0.1 | UI runtime |
+| tailwindcss / @tailwindcss/postcss | 4.3.3 | P0.1 | Styling (Tailwind v4 only) |
+| typescript | 6.0.3 | P0.1 | Types. 7.0.2 is `latest` but `typescript-eslint` 8.70.1 needs <6.1 |
+| eslint | 9.39.5 | P0.1 | Lint. 10.11.0 is `latest` but crashes `eslint-plugin-react` 7.37.5 (used by `eslint-config-next`) |
+| eslint-config-next | 16.3.6 | P0.1 | Next.js lint rules |
+| @types/node | 24.19.0 | P0.1 | Matches Node 24 LTS runtime (26.x is `latest`) |
+| @types/react / @types/react-dom | 19.3.0 | P0.1 | React types |
+| vitest | 5.0.2 | P0.1 | Unit tests |

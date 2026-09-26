@@ -1,3 +1,13 @@
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
+
 # AGENTS.md — Kotila Farm internal tool
 
 This file is the contract for every agent (Claude Code or otherwise) working in this repo. Read it fully before any change. **Every change to the repo ends with a new entry in the [Change log](#change-log) at the bottom of this file.**
@@ -22,7 +32,7 @@ An internal web app for Kotila Farms, a broiler poultry farm in Nigeria owned by
 | Auth | NextAuth (Auth.js), latest **stable** | Credentials (email + password), JWT sessions, roles in the token. See version note below. |
 | Client data | TanStack Query (React Query), latest stable | All client reads and writes go through it |
 | Forms | react-hook-form + @hookform/resolvers + zod | One zod schema per entity, shared by form and API |
-| UI | shadcn/ui CLI (latest) with **Base UI** primitives (`@base-ui/react`), Tailwind CSS latest stable | Themed with the Kotila tokens |
+| UI | shadcn/ui CLI (latest) with **Base UI** primitives (`@base-ui/react`), Tailwind CSS v4 | Themed with the Kotila tokens. All styling is Tailwind v4 (see Styling rule) |
 | Package manager | pnpm (via corepack) | |
 | Tests | Vitest (unit: metrics, zod, API handlers); Playwright later for flows | |
 | Container | Docker + docker compose (app + postgres), `.devcontainer/` for agent work | |
@@ -47,6 +57,7 @@ An internal web app for Kotila Farms, a broiler poultry farm in Nigeria owned by
 - **One metrics module.** Every derived number (live birds, mortality rate, FCR, ADG, uniformity, cost per bird, P&L, cash position, loan interest) comes from `src/utils/metrics/*` and is unit-tested. Screens, API and PDF all use it. Never compute a business number inside a component.
 - **Server is the gatekeeper.** Every route handler: check session → check role → validate with the shared zod schema → call a service in `src/server/services` → return typed JSON. Hiding a button is not security.
 - **Every write is audited.** Updates and deletes write an `audit_events` row in the same transaction (see `docs/03-data-model.md`).
+- **Styling is Tailwind v4 only.** All classes and styling use Tailwind v4 utilities and its CSS-first config (`@theme` in CSS, no `tailwind.config.js`). No CSS modules, styled-components or inline `style` for things a utility can do. Custom CSS only for tokens and theme in `globals.css`.
 - **Money is integer naira** (no floats). Weights are integer grams. Format only for display, with `src/utils/format`.
 - **Dates:** `date` for farm days, `timestamptz` for events. Farm timezone is `Africa/Lagos`.
 - **Accessibility:** 4.5:1 text contrast (the tokens already meet it), 44px minimum touch targets, 56px on entry screens, every icon-only control has `aria-label` and a tooltip.
@@ -152,6 +163,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 ```
 
 ## Change log
+
+### 2026-09-26 — Scaffold Next.js app
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P0.1
+- **Summary:** Scaffolded with `create-next-app@16.3.6` (TypeScript strict, App Router, ESLint, Tailwind v4, `src/`, `@/*`). Set `output: 'standalone'`. Added `typecheck` and `test` scripts and a Vitest config. Placeholder home page and Kotila favicon. Added a Tailwind-v4-only styling rule (Melvin's request).
+- **Files:** `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `next.config.ts`, `tsconfig.json`, `eslint.config.mjs`, `postcss.config.mjs`, `vitest.config.mts`, `.gitignore`, `src/app/{layout.tsx,page.tsx,globals.css,icon.svg}`, `public/.gitkeep`, `AGENTS.md`, `docs/11-versions.md`
+- **Packages:** next@16.3.6, react@19.3.0, react-dom@19.3.0 (added); tailwindcss@4.3.3, @tailwindcss/postcss@4.3.3, typescript@6.0.3, eslint@9.39.5, eslint-config-next@16.3.6, @types/node@24.19.0, @types/react@19.3.0, @types/react-dom@19.3.0, vitest@5.0.2 (added, dev). Three held below `latest`: typescript (7.0.2 breaks `typescript-eslint`, which needs <6.1), eslint (10.11.0 crashes `eslint-plugin-react` in `eslint-config-next`; 9.x is end-of-life, move to 10 when Next's config supports it), @types/node (matches the Node 24 runtime).
+- **Migrations:** none
+- **Follow-ups:** `db:generate`, `db:migrate`, `db:seed` scripts land with Drizzle in P0.6. Fonts and theme are still the scaffold defaults until P0.4. `design/` is excluded from lint and tsc (reference only). No commit made — no `main` or remote exists yet.
 
 ### 2026-09-26 — Handoff package created
 - **Agent:** Claude (Cowork) · **Task:** handoff
