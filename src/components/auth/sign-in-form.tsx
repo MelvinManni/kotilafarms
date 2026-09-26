@@ -1,7 +1,6 @@
 "use client";
 // Email and password sign-in; errors say what happened and what to do
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useHydrated } from "@/hooks/use-hydrated";
@@ -10,6 +9,7 @@ import { Button } from "@/components/kotila/button";
 import { PasswordInput } from "@/components/kotila/fields/password-input";
 import { TextInput } from "@/components/kotila/fields/text-input";
 import { Notice } from "@/components/kotila/notice";
+import { signInWithPassword } from "@/lib/auth/sign-in-with-password";
 import { signInSchema, type SignInInput } from "@/schemas/auth";
 
 const MESSAGES: Record<string, string> = {
@@ -29,9 +29,9 @@ export function SignInForm() {
   const submit = form.handleSubmit(async (values) => {
     setError(null);
     try {
-      const res = await signIn("credentials", { ...values, redirect: false });
-      if (res?.ok) return router.replace(next?.startsWith("/") ? next : "/today");
-      setError(MESSAGES[res?.error ?? ""] ?? "Signing in didn't work. Try again.");
+      const res = await signInWithPassword(values.email, values.password);
+      if (res.ok) return router.replace(next?.startsWith("/") ? next : "/today");
+      setError(MESSAGES[res.error] ?? "Signing in didn't work. Try again.");
     } catch {
       setError("No signal. Signing in needs a connection.");
     }

@@ -38,7 +38,7 @@ export function Notice({ tone = "neutral", icon, title, compact, action, childre
   return (
     <Alert
       role={tone === "alert" ? "alert" : "status"}
-      className={cn("flex items-start gap-3.5 rounded-lg border px-4.5 py-4", compact && "rounded-md px-3.5 py-3", t.box)}
+      className={cn("flex flex-wrap items-start gap-3.5 rounded-lg border px-4.5 py-4 sm:flex-nowrap", compact && "rounded-md px-3.5 py-3", t.box)}
     >
       <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-full", compact && "size-7", t.icon)}>
         <Icon name={icon ?? t.glyph} size={compact ? 16 : 20} strokeWidth={2.2} />
@@ -47,7 +47,8 @@ export function Notice({ tone = "neutral", icon, title, compact, action, childre
         {title ? <strong className={cn("text-base leading-5.5 font-bold", t.title)}>{title}</strong> : null}
         {children ? <div className={cn("text-body", t.text)}>{children}</div> : null}
       </div>
-      {actionNode ? <div className="shrink-0 self-center">{actionNode}</div> : null}
+      {/* On phones the action drops under the text so the words keep their width */}
+      {actionNode ? <div className="shrink-0 self-center max-sm:basis-full max-sm:pl-13.5 max-sm:*:w-full">{actionNode}</div> : null}
     </Alert>
   );
 }

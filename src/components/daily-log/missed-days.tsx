@@ -4,8 +4,8 @@ import { farmDay } from "@/utils/format/dates";
 
 const weekday = (d: string) => new Intl.DateTimeFormat("en-GB", { weekday: "long", timeZone: "UTC" }).format(new Date(`${d}T12:00:00Z`));
 
-export function MissedDays({ setId, setNumber, days }: { setId: string; setNumber: number; days: string[] }) {
-  const recent = [...days].reverse().slice(0, 3);
+export function MissedDays({ setId, setNumber, days, limit = 3 }: { setId: string; setNumber: number; days: string[]; limit?: number }) {
+  const recent = [...days].reverse().slice(0, limit);
   return (
     <>
       {recent.map((d) => (
@@ -13,7 +13,7 @@ export function MissedDays({ setId, setNumber, days }: { setId: string; setNumbe
           Fill it in now so the week has no gap. Guess if you must — a count is better than nothing.
         </Notice>
       ))}
-      {days.length > recent.length ? <p className="m-0 text-caption text-ink-muted">{days.length - recent.length} more missed {days.length - recent.length === 1 ? "day" : "days"} earlier — see the table below.</p> : null}
+      {days.length > recent.length ? <p className="m-0 text-caption text-ink-muted">{days.length - recent.length} more missed {days.length - recent.length === 1 ? "day" : "days"} earlier — see the Set’s daily log.</p> : null}
     </>
   );
 }

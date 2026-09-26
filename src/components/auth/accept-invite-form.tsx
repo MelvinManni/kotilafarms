@@ -1,7 +1,6 @@
 "use client";
 // Set a password from an invite (or reset link), then sign straight in
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { Controller, useForm, useWatch } from "react-hook-form";
@@ -12,6 +11,7 @@ import { PasswordInput } from "@/components/kotila/fields/password-input";
 import { TextInput } from "@/components/kotila/fields/text-input";
 import { Notice } from "@/components/kotila/notice";
 import { useAcceptInvite, type InviteDetails } from "@/hooks/queries/use-invite";
+import { signInWithPassword } from "@/lib/auth/sign-in-with-password";
 import { passwordSchema } from "@/schemas/auth";
 import { Icon } from "@/svgs/icon";
 import { ROLE_LABEL } from "@/types/role";
@@ -30,8 +30,8 @@ export function AcceptInviteForm({ token, invite }: { token: string; invite: Inv
 
   const submit = form.handleSubmit(async ({ password, confirm }) => {
     const { email } = await accept.mutateAsync({ token, password, confirm });
-    const res = await signIn("credentials", { email, password, redirect: false });
-    router.replace(res?.ok ? "/today" : "/sign-in");
+    const res = await signInWithPassword(email, password);
+    router.replace(res.ok ? "/today" : "/sign-in");
   });
 
   const role = ROLE_LABEL[invite.role].toLowerCase();

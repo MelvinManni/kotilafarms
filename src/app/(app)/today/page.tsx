@@ -1,6 +1,9 @@
-// /today — replaced by the Today dashboard in P1.7
-import { PageHeader } from "@/components/layout/page-header";
+// /today
+import type { Metadata } from "next";
+import { TodayScreen } from "@/components/today/today-screen";
+
+export const metadata: Metadata = { title: "Today · Kotila Farm" };
 
 export default function TodayPage() {
-  return <PageHeader title="Today" />;
+  return <TodayScreen />;
 }

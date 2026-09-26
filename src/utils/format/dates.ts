@@ -40,3 +40,11 @@ export function shortDate(day: string, withYear = true): string {
   const text = `${date.getUTCDate()} ${MONTHS[date.getUTCMonth()]}`;
   return withYear ? `${text} ${date.getUTCFullYear()}` : text;
 }
+
+// "Saturday, 26 September" for page headings
+export function fullDay(day: string): string {
+  const date = farmDayToDate(day);
+  const weekday = new Intl.DateTimeFormat("en-GB", { weekday: "long", timeZone: "UTC" }).format(date);
+  const month = new Intl.DateTimeFormat("en-GB", { month: "long", timeZone: "UTC" }).format(date);
+  return `${weekday}, ${date.getUTCDate()} ${month}`;
+}

@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Today
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P1.7
+- **Summary:** `/api/today` (role-shaped: no money for recorders) and `/today`. Owners and managers: owed band (total, oldest, biggest balances → See balances), the latest missed day per Set with Fill in, Active Sets (age, live, mortality, deaths this week vs last, spend), Needs doing today. Recorders (phone): missed days, big Log today buttons (ticked once logged), each Set's counts with this week vs last, Coming up. Tasks come from a tested rule set: logs not in, vaccines due tomorrow / today / late (from each Set's schedule), weighing day within 3 days, a tag seen 3+ days this week. Notices drop their action under the text on phones.
+- **Files:** `src/server/services/today.ts`, `src/app/api/today/**`, `src/components/today/*`, `src/components/daily-log/log-today-links.tsx`, `src/utils/metrics/today-tasks.ts`, `src/types/today.ts`, `src/lib/auth/sign-in-with-password.ts`, `e2e/today.spec.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** Fixed a sign-in bug found while checking Today: on a device's first visit NextAuth could hit a CSRF cookie race, report "ok", and bounce the person back to sign-in with no message; sign-in now spots it and retries once. Cash position, the growth chart and the feed panel join Today in P2.2, P2.3 and P2.5.
+
 ### 2026-09-26 — Sales, buyers and balances
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P1.6
 - **Summary:** `/sales`: owed notice ("₦X is owed by N buyers", oldest balance), outstanding balances oldest first with a total line, every sale (bird and manure) by All / Owed / per-Set tabs. New sale sheet: Set (closed-Set warning), date, buyer or add one inline, linked birds × price = total (any two, price may be rounded from the total), paid now, still owed (worked out), method, deposit. Never more birds than are alive. Payments can't exceed the balance; manure sales; sale details with payments and history; late changes to a sale's birds or money need a reason. Buyers list and buyer page (average per bird against the bulk rate in Settings). Rail badge on Sales counts buyers who owe. Same clientId twice records a sale, payment or buyer once.
