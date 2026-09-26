@@ -6,7 +6,8 @@ import { TextInput } from "@/components/kotila/fields/text-input";
 import { Panel } from "@/components/kotila/panel";
 import { Segmented } from "@/components/kotila/segmented";
 import type { LogFormValues } from "@/components/daily-log/log-form-schema";
-import { feedTypeLabel, type FeedType } from "@/hooks/queries/use-feed-types";
+import type { FeedType } from "@/hooks/queries/use-feed-types";
+import { feedName } from "@/utils/format/feed-name";
 import { parseNumber } from "@/utils/parse/parse-number";
 
 export function FeedPanel({ feedTypes }: { feedTypes: FeedType[] }) {
@@ -37,7 +38,7 @@ export function FeedPanel({ feedTypes }: { feedTypes: FeedType[] }) {
           <Select
             label="Feed type"
             placeholder={feedTypes.length ? "Choose the feed" : "No feed types yet — add them in Settings"}
-            options={feedTypes.map((t) => ({ value: t.id, label: feedTypeLabel(t) }))}
+            options={feedTypes.map((t) => ({ value: t.id, label: feedName(t) }))}
             value={field.value ?? undefined}
             onChange={field.onChange}
             error={fieldState.error?.message}

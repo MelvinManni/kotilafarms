@@ -48,3 +48,8 @@ export function fullDay(day: string): string {
   const month = new Intl.DateTimeFormat("en-GB", { month: "long", timeZone: "UTC" }).format(date);
   return `${weekday}, ${date.getUTCDate()} ${month}`;
 }
+
+// "Tuesday"
+export function weekdayName(day: string): string {
+  return new Intl.DateTimeFormat("en-GB", { weekday: "long", timeZone: "UTC" }).format(farmDayToDate(day));
+}

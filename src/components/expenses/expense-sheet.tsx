@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
-import { attributionSets } from "@/components/expenses/attribution-options";
+import { attributionSets } from "@/utils/sets/attribution-sets";
 import { ExpenseFields } from "@/components/expenses/expense-fields";
 import { attributionToApi, expenseFormSchema, type ExpenseFormValues } from "@/components/expenses/expense-form-schema";
 import { Button } from "@/components/kotila/button";

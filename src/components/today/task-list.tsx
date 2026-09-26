@@ -5,7 +5,7 @@ import type { IconName } from "@/svgs/icon-paths";
 import type { TodayTask } from "@/types/today";
 import { cn } from "@/utils/cn";
 
-const ICONS: Record<TodayTask["kind"], IconName> = { log: "log", missed: "calendar-x", vaccine: "syringe", weigh: "scale", tag: "alert" };
+const ICONS: Record<TodayTask["kind"], IconName> = { log: "log", missed: "calendar-x", vaccine: "syringe", feed: "bag", weigh: "scale", tag: "alert" };
 const TONES = { alert: "bg-alert-bg text-alert", warning: "bg-warning-icon text-warning-ink", neutral: "bg-green-50 text-green-700" };
 
 export function TaskList({ tasks }: { tasks: TodayTask[] }) {

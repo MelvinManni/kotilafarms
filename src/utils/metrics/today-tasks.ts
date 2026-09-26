@@ -1,7 +1,9 @@
-// "Needs doing today" / "Coming up": logs not in, vaccines due, weighing day, tags that keep coming back
+// "Needs doing today" / "Coming up": logs not in, vaccines due, feed running out, weighing day, tags that keep coming back
 import { tagLabel } from "@/constants/observation-tags";
+import type { FeedStockRow } from "@/types/feed";
 import type { TodayTask } from "@/types/today";
 import { addDays } from "@/utils/dates/add-days";
+import { RUN_OUT_WARN_DAYS, runOutDetail, runOutNotice } from "@/utils/metrics/feed-headlines";
 
 type RunningSet = { id: string; number: number; startDate: string; dayOfAge: number };
 type Vaccine = { setId: string; item: string; doseNo: number; dueAgeDays: number; givenOn: string | null };
@@ -11,11 +13,11 @@ type Sample = { setId: string; ageDays: number };
 // A log another phone reported as waiting to send
 type Waiting = { person: string; setId: string; date: string };
 
-type Inputs = { today: string; sets: RunningSet[]; loggedToday: string[]; vaccines: Vaccine[]; weekLogs: LogTags[]; samples: Sample[]; waiting?: Waiting[] };
+type Inputs = { today: string; sets: RunningSet[]; loggedToday: string[]; vaccines: Vaccine[]; weekLogs: LogTags[]; samples: Sample[]; waiting?: Waiting[]; feed?: FeedStockRow[] };
 
 const setList = (numbers: number[]) => (numbers.length === 1 ? `Set ${numbers[0]}` : `Sets ${numbers.slice(0, -1).join(", ")} and ${numbers.at(-1)}`);
 
-export function todayTasks({ today, sets, loggedToday, vaccines, weekLogs, samples, waiting = [] }: Inputs): TodayTask[] {
+export function todayTasks({ today, sets, loggedToday, vaccines, weekLogs, samples, waiting = [], feed = [] }: Inputs): TodayTask[] {
   const tasks: TodayTask[] = [];
   for (const w of waiting) {
     const set = sets.find((s) => s.id === w.setId);
@@ -33,6 +35,10 @@ export function todayTasks({ today, sets, loggedToday, vaccines, weekLogs, sampl
     if (due > addDays(today, 1)) continue;
     const when = due < today ? "is late" : due === today ? "due today" : "due tomorrow";
     tasks.push({ kind: "vaccine", tone: due < today ? "alert" : "warning", title: `${v.item} ${when} · Set ${set.number}`, detail: `Day ${v.dueAgeDays} · dose ${v.doseNo} · in drinking water, morning` });
+  }
+
+  for (const r of feed.filter((f) => f.daysLeft !== null && f.daysLeft <= RUN_OUT_WARN_DAYS).sort((a, b) => a.daysLeft! - b.daysLeft!)) {
+    tasks.push({ kind: "feed", tone: r.daysLeft! < 2 ? "alert" : "warning", title: runOutNotice(r, today).title, detail: runOutDetail(r), href: "/feed" });
   }
 
   for (const set of sets) {

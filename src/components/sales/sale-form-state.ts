@@ -1,4 +1,5 @@
 // New-sale form state, and turning it into the API body (checked with the shared schema)
+import { fieldErrors } from "@/schemas/field-errors";
 import { saleCreateSchema, type SaleCreateInput } from "@/schemas/sale";
 
 export type SaleFormState = {
@@ -31,8 +32,5 @@ export function checkSale(form: SaleFormState, clientId: string, buyerId: string
     method: form.method,
   };
   const result = saleCreateSchema.safeParse(body);
-  if (result.success) return { body: result.data, errors: {} };
-  const errors: Record<string, string> = {};
-  for (const issue of result.error.issues) errors[String(issue.path[0])] ??= issue.message;
-  return { errors };
+  return result.success ? { body: result.data, errors: {} } : { errors: fieldErrors(result.error) };
 }

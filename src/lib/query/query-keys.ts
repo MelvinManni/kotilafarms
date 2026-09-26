@@ -20,6 +20,8 @@ export const qk = {
   feed: {
     types: () => ["feed", "types"] as const,
     purchases: () => ["feed", "purchases"] as const,
+    ingredients: () => ["feed", "ingredients"] as const,
+    allTypes: () => ["feed", "types", "all"] as const,
     stock: () => ["feed", "stock"] as const,
     prices: (feedTypeId: string) => ["feed", "prices", feedTypeId] as const,
   },

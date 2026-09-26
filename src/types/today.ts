@@ -3,7 +3,7 @@ import type { Outstanding } from "@/types/sale";
 import type { SetSummary } from "@/types/sets";
 
 export type TodayTask = {
-  kind: "log" | "missed" | "vaccine" | "weigh" | "tag";
+  kind: "log" | "missed" | "vaccine" | "feed" | "weigh" | "tag";
   tone: "alert" | "warning" | "neutral";
   title: string;
   detail: string;

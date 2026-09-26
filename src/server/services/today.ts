@@ -12,6 +12,7 @@ import type { TodayPayload } from "@/types/today";
 import { addDays } from "@/utils/dates/add-days";
 import { todayTasks } from "@/utils/metrics/today-tasks";
 import { listWeights } from "@/server/services/weights";
+import { feedStockFor } from "@/server/services/feed/stock";
 import { growthSummary } from "@/utils/metrics/growth-summary";
 
 export async function todayFor(db: Executor, role: Role, today: string): Promise<TodayPayload> {
@@ -38,13 +39,16 @@ export async function todayFor(db: Executor, role: Role, today: string): Promise
     return { setId: s.id, gap: growthSummary(w.samples, w.standard)?.gap ?? 0 };
   }));
   const growthSetId = gaps.sort((a, b) => a.gap - b.gap)[0]?.setId ?? null;
+  const feed = (await feedStockFor(db, today)).rows;
+  // Recorders see a feed warning but can't open the Feed page
+  const tasks = todayTasks({ today, sets, loggedToday, vaccines, weekLogs: logs, samples, waiting, feed }).map((t) => (t.kind === "feed" && !can.seeMoney(role) ? { ...t, href: undefined } : t));
   const payload: TodayPayload = {
     date: today,
     sets,
     missed: missing.flat().sort((a, b) => b.date.localeCompare(a.date)),
     loggedToday,
     growthSetId,
-    tasks: todayTasks({ today, sets, loggedToday, vaccines, weekLogs: logs, samples, waiting }),
+    tasks,
   };
   return can.seeMoney(role) ? { ...payload, owed: await outstanding(db, today) } : payload;
 }

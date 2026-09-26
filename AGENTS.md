@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Feed
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P2.3
+- **Summary:** `/feed`: bags in the store per feed (bought − used from the daily log, kg turned into bags), daily rate and days left, a run-out warning with an order-by day, the price per bag over the last six purchases with the change stated and what a ₦1,000 rise costs a Set, and every feed and ingredient buy. Feed purchase sheet: bags × price per bag = total (any two, none blank), bag size, transport as its own Transport expense, supplier, date, Set or the store. Ingredient sheet: what, quantity × cost each = total, which Set. Each buy writes its expenses in the same transaction and is saved once per clientId. Settings › Feed types (add, change, retire; audited). Today lists a feed running out within a week.
+- **Files:** `src/server/services/feed/*`, `src/server/services/{feed-types,today}.ts`, `src/app/api/feed/**`, `src/components/feed/*`, `src/components/settings/feed-type*.tsx`, `src/components/kotila/charts/price-chart.tsx`, `src/components/kotila/attribution-field.tsx` (`allowOverhead`), `src/app/(app)/{feed,settings/feed}/page.tsx`, `src/schemas/{feed,field-errors}.ts`, `src/types/feed.ts`, `src/utils/metrics/{feed-stock,price-trend,feed-headlines,feed-store,linked-amounts-agree,today-tasks}.ts`, `src/utils/format/{bags,feed-name,dates}.ts`, `src/utils/sets/attribution-sets.ts` (moved from expenses), `docs/04-api.md`, `e2e/feed.spec.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** The "Feed left" figure on Set detail isn't added yet. Ingredient purchases have no transport line (the table has no column for it); record transport as its own expense for now.
+
 ### 2026-09-26 — Growth chart on Set detail and Today
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P2.2
 - **Summary:** Deep growth panel on Set detail and on Today (for the Set furthest under its standard): a headline that states the finding and what to do, the chart with ±5% band, today marker, late zone from day 28 and projection to day 35, and figures for the latest average, standard, daily gain and uniformity. The growth story is worked out in one metric (`growthSummary`, `growthHeadline`), tested on Set 4's numbers. Also fixed: panel links on the deep panel were dark on dark; duplicate keys in Today's task list when two vaccine doses share a name.

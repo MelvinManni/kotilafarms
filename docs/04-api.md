@@ -19,6 +19,7 @@ All JSON. All require a session except `auth/*` and `invites/accept`. Roles: **O
 | `GET/POST /api/feed/ingredients` | O M | Raw ingredient purchases |
 | `GET /api/feed/stock` | O M | Stock per feed type + run-out estimate |
 | `GET /api/feed/prices?feedTypeId=` | O M | Price-per-bag history |
+| `GET/POST /api/feed/types`, `PATCH /api/feed/types/:id` | GET all; O M to add, change or retire | Feed types (`?all=1` includes retired) |
 | `GET/PATCH /api/sets/:id/vaccines` | O M | Schedule; mark given |
 | `GET/POST /api/health` | O M | Drug and supplement records |
 | `GET/POST /api/buyers`, `GET /api/buyers/:id` | O M | Buyers; buyer page with analytics |

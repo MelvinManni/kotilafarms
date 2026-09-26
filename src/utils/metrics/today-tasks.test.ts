@@ -28,4 +28,13 @@ describe("todayTasks", () => {
     const tasks = todayTasks({ ...base, loggedToday: ["s4", "s5"] });
     expect(tasks.filter((t) => t.kind === "weigh").map((t) => t.title)).toEqual(["Weigh Set 5 on Sunday"]);
   });
+
+  it("warns when a feed runs out within a week, soonest first", () => {
+    const feed = [
+      { feedTypeId: "st", feed: "Starter · Breedwell", kind: "starter" as const, stockBags: 14, bagsPerDay: 1.3, daysLeft: 14 / 1.3, eating: [{ id: "s5", number: 5 }], lastPrice: 26_200 },
+      { feedTypeId: "fi", feed: "Finisher · Ultima", kind: "finisher" as const, stockBags: 9, bagsPerDay: 2.3, daysLeft: 9 / 2.3, eating: [{ id: "s4", number: 4 }], lastPrice: 24_800 },
+    ];
+    const tasks = todayTasks({ ...base, loggedToday: ["s4", "s5"], feed }).filter((t) => t.kind === "feed");
+    expect(tasks).toEqual([{ kind: "feed", tone: "warning", title: "Finisher runs out in about 3 days", detail: "9 bags left, using 2.3 a day · Set 4", href: "/feed" }]);
+  });
 });
