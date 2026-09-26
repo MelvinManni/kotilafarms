@@ -1,6 +1,7 @@
 "use client";
 // /reports/set: pick a Set (or all closed Sets), read the report, download it as a PDF
 import { useState } from "react";
+import { ReportTabs } from "@/components/reports/report-tabs";
 import { SetReportDocument } from "@/components/reports/set-report-document";
 import { Button } from "@/components/kotila/button";
 import { EmptyState } from "@/components/kotila/empty-state";
@@ -24,10 +25,10 @@ export function SetReportScreen({ initialIds }: { initialIds: string[] }) {
   return (
     <>
       <PageHeader
-        eyebrow="Reports › Set report"
         title="Set report"
         actions={ids.length ? <Button icon="download" href={`/api/reports/set/pdf?setIds=${ids.join(",")}`} download disabled={!online}>Download PDF</Button> : null}
       />
+      <ReportTabs active="set" />
       {failed ? <Notice tone="alert">{failed.message}</Notice> : null}
       {sets.data?.length === 0 ? (
         <EmptyState title="No Sets yet" icon="reports" action={{ label: "Start a new Set", icon: "plus", href: "/sets" }}>A report shows a Set’s birds, money and growth from start to sale. Start a Set to see one.</EmptyState>

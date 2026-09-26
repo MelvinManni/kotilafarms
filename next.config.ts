@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   // Launched at run time to print PDFs; not bundled
   serverExternalPackages: ["playwright-core"],
   // It reads files like browsers.json at run time, which tracing can't see
-  outputFileTracingIncludes: { "/api/reports/set/pdf": ["./node_modules/.pnpm/playwright-core@*/node_modules/playwright-core/**/*"] },
+  outputFileTracingIncludes: { "/api/reports/*/pdf": ["./node_modules/.pnpm/playwright-core@*/node_modules/playwright-core/**/*"] },
 };
 
 export default withSerwist(nextConfig);

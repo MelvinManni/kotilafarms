@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Weekly review
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P3.1
+- **Summary:** `/reports/weekly` (Reports now opens here): one note per Set running that week (Sunday to Saturday), this week or last. A rules engine over the metrics writes 3–6 short points, worst first, each ending in "Do this": late vaccines (grouped), weight under the standard (widening or not, gain against what the standard needs, where it's heading at day 35, feeders needed), feed running out (bags to order and by when, at the last price), deaths above last week and the running average (brooding week left out), pen tags seen 3+ days (advice per tag), vaccines given late, missing logs. When nothing is wrong: one line. Figures: deaths, weight vs standard, FCR so far and where it's heading, feed cost per kg. PDF download like the Set report. Reports pages share tabs.
+- **Files:** `src/utils/metrics/weekly/{week-facts,review-points,set-review}.ts`, `src/utils/dates/week-of.ts`, `src/constants/{tag-advice,weekly-how,report-tabs}.ts`, `src/server/services/reports/weekly.ts`, `src/app/api/reports/weekly/{route.ts,pdf/route.ts}`, `src/app/(print)/print/reports/weekly/page.tsx`, `src/app/(app)/reports/{page.tsx,weekly/page.tsx}`, `src/components/reports/{weekly-*,report-tabs}.tsx`, `src/schemas/report.ts`, `src/types/weekly.ts`, `src/utils/format/dates.ts` (`weekSpan`), `next.config.ts`, `e2e/weekly.spec.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** Feed run-out points only appear for the current week (stock is known for today, not for past weeks). The Docker image build failed at `apk add chromium` on this machine (network fetch); the PDF works in dev and e2e with the installed Chrome — check the image build before deploying. Restarted the stopped `db` container (exit 0, stopped outside this session) on port 5434; its data was kept.
+
 ### 2026-09-26 — Set report and PDF
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P2.6
 - **Summary:** `/reports/set`: pick a Set or all closed Sets and read the full picture — intake, deaths, birds sold, weight at sale, revenue, expenses, profit, margin, per-bird money, FCR, feed cost per kg live weight, mortality, spend by category, growth against the standard (one Set), the largest expenses by date, and unpaid balances in the footnote. Reproduces Set 3 (FCR 1.74, ₦1,806 a kg). Download PDF prints the server-rendered A4 page `/print/reports/set` with headless Chromium, signed in as the person asking.

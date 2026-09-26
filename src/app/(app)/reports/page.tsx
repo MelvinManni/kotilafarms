@@ -1,6 +1,6 @@
-// /reports — the Set report for now; the weekly review and comparison join it later
+// /reports — opens on the weekly review
 import { redirect } from "next/navigation";
 
 export default function ReportsPage() {
-  redirect("/reports/set");
+  redirect("/reports/weekly");
 }

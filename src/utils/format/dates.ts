@@ -53,3 +53,10 @@ export function fullDay(day: string): string {
 export function weekdayName(day: string): string {
   return new Intl.DateTimeFormat("en-GB", { weekday: "long", timeZone: "UTC" }).format(farmDayToDate(day));
 }
+
+// "20–26 September 2026", or "27 September – 3 October 2026" across months
+export function weekSpan(start: string, end: string): string {
+  const [a, b] = [farmDayToDate(start), farmDayToDate(end)];
+  const month = (d: Date) => new Intl.DateTimeFormat("en-GB", { month: "long", timeZone: "UTC" }).format(d);
+  return a.getUTCMonth() === b.getUTCMonth() ? `${a.getUTCDate()}–${b.getUTCDate()} ${month(b)} ${b.getUTCFullYear()}` : `${a.getUTCDate()} ${month(a)} – ${b.getUTCDate()} ${month(b)} ${b.getUTCFullYear()}`;
+}
