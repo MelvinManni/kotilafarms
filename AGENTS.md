@@ -169,6 +169,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Metrics module
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P0.7
+- **Summary:** Pure metric functions in `src/utils/metrics`: live birds, mortality, sample average / CV / uniformity, growth (from P0.5), FCR, live weight, feed stock, daily use, days left, feed cost per kg, Set P&L (one or several Sets) with per-bird figures, sale balance, cash position, capital, ownership, loan interest (gross / WHT / net) and borrowing capacity. Tests reproduce the Set 3 calibration, both loan examples and the Set 4 growth numbers, using the doc's figures as fixtures (no database).
+- **Files:** `src/utils/metrics/{birds,weight-sample,feed,set-pnl,money,loans}.ts` + tests (`set3-calibration`, `loans`, `set4-growth`, `everyday`)
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** Two doc figures don't match their own inputs: (1) feed cost per kg live weight "₦1,646 (₦2,066,412 ÷ 1,255 kg)" in `design/brand/20-numbers.md`, but Set 3's 465 birds × 2.46 kg = 1,143.9 kg gives ₦1,806; (2) Set 4 "projected 1.72 kg at day 35" uses a gain rounded to 63 g; the exact gain gives 1.73 kg (still −22%). Code uses the exact formulas. Money per bird rounds to whole naira; rates stay as ratios.
+
 ### 2026-09-26 — Database: schema, first migration, db:setup, db tests
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P0.6
 - **Summary:** Drizzle schema for every table in the data model plus `devices` and `sync_mutations`, first migration, pg client. Melvin asked for a clean, blank database and tests instead of seed data: `pnpm db:setup` adds only the first owner (`FIRST_OWNER_*`) and the spec's fixed lists (10 expense categories, broiler, vaccine schedule, breed curve, settings), idempotently. 23 db tests run against a throwaway `kotila_test` database built from the committed migrations, each in a rolled-back transaction: Set-or-overhead, one log per Set per day, sale and feed amounts, clientId and mutationId duplicates, case-blind emails, setup idempotency. Checked end to end: `db:setup` twice on the dev DB, and `docker compose --profile app up --build` (migrate exits 0, app serves).
