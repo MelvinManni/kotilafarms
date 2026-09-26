@@ -8,12 +8,21 @@ type Vaccine = { setId: string; item: string; doseNo: number; dueAgeDays: number
 type LogTags = { setId: string; date: string; tags: string[] };
 type Sample = { setId: string; ageDays: number };
 
-type Inputs = { today: string; sets: RunningSet[]; loggedToday: string[]; vaccines: Vaccine[]; weekLogs: LogTags[]; samples: Sample[] };
+// A log another phone reported as waiting to send
+type Waiting = { person: string; setId: string; date: string };
+
+type Inputs = { today: string; sets: RunningSet[]; loggedToday: string[]; vaccines: Vaccine[]; weekLogs: LogTags[]; samples: Sample[]; waiting?: Waiting[] };
 
 const setList = (numbers: number[]) => (numbers.length === 1 ? `Set ${numbers[0]}` : `Sets ${numbers.slice(0, -1).join(", ")} and ${numbers.at(-1)}`);
 
-export function todayTasks({ today, sets, loggedToday, vaccines, weekLogs, samples }: Inputs): TodayTask[] {
+export function todayTasks({ today, sets, loggedToday, vaccines, weekLogs, samples, waiting = [] }: Inputs): TodayTask[] {
   const tasks: TodayTask[] = [];
+  for (const w of waiting) {
+    const set = sets.find((s) => s.id === w.setId);
+    if (!set) continue;
+    const day = w.date === today ? "Today’s" : `${new Intl.DateTimeFormat("en-GB", { weekday: "long", timeZone: "UTC" }).format(new Date(`${w.date}T12:00:00Z`))}’s`;
+    tasks.push({ kind: "missed", tone: "neutral", title: `${day} Set ${set.number} log is on ${w.person.split(" ")[0]}’s phone`, detail: "Waiting for signal — it sends by itself" });
+  }
   const toLog = sets.filter((s) => !loggedToday.includes(s.id));
   if (toLog.length) tasks.push({ kind: "log", tone: "neutral", title: `Log ${setList(toLog.map((s) => s.number))} for today`, detail: "Deaths, feed, water and anything seen in the pen", href: toLog.length === 1 ? `/log/${toLog[0]!.id}/${today}` : "/log" });
 

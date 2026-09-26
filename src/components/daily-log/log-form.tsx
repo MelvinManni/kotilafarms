@@ -11,16 +11,22 @@ import { NotesPanel } from "@/components/daily-log/notes-panel";
 import { PenPanel } from "@/components/daily-log/pen-panel";
 import { Button } from "@/components/kotila/button";
 import { Notice } from "@/components/kotila/notice";
-import { useEditLog, useSaveLog } from "@/hooks/queries/use-daily-logs";
+import { useSubmitLog } from "@/hooks/queries/use-daily-logs";
 import type { FeedType } from "@/hooks/queries/use-feed-types";
+import { removeItem } from "@/lib/offline/outbox";
+import type { PendingLog } from "@/lib/offline/pending-logs";
 import type { DailyLogRow } from "@/types/daily-log";
 import { farmDay } from "@/utils/format/dates";
 
 type LogFormProps = {
   setId: string;
+  // Called when the entry was saved on the phone with no signal (the screen shows the confirmation)
+  onSavedHere: () => void;
   date: string;
   today: string;
   existing: DailyLogRow | undefined;
+  // Not sent yet: opened again, it is changed in place on the phone
+  pending?: PendingLog;
   liveBefore: number;
   yesterday: number | null;
   alertAbove: number;
@@ -30,7 +36,9 @@ type LogFormProps = {
   tagHint?: string;
 };
 
-const fromLog = (log?: DailyLogRow): LogFormValues => ({
+type LogValues = Partial<Pick<DailyLogRow, "deaths" | "deathCause" | "feedUnit" | "feedQty" | "feedTypeId" | "waterLevel" | "tempC" | "tags" | "note">>;
+
+const fromLog = (log?: LogValues): LogFormValues => ({
   deaths: log?.deaths ?? 0,
   deathCause: (log?.deathCause as LogFormValues["deathCause"]) ?? null,
   feedUnit: log?.feedUnit ?? "bags",
@@ -45,24 +53,31 @@ const fromLog = (log?: DailyLogRow): LogFormValues => ({
 
 export function LogForm(p: LogFormProps) {
   const router = useRouter();
-  const save = useSaveLog(p.setId);
-  const edit = useEditLog(p.setId);
-  // One id per entry, so resending the same entry can never make a second log
-  const [clientId] = useState(() => crypto.randomUUID());
-  const form = useForm<LogFormValues>({ resolver: zodResolver(logFormSchema), defaultValues: fromLog(p.existing) });
+  const submitLog = useSubmitLog(p.setId);
+  const [rejected, setRejected] = useState<string | null>(null);
+  // One id per entry (the log's own id when changing it), so resending can never make a second log
+  const [clientId] = useState(() => p.existing?.clientId ?? p.pending?.clientId ?? crypto.randomUUID());
+  const form = useForm<LogFormValues>({ resolver: zodResolver(logFormSchema), defaultValues: fromLog((p.pending?.payload as LogValues | undefined) ?? p.existing) });
   const [deaths, feedQty] = useWatch({ control: form.control, name: ["deaths", "feedQty"] });
   const late = p.date < p.today;
   const askReason = Boolean(p.existing && late && (deaths !== p.existing.deaths || feedQty !== p.existing.feedQty));
   const isToday = p.date === p.today;
-  const pending = save.isPending || edit.isPending;
-  const error = save.error ?? edit.error;
+  const pending = submitLog.isPending;
+  const error = rejected ?? submitLog.error?.message ?? null;
 
-  const submit = form.handleSubmit(({ reason, note, ...values }) => {
+  const submit = form.handleSubmit(async ({ reason, note, ...values }) => {
     if (askReason && !reason.trim()) return form.setError("reason", { message: "Say why you're changing this after the day." });
-    const fields = { ...values, note: note.trim() || null };
-    const done = () => router.push(`/log/${p.setId}?saved=${p.date}`);
-    if (p.existing) edit.mutate({ id: p.existing.id, ...fields, baseVersion: p.existing.version, reason: reason.trim() || undefined }, { onSuccess: done });
-    else save.mutate({ clientId, date: p.date, ...fields }, { onSuccess: done });
+    const fields = { ...values, note: note.trim() || null, feedTypeId: values.feedTypeId || null };
+    const change = p.existing ? { baseVersion: p.existing.version, reason: reason.trim() || undefined } : {};
+    setRejected(null);
+    // mutateAsync, not mutate: the form remounts as the entry reaches the phone and the server, and must still move on
+    const { item, state } = await submitLog.mutateAsync({ clientId, date: p.date, ...fields, ...change });
+    // No signal: confirm right here rather than load another page
+    if (state === "on-phone" && !navigator.onLine) return p.onSavedHere();
+    if (state !== "rejected") return router.push(`/log/${p.setId}?saved=${p.date}&state=${state}`);
+    // Turned down: say why here and drop it, so the fixed entry replaces it
+    setRejected(item.error?.message ?? "The farm records turned this down.");
+    await removeItem(item.mutationId);
   });
 
   return (
@@ -75,7 +90,7 @@ export function LogForm(p: LogFormProps) {
           <PenPanel tagHint={p.tagHint} />
           <NotesPanel brooding={p.brooding} askReason={askReason} />
         </fieldset>
-        {error ? <Notice tone="alert">{error.message}</Notice> : null}
+        {error ? <Notice tone="alert">{error}</Notice> : null}
         {p.locked ? null : (
           <div className="flex flex-col items-center gap-2 pt-2">
             <Button type="submit" variant="primary" size="xl" full icon="check" disabled={pending}>

@@ -10,12 +10,18 @@ import { PageHeader } from "@/components/layout/page-header";
 import { FARM_TIMEZONE } from "@/constants/farm";
 import { useMissingDays, useSetLogs } from "@/hooks/queries/use-daily-logs";
 import { useSet } from "@/hooks/queries/use-sets";
+import { useOutboxItems } from "@/hooks/use-outbox-items";
+import { useCurrentUser } from "@/lib/auth/current-user";
+import { pendingLogsFor } from "@/lib/offline/pending-logs";
 import { todayInZone } from "@/utils/dates/today-in-zone";
 import { count } from "@/utils/format/count";
 import { farmDay } from "@/utils/format/dates";
 
 export function SetLogScreen({ setId }: { setId: string }) {
-  const saved = useSearchParams().get("saved");
+  const params = useSearchParams();
+  const saved = params.get("saved");
+  const state = params.get("state");
+  const pending = pendingLogsFor(useOutboxItems(useCurrentUser().id), setId);
   const set = useSet(setId);
   const logs = useSetLogs(setId);
   const missing = useMissingDays(setId);
@@ -25,7 +31,7 @@ export function SetLogScreen({ setId }: { setId: string }) {
   if (!set.data || !logs.data) return <p className="text-body text-on-deep-muted lg:text-ink-muted">Loading the log…</p>;
   const s = set.data;
   const end = s.closedOn && s.closedOn < today ? s.closedOn : today;
-  const loggedToday = logs.data.some((l) => l.date === today);
+  const loggedToday = logs.data.some((l) => l.date === today) || pending.has(today);
   return (
     <>
       <PageHeader
@@ -33,10 +39,16 @@ export function SetLogScreen({ setId }: { setId: string }) {
         title={`Daily log · Set ${s.number}`}
         actions={s.status !== "closed" && !loggedToday ? <Button variant="primary" icon="plus" href={`/log/${s.id}/${today}`}>Log today</Button> : null}
       />
-      {saved ? <Notice tone="success" title={`Saved: Set ${s.number}, ${farmDay(saved)}`}>It counts straight away on Today and in the Set.</Notice> : null}
+      {saved && state === "on-phone" ? (
+        <Notice tone="neutral" icon="wifi-off" title={`Saved on this phone: Set ${s.number}, ${farmDay(saved)}`}>It will send when signal returns. Keep working.</Notice>
+      ) : null}
+      {saved && state === "conflict" ? (
+        <Notice tone="warning" title={`Someone else logged Set ${s.number} for ${farmDay(saved)} too`}>Both versions are kept. A manager will choose which one stays.</Notice>
+      ) : null}
+      {saved && (!state || state === "sent") ? <Notice tone="success" title={`Saved: Set ${s.number}, ${farmDay(saved)}`}>It counts straight away on Today and in the Set.</Notice> : null}
       {missing.data?.length ? <MissedDays setId={s.id} setNumber={s.number} days={missing.data} /> : null}
       <Panel flush title="Last 14 days" subtitle="Select a day to open it. Edited days keep their history.">
-        <LogTable setId={s.id} startDate={s.startDate} endDate={end} today={today} logs={logs.data} />
+        <LogTable setId={s.id} startDate={s.startDate} endDate={end} today={today} logs={logs.data} pending={pending} />
       </Panel>
     </>
   );

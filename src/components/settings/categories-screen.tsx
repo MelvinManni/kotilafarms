@@ -1,6 +1,6 @@
 "use client";
 // Settings › Expense categories
-import { useSession } from "next-auth/react";
+import { useCurrentUser } from "@/lib/auth/current-user";
 import { useState } from "react";
 import { CategorySheet } from "@/components/settings/category-sheet";
 import { SettingsTabs } from "@/components/settings/settings-tabs";
@@ -13,7 +13,7 @@ import { useCategories } from "@/hooks/queries/use-expenses";
 import type { ExpenseCategory } from "@/types/expense";
 
 export function CategoriesScreen() {
-  const role = useSession().data?.user.role ?? "manager";
+  const role = useCurrentUser().role;
   const categories = useCategories();
   const [sheet, setSheet] = useState<{ category?: ExpenseCategory } | null>(null);
   const rows = (categories.data ?? []).map((c) => ({ id: c.id, name: c.name, capital: c.isCapitalEligible ? { tag: { tone: "deep" as const, label: "Capital items allowed" } } : { value: "—", tone: "muted" as const } }));

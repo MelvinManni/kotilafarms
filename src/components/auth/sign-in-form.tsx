@@ -4,6 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useHydrated } from "@/hooks/use-hydrated";
+import { useRememberedUser } from "@/hooks/use-remembered-user";
+import { unsent, useOutboxItems } from "@/hooks/use-outbox-items";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/kotila/button";
 import { PasswordInput } from "@/components/kotila/fields/password-input";
@@ -24,10 +26,17 @@ export function SignInForm() {
   const [showHelp, setShowHelp] = useState(false);
   // A tap before the page is ready would reload it and lose what was typed
   const hydrated = useHydrated();
+  // Someone else's entries still on this phone must send before anyone else signs in here
+  const remembered = useRememberedUser();
+  const theirs = unsent(useOutboxItems(remembered?.id ?? "nobody")).length;
   const form = useForm<SignInInput>({ resolver: zodResolver(signInSchema), defaultValues: { email: "", password: "" } });
 
   const submit = form.handleSubmit(async (values) => {
     setError(null);
+    if (theirs && remembered && values.email.trim().toLowerCase() !== remembered.email.toLowerCase()) {
+      const first = remembered.name.split(" ")[0];
+      return setError(`${first}’s ${theirs} ${theirs === 1 ? "entry hasn’t" : "entries haven’t"} been sent yet. Sign in as ${first} with signal and wait for “All synced” first.`);
+    }
     try {
       const res = await signInWithPassword(values.email, values.password);
       if (res.ok) return router.replace(next?.startsWith("/") ? next : "/today");

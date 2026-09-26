@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { LedgerTable } from "@/components/kotila/ledger-table";
 import { tagLabel } from "@/constants/observation-tags";
+import type { PendingLog } from "@/lib/offline/pending-logs";
 import type { DailyLogRow } from "@/types/daily-log";
 import { addDays } from "@/utils/dates/add-days";
 import { clockTime, farmDay } from "@/utils/format/dates";
@@ -35,6 +36,21 @@ function logRow(log: DailyLogRow, today: string) {
   };
 }
 
+// Logged here but not sent yet
+function phoneRow(date: string, pending: PendingLog, startDate: string, today: string) {
+  const p = pending.payload;
+  const day = Math.round((Date.parse(date) - Date.parse(startDate)) / 86_400_000);
+  return {
+    id: date,
+    date: { value: farmDay(date), sub: `day ${day}${date === today ? " · today" : ""}` },
+    deaths: { value: String(p.deaths), figure: true },
+    feed: p.feedQty ? `${String(p.feedQty)} ${String(p.feedUnit ?? "bags")}` : muted,
+    water: p.waterLevel ? String(p.waterLevel) : muted,
+    seen: Array.isArray(p.tags) && p.tags.length ? (p.tags as string[]).map(tagLabel).join(", ") : muted,
+    by: { tag: { tone: "warning" as const, label: "On this phone" }, sub: "sends when there's signal" },
+  };
+}
+
 function emptyRow(date: string, startDate: string, today: string) {
   const day = Math.round((Date.parse(date) - Date.parse(startDate)) / 86_400_000);
   const isToday = date === today;
@@ -46,15 +62,16 @@ function emptyRow(date: string, startDate: string, today: string) {
   };
 }
 
-type LogTableProps = { setId: string; startDate: string; endDate: string; today: string; logs: DailyLogRow[]; days?: number };
+type LogTableProps = { setId: string; startDate: string; endDate: string; today: string; logs: DailyLogRow[]; pending?: Map<string, PendingLog>; days?: number };
 
-export function LogTable({ setId, startDate, endDate, today, logs, days = 14 }: LogTableProps) {
+export function LogTable({ setId, startDate, endDate, today, logs, pending, days = 14 }: LogTableProps) {
   const router = useRouter();
   const byDate = new Map(logs.map((l) => [l.date, l]));
   const rows = [];
   for (let d = endDate, i = 0; d >= startDate && i < days; d = addDays(d, -1), i++) {
     const log = byDate.get(d);
-    rows.push(log ? logRow(log, today) : emptyRow(d, startDate, today));
+    const onPhone = pending?.get(d);
+    rows.push(onPhone ? phoneRow(d, onPhone, startDate, today) : log ? logRow(log, today) : emptyRow(d, startDate, today));
   }
   return <LedgerTable dense caption="Daily logs, newest first" columns={columns} rows={rows} onRowClick={(r) => router.push(`/log/${setId}/${r.id}`)} />;
 }

@@ -151,6 +151,17 @@ Online-only creates (sales, feed purchases, payments, …) still send a `clientI
 - Items still queued show an "On this phone" tag in lists.
 - Missed days: `/api/sets/:id/missing-days` → "Set 5 has no log for Friday" with a **Fill in Friday** action.
 
+## As built (P1.8)
+
+- Service worker: Serwist (`@serwist/turbopack`), `src/app/sw.ts`, served at `/serwist/sw.js`; pages are cached as they are opened, `/~offline` when a page isn't on the phone yet. Off in development. It never reloads the page when signal returns (that would lose a half-typed log).
+- Screens read the signed-in person from the page (`useCurrentUser`), not a session fetch, so they open offline.
+- Results also include `"retry"`: the server hit a problem it may not hit next time; the phone backs off and tries again.
+- The sync sheet (tap the sync status) lists what is on the phone, entries turned down (with why, and Remove), clashes, and **Send now**, which ignores the backoff.
+- Saving with no signal confirms in place ("Saved on this phone") instead of loading another page.
+- Managers settle clashes from the sync sheet: both versions side by side, keep one; the choice is audited.
+- The React Query cache is kept in IndexedDB for 7 days and refreshed as soon as the app opens; signing out clears it and the cached pages.
+- Code: `src/lib/offline/*` (outbox, worker, submit), `src/server/services/sync/*`, `src/app/api/sync`, `src/app/api/conflicts`, `src/components/offline/*`.
+
 ## Tests that must exist
 
 Unit (Vitest, server service against a test database, and the outbox with `fake-indexeddb`):

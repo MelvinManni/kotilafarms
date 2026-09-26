@@ -7,6 +7,10 @@ const set5 = { id: "s5", number: 5, startDate: "2026-09-20", dayOfAge: 6 };
 const base = { today: "2026-09-26", sets: [set4, set5], loggedToday: [], vaccines: [], weekLogs: [], samples: [{ setId: "s4", ageDays: 24 }] };
 
 describe("todayTasks", () => {
+  it("says whose phone is holding a log", () => {
+    const tasks = todayTasks({ ...base, loggedToday: ["s5"], waiting: [{ person: "Chinedu Okafor", setId: "s4", date: "2026-09-25" }] });
+    expect(tasks[0]).toMatchObject({ title: "Friday’s Set 4 log is on Chinedu’s phone", detail: "Waiting for signal — it sends by itself" });
+  });
   it("asks for today's logs", () => expect(todayTasks(base)[0]).toMatchObject({ kind: "log", title: "Log Sets 4 and 5 for today", href: "/log" }));
   it("names a vaccine due tomorrow and a late one", () => {
     const tasks = todayTasks({ ...base, loggedToday: ["s4", "s5"], vaccines: [

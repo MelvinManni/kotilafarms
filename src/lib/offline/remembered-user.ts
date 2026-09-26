@@ -1,7 +1,7 @@
 // The last person signed in on this device, so they can open the app offline
 import type { Role } from "@/types/role";
 
-export type RememberedUser = { id: string; name: string; role: Role; lastOnlineAt: string };
+export type RememberedUser = { id: string; name: string; email: string; role: Role; lastOnlineAt: string };
 
 const KEY = "kotila:last-user";
 

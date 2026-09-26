@@ -1,6 +1,6 @@
 "use client";
 // /sets: headline figures, Running / Closed tabs and the ledger of Sets
-import { useSession } from "next-auth/react";
+import { useCurrentUser } from "@/lib/auth/current-user";
 import { useState } from "react";
 import { SetsFigures } from "@/components/sets/sets-figures";
 import { SetCards } from "@/components/sets/set-cards";
@@ -15,7 +15,7 @@ import { useSets } from "@/hooks/queries/use-sets";
 import { can } from "@/lib/auth/roles";
 
 export function SetsScreen() {
-  const role = useSession().data?.user.role;
+  const role = useCurrentUser().role;
   const sets = useSets();
   const [tab, setTab] = useState("all");
   const [starting, setStarting] = useState(false);

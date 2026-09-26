@@ -7,12 +7,14 @@ import { KotilaIcon } from "@/svgs/kotila-icon";
 import { Icon } from "@/svgs/icon";
 import { ROLE_LABEL, type Role } from "@/types/role";
 import type { SyncSummary } from "@/types/sync-state";
+
+type SyncWithAction = SyncSummary & { onClick?: () => void };
 import { initials } from "@/utils/format/initials";
 
 type TopBarProps = {
   title?: string;
   back?: { label: string; href: string };
-  sync?: SyncSummary;
+  sync?: SyncWithAction;
   user?: { name: string; role: Role };
   onAccount?: () => void;
 };

@@ -54,6 +54,13 @@ See AGENTS.md › Version policy. Look up every version with `pnpm view <pkg> ve
 | @playwright/test | 1.63.0 | P1.1 | Browser e2e tests (dev); uses installed Chrome when present |
 | @aws-sdk/client-s3 | 3.1141.0 | P1.5 | Receipt photos in the private S3 bucket |
 | @aws-sdk/s3-request-presigner | 3.1141.0 | P1.5 | Short-lived signed links to read receipts |
+| @tanstack/react-query (+ devtools) | 5.104.0 | P1.8 | Upgraded from 5.103.3; the persister needs ^5.104 |
+| @tanstack/react-query-persist-client / @tanstack/query-async-storage-persister | 5.104.0 | P1.8 | Keep the query cache in IndexedDB |
+| idb-keyval | 6.3.0 | P1.8 | IndexedDB storage for the query cache |
+| idb | 8.0.3 | P1.8 | The outbox (IndexedDB) |
+| @serwist/turbopack / serwist | 9.5.12 | P1.8 | Service worker for Turbopack builds (10.x is preview only) |
+| esbuild | 0.28.2 | P1.8 | Serwist builds the service worker with it (dev) |
+| fake-indexeddb | 6.2.5 | P1.8 | IndexedDB in unit tests (dev) |
 | shadcn | 4.21.0 | P0.4 | CLI; also provides `shadcn/tailwind.css` imported by globals.css |
 | @base-ui/react | 1.8.0 | P0.4 | Primitives under shadcn components |
 | cn | 0.4.0 | P0.4 | Tailwind class merge used by shadcn (replaces clsx + tailwind-merge) |

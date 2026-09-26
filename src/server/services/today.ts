@@ -1,8 +1,8 @@
 // Today's payload: running Sets, missed days, tasks, and (for money roles) what is owed
 import "server-only";
-import { and, gte, inArray, isNull } from "drizzle-orm";
+import { and, eq, gt, gte, inArray, isNull } from "drizzle-orm";
 import type { Executor } from "@/db";
-import { dailyLogs, setVaccines, weightSamples } from "@/db/schema";
+import { dailyLogs, devices, setVaccines, users, weightSamples } from "@/db/schema";
 import { can } from "@/lib/auth/roles";
 import { missingLogDays } from "@/server/services/daily-logs/missing";
 import { outstanding } from "@/server/services/sales/list";
@@ -22,12 +22,20 @@ export async function todayFor(db: Executor, role: Role, today: string): Promise
     Promise.all(sets.map(async (s) => (await missingLogDays(db, s.id, today)).map((date) => ({ setId: s.id, setNumber: s.number, date })))),
   ]);
   const loggedToday = logs.filter((l) => l.date === today).map((l) => l.setId);
+  // Logs other phones said are waiting, and that still haven't arrived
+  const holding = await db.select({ person: users.name, summary: devices.pendingSummary }).from(devices).innerJoin(users, eq(users.id, devices.userId)).where(gt(devices.pendingCount, 0));
+  const arrived = new Set((ids.length ? await db.select({ setId: dailyLogs.setId, date: dailyLogs.date }).from(dailyLogs).where(and(inArray(dailyLogs.setId, ids), isNull(dailyLogs.deletedAt))) : []).map((l) => `${l.setId}|${l.date}`));
+  const waiting = holding.flatMap((d) =>
+    (d.summary as { type: string; setId?: string | null; date?: string }[])
+      .filter((i) => i.type === "dailyLog.upsert" && i.setId && i.date && !arrived.has(`${i.setId}|${i.date}`))
+      .map((i) => ({ person: d.person, setId: i.setId!, date: i.date! })),
+  );
   const payload: TodayPayload = {
     date: today,
     sets,
     missed: missing.flat().sort((a, b) => b.date.localeCompare(a.date)),
     loggedToday,
-    tasks: todayTasks({ today, sets, loggedToday, vaccines, weekLogs: logs, samples }),
+    tasks: todayTasks({ today, sets, loggedToday, vaccines, weekLogs: logs, samples, waiting }),
   };
   return can.seeMoney(role) ? { ...payload, owed: await outstanding(db, today) } : payload;
 }

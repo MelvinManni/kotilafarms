@@ -8,6 +8,8 @@ import { Icon } from "@/svgs/icon";
 import type { NavItem } from "@/types/nav";
 import type { Role } from "@/types/role";
 import type { SyncSummary } from "@/types/sync-state";
+
+type SyncWithAction = SyncSummary & { onClick?: () => void };
 import { cn } from "@/utils/cn";
 
 type Badge = number | { count: number; title: string };
@@ -17,7 +19,7 @@ type SideRailProps = {
   active?: string;
   badges?: Record<string, Badge>;
   user?: { name: string; role: Role };
-  sync?: SyncSummary;
+  sync?: SyncWithAction;
   settingsHref?: string;
 };
 

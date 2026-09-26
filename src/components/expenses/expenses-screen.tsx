@@ -1,6 +1,6 @@
 "use client";
 // /expenses: filters, figures, the list and the category breakdown; ?add=1 opens the add sheet
-import { useSession } from "next-auth/react";
+import { useCurrentUser } from "@/lib/auth/current-user";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { HistorySheet } from "@/components/audit/history-sheet";
@@ -8,6 +8,7 @@ import { ExpenseFigures } from "@/components/expenses/expense-figures";
 import { ExpenseFilters } from "@/components/expenses/expense-filters";
 import { ExpenseList } from "@/components/expenses/expense-list";
 import { ExpenseSheet } from "@/components/expenses/expense-sheet";
+import { ExpensesOnPhone } from "@/components/expenses/expenses-on-phone";
 import { RemoveExpenseSheet } from "@/components/expenses/remove-expense-sheet";
 import { Button } from "@/components/kotila/button";
 import { BarList } from "@/components/kotila/charts/bar-list";
@@ -26,7 +27,7 @@ import { topCategories } from "@/utils/metrics/expense-summary";
 export function ExpensesScreen() {
   const params = useSearchParams();
   const router = useRouter();
-  const isOwner = useSession().data?.user.role === "owner";
+  const isOwner = useCurrentUser().role === "owner";
   const today = todayInZone(FARM_TIMEZONE);
   const [filters, setFilters] = useState<ExpenseFilterState>({ month: params.get("set") ? undefined : today.slice(0, 7), set: params.get("set") ?? undefined, show: "all" });
   const [sheet, setSheet] = useState<{ kind: "add" } | { kind: "edit" | "history" | "remove"; expense: ExpenseRow } | null>(params.get("add") ? { kind: "add" } : null);
@@ -47,6 +48,7 @@ export function ExpensesScreen() {
         actions={<Button variant="primary" icon="plus" onClick={() => setSheet({ kind: "add" })}>Add expense</Button>}
       />
       {sets.data && categories.data ? <ExpenseFilters value={filters} onChange={setFilters} sets={sets.data} categories={categories.data} months={recentMonths(today)} /> : null}
+      <ExpensesOnPhone />
       {list.isError ? <Notice tone="alert" action={{ label: "Try again", onClick: () => list.refetch() }}>{list.error.message}</Notice> : null}
       {list.data ? (
         list.data.rows.length === 0 ? (

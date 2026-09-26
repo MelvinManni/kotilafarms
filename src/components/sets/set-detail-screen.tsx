@@ -1,6 +1,6 @@
 "use client";
 // /sets/:id: header with actions, figures, deaths by day and spend by category
-import { useSession } from "next-auth/react";
+import { useCurrentUser } from "@/lib/auth/current-user";
 import { useState } from "react";
 import { DeathsByDay } from "@/components/sets/deaths-by-day";
 import { SetFigures } from "@/components/sets/set-figures";
@@ -21,7 +21,7 @@ import { categoryShare } from "@/utils/metrics/category-share";
 import { naira } from "@/utils/format/naira";
 
 export function SetDetailScreen({ id }: { id: string }) {
-  const role = useSession().data?.user.role;
+  const role = useCurrentUser().role;
   const set = useSet(id);
   const [staging, setStaging] = useState(false);
   const today = todayInZone(FARM_TIMEZONE);

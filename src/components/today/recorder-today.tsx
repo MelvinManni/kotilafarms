@@ -8,6 +8,8 @@ import { Figure } from "@/components/kotila/figure";
 import { Panel } from "@/components/kotila/panel";
 import { StatusChip } from "@/components/kotila/status-chip";
 import { PageHeader } from "@/components/layout/page-header";
+import { useOutboxItems } from "@/hooks/use-outbox-items";
+import { useCurrentUser } from "@/lib/auth/current-user";
 import type { TodayPayload } from "@/types/today";
 import { count } from "@/utils/format/count";
 import { fullDay } from "@/utils/format/dates";
@@ -15,6 +17,8 @@ import { pct } from "@/utils/format/percent";
 
 export function RecorderToday({ data }: { data: TodayPayload }) {
   const coming = data.tasks.filter((t) => t.kind !== "log");
+  // A log saved on this phone counts as done for today
+  const onPhone = useOutboxItems(useCurrentUser().id).filter((i) => i.type === "dailyLog.upsert" && i.payload.date === data.date).map((i) => String(i.payload.setId));
   return (
     <>
       <PageHeader eyebrow={fullDay(data.date)} title="Today" />
@@ -24,7 +28,7 @@ export function RecorderToday({ data }: { data: TodayPayload }) {
       ) : (
         <>
           <h2 className="m-0 mt-2 px-1 font-display text-title font-semibold">Log today</h2>
-          <LogTodayLinks sets={data.sets} today={data.date} loggedToday={data.loggedToday} />
+          <LogTodayLinks sets={data.sets} today={data.date} loggedToday={[...data.loggedToday, ...onPhone]} />
           <Panel flush>
             {data.sets.map((s) => (
               <div key={s.id} className="flex flex-col gap-3 border-t border-line-soft px-5 py-4 first:border-t-0">

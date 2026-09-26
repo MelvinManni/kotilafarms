@@ -2,6 +2,7 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Signika } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { SerwistProvider } from "@serwist/turbopack/react";
 import { Providers } from "@/app/providers";
 import "./globals.css";
 
@@ -22,6 +23,7 @@ const jakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "Kotila Farm",
   description: "Daily records, sales and money for Kotila Farms",
+  appleWebApp: { capable: true, title: "Kotila", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {
@@ -32,9 +34,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${signika.variable} ${jakarta.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
-        <Providers>
-          <TooltipProvider>{children}</TooltipProvider>
-        </Providers>
+        {/* Registers the offline service worker (off in development, where it would cache stale code) */}
+        <SerwistProvider swUrl="/serwist/sw.js" disable={process.env.NODE_ENV === "development"} cacheOnNavigation reloadOnOnline={false}>
+          <Providers>
+            <TooltipProvider>{children}</TooltipProvider>
+          </Providers>
+        </SerwistProvider>
       </body>
     </html>
   );

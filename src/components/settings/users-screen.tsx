@@ -1,6 +1,6 @@
 "use client";
 // Settings › Users and roles: the people list, their access, invites, and the role table
-import { useSession } from "next-auth/react";
+import { useCurrentUser } from "@/lib/auth/current-user";
 import { useState } from "react";
 import { InviteSheet } from "@/components/settings/invite-sheet";
 import { PeopleTable } from "@/components/settings/people-table";
@@ -14,7 +14,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { useUsers, type UserRow } from "@/hooks/queries/use-users";
 
 export function UsersScreen() {
-  const me = useSession().data?.user;
+  const me = useCurrentUser();
   const users = useUsers();
   const [inviting, setInviting] = useState(false);
   const [selected, setSelected] = useState<UserRow | null>(null);

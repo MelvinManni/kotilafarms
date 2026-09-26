@@ -13,12 +13,13 @@ import { FARM_TIMEZONE } from "@/constants/farm";
 import { useAddExpense, useCategories, useEditExpense } from "@/hooks/queries/use-expenses";
 import { useSets } from "@/hooks/queries/use-sets";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { removeItem } from "@/lib/offline/outbox";
 import type { ExpenseRow } from "@/types/expense";
 import { todayInZone } from "@/utils/dates/today-in-zone";
 
-type ExpenseSheetProps = { expense?: ExpenseRow; presetSet?: string; onClose: () => void; onSaved?: (row: ExpenseRow) => void; extraActions?: React.ReactNode };
+type ExpenseSheetProps = { expense?: ExpenseRow; presetSet?: string; onClose: () => void; extraActions?: React.ReactNode };
 
-export function ExpenseSheet({ expense, presetSet, onClose, onSaved, extraActions }: ExpenseSheetProps) {
+export function ExpenseSheet({ expense, presetSet, onClose, extraActions }: ExpenseSheetProps) {
   const phone = useMediaQuery("(max-width: 1023px)");
   const categories = useCategories();
   const sets = useSets();
@@ -35,19 +36,21 @@ export function ExpenseSheet({ expense, presetSet, onClose, onSaved, extraAction
   });
   const [date, amount] = useWatch({ control: form.control, name: ["date", "amount"] });
   const askReason = Boolean(expense && expense.date < today && amount !== expense.amount);
+  const [rejected, setRejected] = useState<string | null>(null);
   const pending = add.isPending || edit.isPending;
-  const error = add.error ?? edit.error;
+  const error = rejected ?? (add.error ?? edit.error)?.message ?? null;
 
-  const submit = form.handleSubmit(({ attribution, reason, capitalItem, ...values }) => {
+  const submit = form.handleSubmit(async ({ attribution, reason, capitalItem, ...values }) => {
     if (askReason && !reason.trim()) return form.setError("reason", { message: "Say why you're changing the amount after the day." });
     const capital = Boolean(categories.data?.find((c) => c.id === values.categoryId)?.isCapitalEligible && capitalItem);
     const body = { ...values, ...attributionToApi(attribution), capitalItem: capital };
-    const done = (row: ExpenseRow) => {
-      onSaved?.(row);
-      onClose();
-    };
-    if (expense) edit.mutate({ id: expense.id, ...body, baseVersion: expense.version, reason: reason.trim() || undefined }, { onSuccess: done });
-    else add.mutate({ clientId, ...body }, { onSuccess: done });
+    setRejected(null);
+    if (expense) return edit.mutate({ id: expense.id, ...body, baseVersion: expense.version, reason: reason.trim() || undefined }, { onSuccess: onClose });
+    const { item, state } = await add.mutateAsync({ clientId, ...body });
+    if (state !== "rejected") return onClose();
+    // Turned down: say why here and drop it, so the fixed one replaces it
+    setRejected(item.error?.message ?? "The farm records turned this down.");
+    await removeItem(item.mutationId);
   });
 
   return (
@@ -67,7 +70,7 @@ export function ExpenseSheet({ expense, presetSet, onClose, onSaved, extraAction
     >
       <FormProvider {...form}>
         <form onSubmit={submit} noValidate className="flex flex-col gap-5">
-          {error ? <Notice tone="alert" compact>{error.message}</Notice> : null}
+          {error ? <Notice tone="alert" compact>{error}</Notice> : null}
           {categories.data && sets.data ? (
             <ExpenseFields categories={categories.data} sets={attributionSets(sets.data, date)} askReason={askReason} showAttributionError={Boolean(form.formState.errors.attribution)} />
           ) : (

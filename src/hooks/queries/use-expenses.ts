@@ -1,5 +1,7 @@
 // Expenses: list with filters, categories, add, change, remove, receipt upload
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCurrentUser } from "@/lib/auth/current-user";
+import { submitViaOutbox } from "@/lib/offline/submit";
 import { apiFetch, ApiRequestError } from "@/lib/query/fetcher";
 import { REFERENCE_STALE_MS } from "@/lib/query/query-client";
 import { qk } from "@/lib/query/query-keys";
@@ -30,9 +32,14 @@ function useRefreshMoney() {
   };
 }
 
+// New expenses go through the outbox, so they save with no signal and can never be added twice
 export function useAddExpense() {
   const refresh = useRefreshMoney();
-  return useMutation({ mutationFn: (input: ExpenseCreateInput) => apiFetch<ExpenseRow>("/api/expenses", { method: "POST", body: input }), onSuccess: refresh });
+  const user = useCurrentUser();
+  return useMutation({
+    mutationFn: ({ clientId, ...payload }: ExpenseCreateInput) => submitViaOutbox({ type: "expense.create", clientId, userId: user.id, payload }),
+    onSettled: refresh,
+  });
 }
 
 export function useEditExpense() {

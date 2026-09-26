@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Offline v1 and duplicate-free sync
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P1.8
+- **Summary:** Built `docs/07-offline-sync.md`. Daily logs and new expenses always go through an IndexedDB outbox (online too): ids fixed per form, pending entries changed in place, per-record order, stuck sends reset after 2 minutes, backoff 30s → 30 min, pause on 401, one runner across tabs (Web Locks), triggers on signal back / app to front / after a save / every 60s. `/api/sync` applies each entry in its own transaction with a ledger row (`sync_mutations`): replays return `duplicate`, a reused id with a different payload is refused, a race of two copies makes one row, two people logging one day become one conflict for a manager (settled side by side, audited), a matching expense is flagged. Device heartbeat feeds Today ("Friday's Set 4 log is on Chinedu's phone"). Serwist service worker, manifest and icons, `/~offline`; the query cache kept in IndexedDB; sync status is real, with a sheet (waiting, turned down, clashes, Send now); sign-out warns about unsent entries; nobody else can sign in on a phone holding someone's unsent entries.
+- **Files:** `src/lib/offline/*`, `src/server/services/{sync/*,conflicts}.ts`, `src/app/api/{sync,conflicts}/**`, `src/components/offline/*`, `src/app/{sw.ts,manifest.ts,serwist/[path]/route.ts,~offline/page.tsx,providers.tsx,layout.tsx}`, `src/lib/auth/current-user.tsx`, `src/lib/query/persister.ts`, `src/hooks/{use-outbox-items,use-sync-summary}.ts`, `public/icons/*`, `next.config.ts`, `e2e/offline.spec.ts`
+- **Packages:** see `docs/11-versions.md` (P1.8 rows); @tanstack/react-query upgraded to 5.104.0
+- **Migrations:** none (tables came in P0.6)
+- **Follow-ups:** All ten tests from the offline doc exist (server, outbox and worker on fake IndexedDB, and two Playwright flows: log offline → reload → online = one row; reply lost mid-send = one row). Weight samples join the outbox in P2.1. Bugs found on the way: React Query drops per-call `onSuccess` when a form remounts (saves now use `mutateAsync`), and a restored cache counted as fresh (now refetched on open).
+
 ### 2026-09-26 — Today
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P1.7
 - **Summary:** `/api/today` (role-shaped: no money for recorders) and `/today`. Owners and managers: owed band (total, oldest, biggest balances → See balances), the latest missed day per Set with Fill in, Active Sets (age, live, mortality, deaths this week vs last, spend), Needs doing today. Recorders (phone): missed days, big Log today buttons (ticked once logged), each Set's counts with this week vs last, Coming up. Tasks come from a tested rule set: logs not in, vaccines due tomorrow / today / late (from each Set's schedule), weighing day within 3 days, a tag seen 3+ days this week. Notices drop their action under the text on phones.

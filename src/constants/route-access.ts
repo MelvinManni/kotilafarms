@@ -1,7 +1,7 @@
 // Which pages each role may open (the API checks again on every call)
 import type { Role } from "@/types/role";
 
-const PUBLIC = ["/sign-in", "/invite/", "/api/auth/", "/api/invites/accept"];
+const PUBLIC = ["/sign-in", "/invite/", "/api/auth/", "/api/invites/accept", "/serwist/", "/~offline", "/manifest.webmanifest", "/icons/"];
 
 // Longest matching prefix wins
 const ACCESS: [string, Role[]][] = [
