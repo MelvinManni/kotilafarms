@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Steady accessibility check on sign-in
+- **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P3.5)
+- **Summary:** The sign-in accessibility check sometimes ran while the Sign in button was still fading from its "not ready" grey to green, and measured the colour mid-fade. It now waits for the button's resting colour (5:1 against white text) before scanning. No app change.
+- **Files:** `e2e/a11y.spec.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** none.
+
 ### 2026-09-26 — Editable Set schedules and share register
 - **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P2.4, P3.3)
 - **Summary:** Melvin asked for schedules to be adjustable and editable. On Health, each running Set's schedule has **Change schedule**: move a dose's due day, add a dose, or drop one not given yet (a given dose must be marked not given first); an optional reason is kept in the audit trail; stale copies and repeated doses are refused; the farm defaults in Settings stay as they are, and closed Sets can't change. The share register is editable too: select a shareholder to fix a name or share count, with a required reason in the history. Also fixed a flaky order in edit histories: rows written in one transaction share a time, so the create now always reads first.

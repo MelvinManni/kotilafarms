@@ -13,7 +13,10 @@ async function problems(page: import("@playwright/test").Page) {
 
 test("sign-in page has no serious accessibility problems", async ({ page }) => {
   await page.goto("/sign-in");
-  await page.getByRole("button", { name: "Sign in" }).waitFor();
+  // Scan once it's usable: before hydration the button is greyed out on purpose, then fades to green
+  const button = page.getByRole("button", { name: "Sign in" });
+  await expect(button).toBeEnabled();
+  await expect(button).toHaveCSS("background-color", "rgb(61, 122, 18)");
   expect(await problems(page)).toEqual([]);
 });
 
