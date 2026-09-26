@@ -10,9 +10,9 @@ const columns = [{ key: "vax", label: "Vaccine" }, { key: "due", label: "Due" },
 
 const TONE = { given: "success", "given-late": "warning", late: "alert", "due-today": "warning", "due-tomorrow": "warning", upcoming: "neutral" } as const;
 
-type SchedulePanelProps = { set: SetSummary; vaccines: SetVaccineRow[] | undefined; onOpen: (v: SetVaccineRow) => void };
+type SchedulePanelProps = { set: SetSummary; vaccines: SetVaccineRow[] | undefined; onOpen: (v: SetVaccineRow) => void; onEdit: () => void };
 
-export function SchedulePanel({ set, vaccines, onOpen }: SchedulePanelProps) {
+export function SchedulePanel({ set, vaccines, onOpen, onEdit }: SchedulePanelProps) {
   const given = vaccines?.filter((v) => v.givenOn).length ?? 0;
   const all = vaccines && vaccines.length > 0 && given === vaccines.length ? ` · all ${vaccines.length} given` : "";
   const rows = (vaccines ?? []).map((v) => ({
@@ -23,7 +23,7 @@ export function SchedulePanel({ set, vaccines, onOpen }: SchedulePanelProps) {
     status: { tag: { tone: TONE[v.state], label: vaccineStateLabel(v) } },
   }));
   return (
-    <Panel flush title={`Vaccine schedule · Set ${set.number}`} subtitle={`${set.pen ? `${set.pen} · ` : ""}started ${shortDate(set.startDate, false)} · day ${set.dayOfAge}${all}`}>
+    <Panel flush title={`Vaccine schedule · Set ${set.number}`} subtitle={`${set.pen ? `${set.pen} · ` : ""}started ${shortDate(set.startDate, false)} · day ${set.dayOfAge}${all}`} action={vaccines && set.status !== "closed" ? { label: "Change schedule", onClick: onEdit } : undefined}>
       {vaccines ? (
         rows.length ? <LedgerTable caption={`Set ${set.number} vaccines`} columns={columns} rows={rows} onRowClick={(r) => onOpen(vaccines.find((v) => v.id === r.id)!)} /> : <p className="m-0 px-6 pb-5 text-body text-ink-muted">No vaccines on this Set’s schedule.</p>
       ) : (

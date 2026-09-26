@@ -2,7 +2,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/query/fetcher";
 import { qk } from "@/lib/query/query-keys";
-import type { CapitalEntryCreate, LoanCreate, LoanRepay, ShareholderCreate } from "@/schemas/capital";
+import type { CapitalEntryCreate, LoanCreate, LoanRepay, ShareholderCreate, ShareholderUpdate } from "@/schemas/capital";
 import type { CapitalPayload } from "@/types/capital";
 
 export function useCapital() {
@@ -29,4 +29,8 @@ export function useAddLoan() {
 
 export function useRepayLoan() {
   return useMutation({ mutationFn: ({ id, ...input }: LoanRepay & { id: string }) => apiFetch(`/api/finance/loans/${id}`, { method: "PATCH", body: input }), onSuccess: useRefresh() });
+}
+
+export function useUpdateShareholder() {
+  return useMutation({ mutationFn: ({ id, ...input }: ShareholderUpdate & { id: string }) => apiFetch(`/api/finance/shareholders/${id}`, { method: "PATCH", body: input }), onSuccess: useRefresh() });
 }

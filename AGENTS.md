@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Editable Set schedules and share register
+- **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P2.4, P3.3)
+- **Summary:** Melvin asked for schedules to be adjustable and editable. On Health, each running Set's schedule has **Change schedule**: move a dose's due day, add a dose, or drop one not given yet (a given dose must be marked not given first); an optional reason is kept in the audit trail; stale copies and repeated doses are refused; the farm defaults in Settings stay as they are, and closed Sets can't change. The share register is editable too: select a shareholder to fix a name or share count, with a required reason in the history. Also fixed a flaky order in edit histories: rows written in one transaction share a time, so the create now always reads first.
+- **Files:** `src/server/services/health/set-schedule.ts`, `src/app/api/sets/[id]/vaccine-schedule/route.ts`, `src/components/health/{set-schedule-sheet,set-dose-row,schedule-panel,health-screen}.tsx`, `src/server/services/finance/{capital,capital-writes}.ts`, `src/app/api/finance/shareholders/[id]/route.ts`, `src/components/finance/{shareholder-sheet,ownership-panel,capital-screen}.tsx`, `src/hooks/queries/{use-health,use-capital}.ts`, `src/types/capital.ts`, `src/server/services/audit-trail.ts`, tests in `src/app/api/{health,finance/capital}/*.db.test.ts`, `e2e/{health,capital}.spec.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** none.
+
 ### 2026-09-26 — Schemas on zod/mini
 - **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P3.5)
 - **Summary:** Melvin asked to switch to `zod/mini`. Every schema, form schema, route query and env check now uses its functional style (`.check(z.trim(), z.minLength(…))`, `z.optional`, `z.extend`, `z.partial`, `z.pipe`); shared `whole()` and `text()` checks live in `src/schemas/checks.ts`. Validation errors are caught as `z.core.$ZodError`. Messages are unchanged. First-visit JS on a phone fell from 348 KB to 279 KB and sign-in is ready about 0.4 s sooner on slow 4G. Also adds the schemas for the next two changes (a Set's own vaccine schedule, fixing the share register).

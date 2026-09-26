@@ -5,7 +5,7 @@ import type { Executor } from "@/db";
 import { capitalEntries, loans, shareholders } from "@/db/schema";
 import { recordChange, recordCreate } from "@/server/audit";
 import { conflict, notFound, unprocessable } from "@/server/errors";
-import type { CapitalEntryCreate, LoanCreate, LoanRepay, ShareholderCreate } from "@/schemas/capital";
+import type { CapitalEntryCreate, LoanCreate, LoanRepay, ShareholderCreate, ShareholderUpdate } from "@/schemas/capital";
 import type { SessionUser } from "@/types/session";
 
 async function shareholder(db: Executor, id: string) {
@@ -20,6 +20,18 @@ export async function addShareholder(db: Executor, input: ShareholderCreate, act
     if (existing) return existing;
     const [row] = await tx.insert(shareholders).values({ ...input, createdBy: actor.id }).returning();
     await recordCreate(tx, "shareholders", row!.id, { userId: actor.id });
+    return row!;
+  });
+}
+
+// Fix a name or share count in the register; the reason is kept in the audit trail
+export async function updateShareholder(db: Executor, id: string, input: ShareholderUpdate, actor: SessionUser) {
+  return db.transaction(async (tx) => {
+    const before = await shareholder(tx, id);
+    if (before.version !== input.baseVersion) throw conflict("Someone changed this shareholder. Open it again.");
+    const after = { ...(input.name !== undefined ? { name: input.name } : {}), ...(input.shares !== undefined ? { shares: input.shares } : {}) };
+    const [row] = await tx.update(shareholders).set({ ...after, version: before.version + 1 }).where(eq(shareholders.id, id)).returning();
+    await recordChange(tx, { table: "shareholders", rowId: id, before, after, reason: input.reason, userId: actor.id });
     return row!;
   });
 }

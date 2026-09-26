@@ -20,6 +20,15 @@ test("manager marks Gumboro given and records a treatment", async ({ page }) => 
   await expect(gumboro).toContainText("Given");
   await expect(gumboro).toContainText("Day 6");
 
+  // Move this Set's Lasota 1st dose from day 10 to day 12
+  await panel.getByRole("button", { name: "Change schedule" }).click();
+  const edit = page.getByRole("dialog");
+  await edit.getByRole("spinbutton", { name: "Row 2: due on day" }).fill("12");
+  await edit.getByRole("textbox", { name: "Why the change" }).fill("Vet's advice");
+  await edit.getByRole("button", { name: "Save schedule" }).click();
+  await expect(edit).toHaveCount(0);
+  await expect(panel.getByRole("row", { name: /Lasota 1st dose/ })).toContainText("Day 12");
+
   await page.getByRole("button", { name: "Record a treatment" }).first().click();
   const treat = page.getByRole("dialog");
   await treat.getByRole("combobox", { name: "Set" }).click();

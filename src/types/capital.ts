@@ -1,7 +1,7 @@
 // Partner capital and loans page data
 import type { LoanInterest } from "@/utils/metrics/loans";
 
-export type ShareholderRow = { id: string; name: string; shares: number; ownership: number; contributed: number; withdrawn: number; net: number };
+export type ShareholderRow = { id: string; version: number; name: string; shares: number; ownership: number; contributed: number; withdrawn: number; net: number };
 
 export type LoanRow = { id: string; lender: { id: string; name: string }; amount: number; advancedOn: string; repaidOn: string | null; rate: number; whtRate: number; interest: LoanInterest; version: number };
 

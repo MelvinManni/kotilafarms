@@ -17,6 +17,17 @@ test("owner records capital and a loan, then repays it", async ({ page }) => {
   await expect(sheet).toHaveCount(0);
   await expect(page.getByRole("row", { name: /^Emeka/ })).toContainText("120,173");
 
+  // Correct the share count
+  await page.getByRole("row", { name: /^Emeka/ }).click();
+  sheet = page.getByRole("dialog");
+  await sheet.getByRole("textbox", { name: "Shares held" }).fill("120174");
+  await sheet.getByRole("button", { name: "Save changes" }).click();
+  await expect(sheet.getByText("Say why the register changed.")).toBeVisible();
+  await sheet.getByRole("textbox", { name: "Why it changed" }).fill("One share transferred");
+  await sheet.getByRole("button", { name: "Save changes" }).click();
+  await expect(sheet).toHaveCount(0);
+  await expect(page.getByRole("row", { name: /^Emeka/ })).toContainText("120,174");
+
   await page.getByRole("button", { name: "Record a contribution" }).click();
   sheet = page.getByRole("dialog");
   await sheet.getByRole("combobox", { name: "Shareholder" }).click();

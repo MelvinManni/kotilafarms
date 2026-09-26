@@ -18,7 +18,7 @@ export async function capitalFor(db: Executor, today: string): Promise<CapitalPa
   ]);
   const totalShares = people.reduce((a, p) => a + p.shares, 0);
   const rows = people
-    .map((p) => ({ id: p.id, name: p.name, shares: p.shares, ownership: ownershipShare(p.shares, totalShares), ...capitalPosition(entries.filter((e) => e.shareholderId === p.id).map((e) => e.amount)) }))
+    .map((p) => ({ id: p.id, version: p.version, name: p.name, shares: p.shares, ownership: ownershipShare(p.shares, totalShares), ...capitalPosition(entries.filter((e) => e.shareholderId === p.id).map((e) => e.amount)) }))
     .sort((a, b) => b.shares - a.shares);
   const totals = { shares: totalShares, contributed: rows.reduce((a, r) => a + r.contributed, 0), withdrawn: rows.reduce((a, r) => a + r.withdrawn, 0), net: rows.reduce((a, r) => a + r.net, 0) };
   const list = loanRows.map(({ l, name }) => ({ id: l.id, lender: { id: l.lenderShareholderId, name }, amount: l.amount, advancedOn: l.advancedOn, repaidOn: l.repaidOn, rate: l.rate, whtRate: l.whtRate, interest: loanInterest(l.amount, l.advancedOn, l.repaidOn ?? today, l.rate, l.whtRate), version: l.version }));

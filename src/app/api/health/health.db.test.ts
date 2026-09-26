@@ -2,6 +2,7 @@
 import { eq } from "drizzle-orm";
 import { describe, expect, it } from "vitest";
 import { GET as vaccines, PATCH as mark } from "@/app/api/sets/[id]/vaccines/route";
+import { PATCH as reschedule } from "@/app/api/sets/[id]/vaccine-schedule/route";
 import { POST as startSet } from "@/app/api/sets/route";
 import { GET as schedule, PATCH as saveSchedule } from "@/app/api/settings/vaccine-schedule/route";
 import { GET as records, POST as record } from "@/app/api/health/route";
@@ -71,6 +72,30 @@ describe("health API", () => {
       const theirs = (await call(vaccines, { params: { id: started.body.id } })).body;
       expect(theirs.map((v: { item: string; dueAgeDays: number; method: string }) => `${v.item} ${v.dueAgeDays}`)).toEqual(["Gumboro 7", "Lasota 10", "Gumboro 16", "Fowl pox 28"]);
       expect(theirs.at(-1).method).toBe("Wing web");
+    });
+  });
+
+  it("changes one Set's own schedule: moves a day, adds a dose, drops one not given, keeps given doses", async () => {
+    await withApi(async (tx) => {
+      const { set, recorder } = await farm(tx);
+      const params = { id: set.id };
+      const list = (await call(vaccines, { params })).body as { id: string; item: string; doseNo: number; dueAgeDays: number; version: number }[];
+      await call(mark, { method: "PATCH", params, body: { vaccineId: list[0]!.id, givenOn: "2026-09-26" } });
+      const given = (await call(vaccines, { params })).body[0];
+      const rows = (keep: typeof list) => keep.map(({ id, item, doseNo, dueAgeDays, version }) => ({ id, item, doseNo, dueAgeDays, version }));
+      const moved = [...rows([given, ...list.slice(1, 3)]).map((r) => (r.item === "Gumboro" && r.doseNo === 2 ? { ...r, dueAgeDays: 16 } : r)), { item: "Fowl pox", doseNo: 1, dueAgeDays: 28 }];
+      const res = await call(reschedule, { method: "PATCH", params, body: { rows: moved, reason: "Vet's advice" } });
+      expect(res.status).toBe(200);
+      expect(res.body.map((v: { item: string; doseNo: number; dueAgeDays: number }) => `${v.item} ${v.doseNo} day ${v.dueAgeDays}`)).toEqual(["Gumboro 1 day 7", "Lasota 1 day 10", "Gumboro 2 day 16", "Fowl pox 1 day 28"]);
+      const moveAudit = await tx.select().from(auditEvents).where(eq(auditEvents.rowId, list[2]!.id));
+      expect(moveAudit.some((a) => a.field === "dueAgeDays" && a.reason === "Vet's advice")).toBe(true);
+
+      // A given dose can't be dropped; a stale copy is refused; a repeated dose is refused
+      expect((await call(reschedule, { method: "PATCH", params, body: { rows: [] } })).body.error.message).toBe("Gumboro 1st dose was already given. Mark it not given before removing it.");
+      expect((await call(reschedule, { method: "PATCH", params, body: { rows: rows([given, ...list.slice(1, 3)]) } })).status).toBe(409);
+      expect((await call(reschedule, { method: "PATCH", params, body: { rows: [...rows([given]), { item: "gumboro", doseNo: 1, dueAgeDays: 9 }] } })).status).toBe(422);
+      signInAs(recorder);
+      expect((await call(reschedule, { method: "PATCH", params, body: { rows: [] } })).status).toBe(403);
     });
   });
 });

@@ -2,7 +2,7 @@
 import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/query/fetcher";
 import { qk } from "@/lib/query/query-keys";
-import type { HealthRecordCreateInput, VaccineMark, VaccineSchedule } from "@/schemas/health";
+import type { HealthRecordCreateInput, SetSchedule, VaccineMark, VaccineSchedule } from "@/schemas/health";
 import type { HealthRecordRow, ScheduleDefault, SetVaccineRow } from "@/types/health";
 
 export function useSetVaccines(setId: string) {
@@ -50,5 +50,17 @@ export function useSaveVaccineSchedule() {
 export function useRunningVaccines(setIds: string[]) {
   return useQueries({
     queries: setIds.map((id) => ({ queryKey: qk.sets.vaccines(id), queryFn: ({ signal }: { signal: AbortSignal }) => apiFetch<SetVaccineRow[]>(`/api/sets/${id}/vaccines`, { signal }) })),
+  });
+}
+
+// Change one Set's own schedule (not the farm defaults)
+export function useSaveSetSchedule(setId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (input: SetSchedule) => apiFetch<SetVaccineRow[]>(`/api/sets/${setId}/vaccine-schedule`, { method: "PATCH", body: input }),
+    onSuccess: (rows) => {
+      client.setQueryData(qk.sets.vaccines(setId), rows);
+      void client.invalidateQueries({ queryKey: qk.today() });
+    },
   });
 }

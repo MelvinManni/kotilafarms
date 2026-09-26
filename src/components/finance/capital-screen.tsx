@@ -17,9 +17,9 @@ import { PageHeader } from "@/components/layout/page-header";
 import { useCapital } from "@/hooks/queries/use-capital";
 import { useOnline } from "@/hooks/use-online";
 import { useCurrentUser } from "@/lib/auth/current-user";
-import type { LoanRow } from "@/types/capital";
+import type { LoanRow, ShareholderRow } from "@/types/capital";
 
-type Open = { kind: "shareholder" } | { kind: "contribution" } | { kind: "loan" } | { kind: "detail"; loan: LoanRow } | null;
+type Open = { kind: "shareholder"; shareholder?: ShareholderRow } | { kind: "contribution" } | { kind: "loan" } | { kind: "detail"; loan: LoanRow } | null;
 
 export function CapitalScreen() {
   const role = useCurrentUser().role;
@@ -47,7 +47,7 @@ export function CapitalScreen() {
       {capital.isError ? <Notice tone="alert">{capital.error.message}</Notice> : null}
       {c ? (
         <>
-          <OwnershipPanel c={c} onAdd={() => setOpen({ kind: "shareholder" })} />
+          <OwnershipPanel c={c} onAdd={() => setOpen({ kind: "shareholder" })} onOpen={(shareholder) => setOpen({ kind: "shareholder", shareholder })} />
           <LoansPanel loans={c.loans} onOpen={(loan) => setOpen({ kind: "detail", loan })} />
           <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
             <CapacityPanel c={c} />
@@ -56,7 +56,7 @@ export function CapitalScreen() {
           </div>
         </>
       ) : capital.isPending ? <p className="text-body text-on-deep-muted lg:text-ink-muted">Opening the register…</p> : null}
-      {open?.kind === "shareholder" ? <ShareholderSheet onClose={close} /> : null}
+      {open?.kind === "shareholder" ? <ShareholderSheet shareholder={open.shareholder} onClose={close} /> : null}
       {open?.kind === "contribution" && c ? <ContributionSheet shareholders={c.shareholders} onClose={close} /> : null}
       {open?.kind === "loan" && c ? <LoanSheet c={c} onClose={close} /> : null}
       {open?.kind === "detail" ? <LoanDetailSheet loan={open.loan} onClose={close} /> : null}

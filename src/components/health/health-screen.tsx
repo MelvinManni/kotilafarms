@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { MarkGivenSheet } from "@/components/health/mark-given-sheet";
 import { SchedulePanel } from "@/components/health/schedule-panel";
+import { SetScheduleSheet } from "@/components/health/set-schedule-sheet";
 import { TreatmentSheet } from "@/components/health/treatment-sheet";
 import { TreatmentsPanel } from "@/components/health/treatments-panel";
 import { Button } from "@/components/kotila/button";
@@ -21,8 +22,12 @@ export function HealthScreen() {
   const records = useHealthRecords();
   const [marking, setMarking] = useState<{ setId: string; setNumber: number; vaccine: SetVaccineRow } | null>(null);
   const [treating, setTreating] = useState(false);
+  const [editing, setEditing] = useState<string | null>(null);
   const due = running.flatMap((s, i) => (vaccines[i]?.data ?? []).map((vaccine) => ({ setId: s.id, setNumber: s.number, liveBirds: s.liveBirds, vaccine })));
   const pressing = mostPressingVaccine(due);
+  const editingIndex = running.findIndex((s) => s.id === editing);
+  const editingSet = running[editingIndex];
+  const editingVaccines = vaccines[editingIndex]?.data;
   const notice = pressing ? vaccineNotice(pressing) : null;
   const failed = sets.error ?? records.error ?? vaccines.find((q) => q.error)?.error;
   return (
@@ -46,11 +51,12 @@ export function HealthScreen() {
       ) : null}
       <div className="grid gap-5 xl:grid-cols-2">
         {running.map((s, i) => (
-          <SchedulePanel key={s.id} set={s} vaccines={vaccines[i]?.data} onOpen={(vaccine) => setMarking({ setId: s.id, setNumber: s.number, vaccine })} />
+          <SchedulePanel key={s.id} set={s} vaccines={vaccines[i]?.data} onOpen={(vaccine) => setMarking({ setId: s.id, setNumber: s.number, vaccine })} onEdit={() => setEditing(s.id)} />
         ))}
       </div>
       {records.data ? <TreatmentsPanel rows={records.data} onRecord={() => setTreating(true)} /> : null}
       {marking ? <MarkGivenSheet {...marking} onClose={() => setMarking(null)} /> : null}
+      {editingSet && editingVaccines ? <SetScheduleSheet setId={editingSet.id} setNumber={editingSet.number} vaccines={editingVaccines} onClose={() => setEditing(null)} /> : null}
       {treating ? <TreatmentSheet sets={running} onClose={() => setTreating(false)} /> : null}
     </>
   );
