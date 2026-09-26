@@ -23,3 +23,10 @@ export function pnlHeadline(p: PnlPayload): { title: string; subtitle: string } 
   const closed = p.sets.length === 1 && p.sets[0]!.closedOn ? ` · closed ${longDate(p.sets[0]!.closedOn)}` : running ? " · still running" : "";
   return { title, subtitle: `${count(p.intake)} day-olds, ${count(p.birdsSold)} sold${closed}` };
 }
+
+// "Loans may not pass 50% of equity (₦2,810,000). 36% of that cap is used."
+export function capacityLine(c: { capPct: number; equity: number; cap: number; outstanding: number; overCap: boolean }): string {
+  const used = c.cap > 0 ? c.outstanding / c.cap : 0;
+  const rule = `Loans may not pass ${pct(c.capPct, 0)} of equity (${naira(c.equity)}).`;
+  return c.overCap ? `${rule} They are ${naira(c.outstanding - c.cap)} over it.` : `${rule} ${pct(used, 0)} of that cap is used.`;
+}

@@ -2,6 +2,7 @@
 // /finance: cash position since the last count, and what each Set made
 import { useState } from "react";
 import { CashPanel } from "@/components/finance/cash-panel";
+import { FinanceTabs } from "@/components/finance/finance-tabs";
 import { PnlPanel } from "@/components/finance/pnl-panel";
 import { ReconcileSheet } from "@/components/finance/reconcile-sheet";
 import { EmptyState } from "@/components/kotila/empty-state";
@@ -20,6 +21,7 @@ export function FinanceScreen() {
   return (
     <>
       <PageHeader eyebrow="Money in and out, and what each Set made" title="Finance" />
+      <FinanceTabs active="cash" role={role} />
       {failed ? <Notice tone="alert">{failed.message}</Notice> : null}
       {cash.data ? <CashPanel cash={cash.data} canReconcile={role === "owner"} onReconcile={() => setReconciling(true)} /> : failed ? null : <p className="text-body text-on-deep-muted lg:text-ink-muted">Loading the books…</p>}
       {sets.data?.length === 0 ? (

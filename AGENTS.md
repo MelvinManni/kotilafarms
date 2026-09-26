@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-26 — Partner capital and shareholder loans
+- **Agent:** Claude Code (Opus 5.5) · **Task:** P3.3
+- **Summary:** `/finance/capital` (owners only; Finance now has tabs): the share register with ownership from shares, and each person's money contributed, withdrawn and net; shareholder loans (lender, amount, advanced, repaid, days) with interest as three separate numbers — gross at 16% simple for the actual days, 10% withholding tax, net — and what is paid; borrowing capacity (loans outstanding against the agreed share of equity from Settings, room left, a warning when a new loan would pass the cap). Owners add shareholders, record money in or out, record a loan and mark it repaid; every write needs a connection, is saved once per clientId and audited. Capital and loans flow into the cash position (repayments out at principal + gross interest). Reproduces Emeka's loan (₦9,973 / ₦997 / ₦8,976) and Kosi's 24 days (₦5,260 / ₦526 / ₦4,734).
+- **Files:** `src/server/services/finance/{capital,capital-writes}.ts`, `src/app/api/finance/{capital,shareholders,loans,loans/[id]}/route.ts`, `src/components/finance/{capital-screen,ownership-panel,capacity-panel,loans-panel,loan-breakdown,loan-sheet,loan-detail-sheet,contribution-sheet,shareholder-sheet,finance-tabs}.tsx`, `src/app/(app)/finance/capital/page.tsx`, `src/schemas/capital.ts`, `src/types/capital.ts`, `src/constants/finance-tabs.ts`, `src/hooks/queries/use-capital.ts`, `src/utils/metrics/finance-headlines.ts` (`capacityLine`), `e2e/capital.spec.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** Shareholders are added by an owner (no seed data), not preloaded. Shares can't be edited after adding yet; a mistake needs a new register entry.
+
 ### 2026-09-26 — Compare Sets
 - **Agent:** Claude Code (Opus 5.5) · **Task:** P3.2
 - **Summary:** `/reports/compare`: one dropdown per Set (First Set, Second Set, …); a Set picked in one list leaves the others; at least two; Add a Set, and remove from the third on. The table runs intake, mortality, birds sold, FCR, weight at sale, cost/revenue/margin per bird, net margin, feed share and profit, with the best named per row (only Sets with that figure take part; running Sets count for mortality only; a tie names nobody). Three findings under it: lowest mortality, best margin, revenue per bird from the first closed Set to the last. PDF download. Each Set's line comes from its Set report, so the numbers match everywhere. The three PDF routes now share one helper.
