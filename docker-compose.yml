@@ -1,4 +1,8 @@
-# Kotila Farm — local stack. PostgreSQL 18 and Node 24 LTS (checked 2026-09-26; see AGENTS.md version policy).
+# Kotila Farm — containers. PostgreSQL 18 and Node 24 LTS (checked 2026-09-26; see AGENTS.md version policy).
+#   Local Postgres only (dev):         docker compose up -d db
+#   App against AWS RDS (production):  docker compose --profile app up -d --build        (DATABASE_URL in .env points at RDS)
+#   App and Postgres, all local:       docker compose --profile app --profile localdb up --build
+#                                      with CONTAINER_DATABASE_URL=postgres://kotila:<password>@db:5432/kotila in .env
 services:
   db:
     image: postgres:${POSTGRES_VERSION:-18}-alpine
@@ -18,32 +22,35 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    # Never started with the app unless asked for: production uses AWS RDS
+    profiles: ["localdb"]
 
+  # Applies committed migrations, then exits; the app starts only if it succeeds
   migrate:
+    image: kotila-farm:${IMAGE_TAG:-local}
     build:
       context: .
-      target: build
       args:
         NODE_VERSION: ${NODE_VERSION:-24}
-    command: ["pnpm", "db:migrate"]
+    command: ["node", "db-migrate.cjs"]
     env_file: .env
     environment:
-      DATABASE_URL: postgres://${POSTGRES_USER:-kotila}:${POSTGRES_PASSWORD:-kotila}@db:5432/${POSTGRES_DB:-kotila}
+      # Inside a container "localhost" is the container itself; CONTAINER_DATABASE_URL overrides for the all-local stack
+      DATABASE_URL: ${CONTAINER_DATABASE_URL:-${DATABASE_URL}}
     depends_on:
       db:
         condition: service_healthy
+        required: false
     profiles: ["app"]
 
   app:
-    build:
-      context: .
-      args:
-        NODE_VERSION: ${NODE_VERSION:-24}
+    image: kotila-farm:${IMAGE_TAG:-local}
+    restart: unless-stopped
     env_file: .env
     environment:
-      DATABASE_URL: postgres://${POSTGRES_USER:-kotila}:${POSTGRES_PASSWORD:-kotila}@db:5432/${POSTGRES_DB:-kotila}
+      DATABASE_URL: ${CONTAINER_DATABASE_URL:-${DATABASE_URL}}
     ports:
-      - "3000:3000"
+      - "${APP_PORT:-3000}:3000"
     depends_on:
       migrate:
         condition: service_completed_successfully

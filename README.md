@@ -22,4 +22,4 @@ Handoff repo for building the Kotila Farm management app with Claude Code.
 | `docs/11-versions.md` | Version log (observed at handoff; re-verify) |
 | `docs/12-seed-data.md` | Reference farm numbers for test fixtures (never loaded into the database) |
 | `design/` | Tokens, Tailwind v4 theme, reference React components, brand book, logos, screen designs |
-| `Dockerfile`, `docker-compose.yml`, `.devcontainer/` | Container setup |
+| `Dockerfile`, `docker-compose.yml`, `.devcontainer/` | Container setup; running the app in Docker against AWS RDS is in `docs/13-deploy.md` |

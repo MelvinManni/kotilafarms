@@ -27,7 +27,7 @@ An internal web app for Kotila Farms, a broiler poultry farm in Nigeria owned by
 | --- | --- | --- |
 | Framework | Next.js, latest stable, App Router, TypeScript strict | `output: 'standalone'` for the container |
 | Backend | Next.js Route Handlers under `app/api/**/route.ts` | The only backend surface. No Server Actions for data writes. |
-| Database | PostgreSQL in Docker | |
+| Database | PostgreSQL 18: a Docker container locally, **AWS RDS in production** | The app image never contains the database; see `docs/13-deploy.md` |
 | ORM | Drizzle ORM + drizzle-kit | Schema in `src/db/schema/*`, migrations committed |
 | Auth | NextAuth (Auth.js), latest **stable** | Credentials (email + password), JWT sessions, roles in the token. See version note below. |
 | Client data | TanStack Query (React Query), latest stable | All client reads and writes go through it |
@@ -36,7 +36,7 @@ An internal web app for Kotila Farms, a broiler poultry farm in Nigeria owned by
 | File storage | Private S3 bucket (AWS S3 or S3-compatible) | Receipt photos. Server uploads; DB stores the object key; reads use short-lived signed URLs. No files on local disk or volumes |
 | Package manager | pnpm (via corepack) | |
 | Tests | Vitest (unit: metrics, zod, API handlers); Playwright later for flows | |
-| Container | Docker + docker compose (app + postgres), `.devcontainer/` for agent work | |
+| Container | Docker image for the app (runs `server.js`; `db-migrate.cjs` and `db-setup.cjs` as one-off jobs) + docker compose, `.devcontainer/` for agent work | Postgres container is for local development only |
 
 ## Version policy (hard rule)
 
@@ -140,7 +140,7 @@ pnpm db:setup                       # first owner (FIRST_OWNER_*) + fixed lists;
 pnpm test:e2e                       # Playwright against a dev server on :3200 and a throwaway kotila_e2e database
 pnpm test                           # unit + db tests; db tests need `docker compose up -d db` and use a throwaway kotila_test database
 pnpm lint && pnpm typecheck && pnpm test
-docker compose --profile app up --build  # full stack in containers (db + migrate + app)
+docker compose --profile app up -d --build  # app + migrations in containers, against DATABASE_URL (AWS RDS in production; see docs/13-deploy.md)
 ```
 
 Add these scripts to `package.json` when scaffolding if the CLIs didn't.
@@ -169,6 +169,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 ```
 
 ## Change log
+
+### 2026-09-27 — App container for AWS: database outside the image
+- **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P0.2, P2.6)
+- **Summary:** Melvin said Docker is for running the app, and production's database is AWS RDS. Compose no longer forces the local database: the app and a `migrate` job use `DATABASE_URL` from `.env` (RDS in production); the Postgres container is now only for local development (`localdb` profile, or `docker compose up -d db`). The image can migrate and set up a database by itself (`node db-migrate.cjs`, `node db-setup.cjs`, bundled with esbuild), and trusts Amazon's RDS certificates so `?sslmode=verify-full` works. Fixed a production-only PDF bug: behind HTTPS the session cookie is `__Secure-…`, which Chromium won't store for `http://127.0.0.1`, so the printer now passes the Cookie header through instead. Checked end to end: built the image, pointed it at a separate database, ran migrate and setup (twice), signed in and downloaded a PDF from the container.
+- **Files:** `Dockerfile`, `docker-compose.yml`, `src/db/migrate.ts`, `package.json` (`build:db-scripts`), `src/server/services/reports/print-pdf.ts`, `eslint.config.mjs`, `.gitignore`, `.env.example`, `docs/13-deploy.md` (new), `README.md`, `AGENTS.md` (stack and commands)
+- **Packages:** none (esbuild was already a dev dependency)
+- **Migrations:** none
+- **Follow-ups:** Not tried against a real RDS instance or over HTTPS (the cookie hand-off was checked with Chromium directly). Load balancers may want a health check: `/sign-in` answers 200 without the database.
 
 ### 2026-09-27 — Buttons keep their colours on hover; steady focus rings
 - **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P0.5)

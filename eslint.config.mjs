@@ -13,6 +13,8 @@ const eslintConfig = defineConfig([
     // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",
+    // Bundled db scripts for the image (pnpm build:db-scripts)
+    "dist/**",
     "build/**",
     "next-env.d.ts",
     // Reference-only design files, ported into src in P0.5

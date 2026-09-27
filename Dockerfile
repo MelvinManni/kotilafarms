@@ -1,4 +1,4 @@
-# Kotila Farm — production image (Next.js standalone output).
+# Kotila Farm — production image (Next.js standalone output). Runs the app; the database lives elsewhere (AWS RDS in production).
 # NODE_VERSION: Node.js Active LTS major (24, checked 2026-09-26; 26 becomes LTS on 2026-10-28).
 ARG NODE_VERSION=24
 
@@ -15,18 +15,22 @@ FROM base AS build
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN pnpm build
+RUN pnpm build && pnpm build:db-scripts
 
 FROM base AS runner
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 HOSTNAME=0.0.0.0
 # Chromium prints the PDF reports
 RUN apk add --no-cache chromium
-ENV CHROMIUM_PATH=/usr/bin/chromium INTERNAL_APP_URL=http://127.0.0.1:3000
+# Amazon RDS certificates, so `?sslmode=verify-full` connections to RDS are trusted
+RUN wget -qO /usr/local/share/rds-global-bundle.pem https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && chmod 644 /usr/local/share/rds-global-bundle.pem
+ENV CHROMIUM_PATH=/usr/bin/chromium INTERNAL_APP_URL=http://127.0.0.1:3000 NODE_EXTRA_CA_CERTS=/usr/local/share/rds-global-bundle.pem MIGRATIONS_DIR=/app/db/migrations
 RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
 COPY --from=build /app/public ./public
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=build --chown=nextjs:nodejs /app/.next/static ./.next/static
-# Migrations run from a separate one-off service (see docker-compose.yml `migrate`).
+# One-off jobs from the same image: `node db-migrate.cjs` (apply migrations) and `node db-setup.cjs` (first owner + fixed lists)
+COPY --from=build --chown=nextjs:nodejs /app/dist/db-migrate.cjs /app/dist/db-setup.cjs ./
+COPY --from=build --chown=nextjs:nodejs /app/src/db/migrations ./db/migrations
 USER nextjs
 EXPOSE 3000
 CMD ["node", "server.js"]
