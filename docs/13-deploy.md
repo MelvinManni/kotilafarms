@@ -1,0 +1,47 @@
+# Running the app in Docker
+
+The Docker image runs the app only. The database lives outside it: **AWS RDS (PostgreSQL 18) in production**, the local `db` container while developing. Receipts go to S3 (see `.env.example`).
+
+## The image
+
+`docker build -t kotila-farm .` makes one image (Node 24 LTS, Next.js standalone) that holds:
+
+| Command | What it does |
+| --- | --- |
+| `node server.js` (default) | Runs the app on port 3000 |
+| `node db-migrate.cjs` | Applies the committed migrations to `DATABASE_URL`, then exits. Safe to run every deploy |
+| `node db-setup.cjs` | Adds the first owner (`FIRST_OWNER_*`) and the fixed lists on an empty database, then exits. Safe to run again |
+
+It also carries Chromium (PDF reports) and Amazon's RDS certificates (`NODE_EXTRA_CA_CERTS`), so `?sslmode=verify-full` to RDS works.
+
+## Settings the container needs
+
+Everything in `.env.example`, given as environment variables (or an env file). For production:
+
+- `DATABASE_URL` — the RDS address with `?sslmode=verify-full`
+- `NEXTAUTH_URL` — the public `https://…` address people open
+- `NEXTAUTH_SECRET` — `openssl rand -base64 32`, kept secret
+- `S3_BUCKET`, `S3_REGION` — leave `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` empty when the task has an IAM role with access to the bucket
+- `FIRST_OWNER_*` — only for the one-off `db-setup.cjs`
+
+`INTERNAL_APP_URL` is already set in the image (`http://127.0.0.1:3000`): the PDF printer visits the app inside the container.
+
+## First deploy against RDS
+
+1. Create the RDS PostgreSQL 18 instance and a database named `kotila`; let the app's network reach port 5432.
+2. Build and push the image to ECR (or any registry).
+3. Run the image once with `node db-migrate.cjs`, then once with `node db-setup.cjs` (e.g. two one-off ECS tasks).
+4. Run the image with the default command behind HTTPS (ALB, App Runner or similar), port 3000.
+5. Sign in as the first owner and invite everyone else.
+
+Every later deploy: build, push, run `node db-migrate.cjs`, then roll the app.
+
+## With docker compose
+
+```bash
+docker compose --profile app up -d --build        # app + migrations against DATABASE_URL (RDS)
+docker compose run --rm migrate node db-setup.cjs  # first owner, once
+docker compose up -d db                             # local Postgres only, for development
+```
+
+To run everything locally in containers, also start the `localdb` profile and set `CONTAINER_DATABASE_URL=postgres://kotila:<password>@db:5432/kotila` (inside a container, `localhost` is the container itself).

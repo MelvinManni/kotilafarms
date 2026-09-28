@@ -3,19 +3,13 @@ import "server-only";
 import { chromium } from "playwright-core";
 import { env } from "@/lib/env";
 
-type Cookie = { name: string; value: string };
-
-// "a=1; b=2" → [{ name: "a", value: "1" }, …]
-export const parseCookies = (header: string | null): Cookie[] =>
-  (header ?? "").split(";").map((c) => c.trim()).filter(Boolean).map((c) => ({ name: c.slice(0, c.indexOf("=")), value: decodeURIComponent(c.slice(c.indexOf("=") + 1)) }));
-
-export async function printPdf(base: string, path: string, cookies: Cookie[]): Promise<Buffer> {
+export async function printPdf(base: string, path: string, cookieHeader: string): Promise<Buffer> {
   const executablePath = env().CHROMIUM_PATH;
   // Dev machines print with the installed Chrome; the container brings its own Chromium
   const browser = await chromium.launch(executablePath ? { executablePath, args: ["--no-sandbox"] } : { channel: "chrome" });
   try {
-    const context = await browser.newContext();
-    await context.addCookies(cookies.map((c) => ({ ...c, url: base })));
+    // The person's cookies go as a plain header: Chromium won't store "__Secure-" session cookies for http://127.0.0.1
+    const context = await browser.newContext({ extraHTTPHeaders: cookieHeader ? { cookie: cookieHeader } : {} });
     const page = await context.newPage();
     const res = await page.goto(new URL(path, base).toString(), { waitUntil: "load" });
     if (!res?.ok()) throw new Error(`The report page answered ${res?.status() ?? "nothing"}.`);
@@ -28,6 +22,6 @@ export async function printPdf(base: string, path: string, cookies: Cookie[]): P
 
 // The PDF download for a print page, as the person asking; never the request's Host header, so the browser only visits this app
 export async function pdfResponse(req: Request, path: string, filename: string): Promise<Response> {
-  const pdf = await printPdf(env().INTERNAL_APP_URL ?? env().NEXTAUTH_URL, path, parseCookies(req.headers.get("cookie")));
+  const pdf = await printPdf(env().INTERNAL_APP_URL ?? env().NEXTAUTH_URL, path, req.headers.get("cookie") ?? "");
   return new Response(new Uint8Array(pdf), { headers: { "content-type": "application/pdf", "content-disposition": `attachment; filename="${filename}"`, "cache-control": "no-store" } });
 }
