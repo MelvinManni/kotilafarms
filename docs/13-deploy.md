@@ -24,6 +24,10 @@ Everything in `.env.example`, given as environment variables (or an env file). F
 - `S3_BUCKET`, `S3_REGION` — leave `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` empty when the task has an IAM role with access to the bucket
 - `FIRST_OWNER_NAME`, `FIRST_OWNER_EMAIL`, `FIRST_OWNER_PASSWORD` — the first owner, made on the first start. Once you can sign in, remove them (setup is then skipped; the owner stays)
 
+- `RESEND_API_KEY` — turns on email: starting passwords for new people and the 6pm missing-log reminder to owners. Without it no email is sent; the owner sees a new person's password once instead, and the log says "Daily reminders are off"
+- `MAIL_FROM` (optional) — defaults to `Kotila Farms <hello@kotilafarms.com>`; the domain must be verified in Resend (`kotilafarms.com` is)
+- `HOW_TO_VIDEO_URL` (optional) — the video linked in the starting-password email; defaults to the staff how-to video in the `kotilafarms` bucket
+
 `INTERNAL_APP_URL` is already set in the image (`http://127.0.0.1:3000`): the PDF printer visits the app inside the container.
 
 ## First deploy against RDS
@@ -31,7 +35,7 @@ Everything in `.env.example`, given as environment variables (or an env file). F
 1. Create the RDS PostgreSQL 18 instance and a database named `kotila`; let the app's network reach port 5432.
 2. Build and push the image to ECR (or any registry).
 3. Run the image with the default command behind HTTPS (Deckhand, App Runner or similar), port 3000, with `FIRST_OWNER_*` set. The first start migrates and makes the owner; the logs say `Made the first owner: …`.
-4. Sign in as the first owner and invite everyone else. Then remove `FIRST_OWNER_*`.
+4. Sign in as the first owner and add everyone else (Settings › Users; each gets a password by email). Then remove `FIRST_OWNER_*`.
 
 Every later deploy: build, push, roll the app. It migrates on start.
 

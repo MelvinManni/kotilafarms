@@ -17,7 +17,7 @@ Five small features. Emails go through Resend from the `kotilafarms.com` domain.
 - **Reset password** on a person does the same for an existing account: new random password, flag set, email sent.
 - Email (from `Kotila Farms <hello@kotilafarms.com>`, `MAIL_FROM` overrides it): "Kosi added you to Kotila Farms as a recorder", the email address and password, a **Sign in** button (`NEXTAUTH_URL/sign-in`), "You'll choose your own password when you first sign in", and a **Watch the how-to video** button linking to `https://kotilafarms.s3.us-east-1.amazonaws.com/kotila-farm-how-to-staff.mp4` (`HOW_TO_VIDEO_URL` overrides it). Email apps can't play video inline, so it is a link.
 - If the email can't be sent (no `RESEND_API_KEY`, or Resend refuses it), the account is still made and the owner sees the password once in the sheet with Copy and WhatsApp buttons, and a notice saying the email didn't go.
-- Sign-in with `mustChangePassword` set: the proxy sends every page to `/profile?first=1`, which shows only the change-password form ("Choose your own password to carry on"). APIs other than auth and `/api/me/password` answer 403 until it is changed. The flag is carried in the JWT and re-read with role every 5 minutes, and at once after a password change.
+- Sign-in with `mustChangePassword` set: the proxy sends every page to `/profile?first=1`, which shows only the change-password form ("Choose your own password to carry on"). APIs other than auth and `/api/me/password` answer 403 until it is changed. The flag is carried in the JWT and re-read with role every 5 minutes, and the person signs in again with the new password right after changing it.
 - Invite links already sent keep working until they expire; new invites are no longer made. The invite code stays for those links.
 
 ## 3. Removing a shareholder
@@ -38,13 +38,13 @@ Five small features. Emails go through Resend from the `kotilafarms.com` domain.
 ## 5. 6pm reminder for missing daily logs
 
 - Missing: a Set that is not closed, not deleted, started on or before today, with no live daily log for today (Africa/Lagos).
-- `src/instrumentation.ts` starts a timer when `RESEND_API_KEY` is set (otherwise it logs "Daily reminders are off: RESEND_API_KEY is not set"). Every minute between 18:00 and 23:59 Lagos time it tries the day's run.
-- Once a day: new table `reminder_runs` (`kind`, `day`, `claimed_at`, `sent_at`, `sets`, `recipients`), unique on `(kind, day)`. The run inserts its claim first (on conflict do nothing); if the insert makes no row, another copy or an earlier minute has it. If sending fails the claim is deleted and the next minute retries. If every Set has its log, the run is recorded with no email.
+- `src/instrumentation.ts` starts a timer when `RESEND_API_KEY` is set (otherwise it logs "Daily reminders are off: RESEND_API_KEY is not set"). Every 5 minutes, from 18:00 to 23:59 Lagos time, it tries the day's run.
+- Once a day: new table `reminder_runs` (`kind`, `day`, `claimed_at`, `sent_at`, `sets`, `recipients`), unique on `(kind, day)`. The run inserts its claim first (on conflict do nothing); if the insert makes no row, another copy or an earlier minute has it. If sending fails the claim is deleted and the next check retries. If every Set has its log, the run is recorded with no email.
 - Email to every active owner, subject "No daily log yet for Set 4 today" (or "for 2 Sets"), each Set with its day of age and a **Fill in today** link to `/log/<setId>/<today>`.
 
 ## Settings, packages, migration
 
 - Env (all optional): `RESEND_API_KEY`, `MAIL_FROM`, `HOW_TO_VIDEO_URL`. Added to `env-schema.ts`, `.env.example`, `docs/13-deploy.md`.
-- Package: `resend` at its `latest` stable version, recorded in `docs/11-versions.md`.
+- No package: `sendMail` posts to Resend's HTTP API with `fetch` (the `resend` SDK needs `@react-email/render` as a peer).
 - One migration: `users.must_change_password`, `shareholders.removed_at`, `auth_events`, `reminder_runs`.
 - Emails are plain HTML built in `src/server/mail/*` (one file per email), sent through one `sendMail` wrapper that never throws past its caller.

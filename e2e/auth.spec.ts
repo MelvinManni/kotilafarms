@@ -32,7 +32,7 @@ test("owner adds a recorder who signs in, must choose a password, and can't open
   const recorder = await browser.newContext();
   const phone = await recorder.newPage();
   await phone.goto("/sign-in");
-  await phone.getByLabel("Email").fill("ifeanyi@e2e.test");
+  await phone.getByRole("textbox", { name: "Email" }).fill("ifeanyi@e2e.test");
   await phone.getByRole("textbox", { name: "Password" }).fill(password);
   await phone.getByRole("button", { name: "Sign in" }).click();
   await expect(phone).toHaveURL(/\/profile\?first=1/);

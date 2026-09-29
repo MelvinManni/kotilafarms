@@ -1,7 +1,5 @@
 "use client";
 // Your profile: who you are, change your password, sign out; on first sign-in only the password change
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { Notice } from "@/components/kotila/notice";
 import { Panel } from "@/components/kotila/panel";
 import { Person } from "@/components/kotila/person";
@@ -9,19 +7,16 @@ import { PageHeader } from "@/components/layout/page-header";
 import { PasswordForm } from "@/components/profile/password-form";
 import { SignOutPanel } from "@/components/profile/sign-out-panel";
 import { useCurrentUser } from "@/lib/auth/current-user";
+import { signInWithPassword } from "@/lib/auth/sign-in-with-password";
 
 export function ProfileScreen({ first }: { first: boolean }) {
   const me = useCurrentUser();
-  const router = useRouter();
-  const { update } = useSession();
   const gated = first || Boolean(me.mustChangePassword);
-  // New token without the gate, then carry on into the app
-  const changed = async () => {
-    await update();
-    if (gated) {
-      router.replace("/today");
-      router.refresh();
-    }
+  // Signing in again with the new password gives a token without the gate; then a full load into the app
+  const changed = async (password: string) => {
+    if (!gated) return;
+    const res = await signInWithPassword(me.email, password);
+    window.location.assign(res.ok ? "/today" : "/sign-in");
   };
   return (
     <div className="flex flex-col gap-6">

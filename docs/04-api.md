@@ -5,9 +5,13 @@ All JSON. All require a session except `auth/*` and `invites/accept`. Roles: **O
 | Method & path | Roles | Purpose |
 | --- | --- | --- |
 | `GET/POST /api/auth/[...nextauth]` | — | NextAuth |
-| `POST /api/invites` | O | Invite by email + role |
+| `POST /api/invites` | O | Invite by email + role (older flow; the app now adds people directly) |
 | `POST /api/invites/accept` | public (token) | Set name + password |
 | `GET /api/users`, `PATCH /api/users/:id` | O | List, change role, deactivate |
+| `POST /api/users` | O | Add a person: the app makes a starting password and emails it; returns it only if the email didn't go |
+| `POST /api/users/:id/password` | O | Reset someone's password the same way (not your own) |
+| `POST /api/me/password` | anyone signed in | Change your own password (current, new, new again); allowed while the first-password gate is on |
+| `GET /api/activity?person=&kind=&from=&to=&before=` | O | Record changes and sign-ins, newest first, 50 a page; `before` is the `nextBefore` of the last page |
 | `GET /api/today` | O M R | Dashboard payload (role-shaped): active Sets summary, tasks, owed (O M), cash (O M) |
 | `GET /api/sets`, `POST /api/sets` | O M (R read) | List (with headline metrics) / start a Set (creates vaccine schedule from defaults) |
 | `GET/PATCH /api/sets/:id` | O M (R read) | Detail with metrics; status changes |

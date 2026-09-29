@@ -3,11 +3,14 @@
 ## NextAuth setup
 
 - **Version:** latest stable `next-auth` (at handoff: v4.24.x; v5 is beta — do not use unless it has become `latest`). Re-check per AGENTS.md.
-- **Provider:** Credentials (email + password). No public sign-up; accounts come from owner invites.
+- **Provider:** Credentials (email + password). No public sign-up; owners add people. The app makes a starting password (four groups of four, no look-alike characters), emails it with the sign-in link and the how-to video, and sets `users.mustChangePassword`. Owners can **Reset password** the same way. If the email can't be sent, the owner sees the password once.
+- **First-password gate:** while `mustChangePassword` is set, the proxy sends every page to `/profile?first=1` and `requireSession` answers 403 `password_change_required`. `POST /api/me/password` (current, new, new again) lifts it; the page then signs in again with the new password, so the new token has no gate.
+- **Profile:** `/profile` for every role (opened from your name): details, change password, sign out. Changing your password does not sign out other devices (phones must keep unsent entries).
+- **Activity:** sign-ins, failed sign-ins (with the email tried and IP), sign-outs and password changes go to `auth_events`; owners read them with every record change in Settings › Activity.
 - **Sessions:** JWT strategy. Put `id`, `name`, `role` in the token and session via the `jwt` and `session` callbacks. Refresh `role` and `active` from the DB at most every 5 minutes inside the `jwt` callback, so a deactivated person is logged out soon after.
 - **Passwords:** hash with a maintained library (check latest stable; argon2 via a pure-JS/WASM or native build that works in the container, or bcrypt). Minimum 10 characters.
 - **Rate-limit** sign-in attempts per email + IP (in-memory is fine for one instance; note it in the change log).
-- **Pages:** custom `/sign-in` and `/invite/[token]` matching `design/screens/Main.dc.html`, `SignInPhone.dc.html`, `SetPassword.dc.html`.
+- **Pages:** custom `/sign-in`, `/profile` and `/invite/[token]` (invite links made before starting passwords still work until they expire) matching `design/screens/Main.dc.html`, `SignInPhone.dc.html`, `SetPassword.dc.html`.
 - **Offline sign-in:** keep the session cookie long-lived on the device (30 days, sliding). If the app shell loads offline with a valid cached session, show the "Open offline as <name>" screen (SignInPhone design). Signing in as someone else needs a connection.
 - **Middleware:** protect `(app)` routes; redirect unauthenticated users to `/sign-in`; send recorders who hit owner/manager routes to `/today`.
 

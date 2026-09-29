@@ -18,7 +18,7 @@ Put these in a helper (`src/db/schema/_common.ts`) and spread into each table.
 
 ```text
 users            id, name, email (unique, lowercased), passwordHash, role enum(owner|manager|recorder),
-                 active bool, lastActiveAt, invitedBy
+                 active bool, mustChangePassword bool (app-made password), lastActiveAt, invitedBy
 invites          id, email, role, tokenHash, expiresAt, acceptedAt, createdBy
 
 stock_types      id, key ('broiler'), name                      -- only broiler seeded in v1
@@ -54,7 +54,7 @@ expenses         id, date, categoryId, description, amount int, setId uuid?, ove
                  receiptKey?, capitalItem bool default false, spreadOverSets int?, possibleDuplicateOf uuid?,
                  CHECK ((setId IS NOT NULL) <> overhead)   -- receiptKey = S3 object key, never a public URL
 
-shareholders     id, name, shares int                            -- 633,858 / 122,985 / 122,984 / 120,173
+shareholders     id, name, shares int, removedAt timestamptz?     -- 633,858 / …; removed: money stays, shares stop counting
 capital_entries  id, shareholderId, date, amount int (+ contributed, − withdrawn), note
 loans            id, lenderShareholderId, amount int, advancedOn date, repaidOn date?, rate numeric default 0.16,
                  whtRate numeric default 0.10
@@ -68,6 +68,9 @@ sync_mutations   mutationId uuid pk, deviceId, userId, type, payloadHash text, s
 
 audit_events     id, table, rowId, action enum(create|update|delete|resolve), field?, oldValue jsonb?, newValue jsonb?,
                  reason text?, userId, deviceId?, at timestamptz, enteredOfflineAt?
+auth_events      id, kind text(sign_in|sign_in_failed|sign_out|password_changed), userId? (null for an unknown email),
+                 email, ip?, at timestamptz                        -- for the activity log
+reminder_runs    id, kind text, day date, claimedAt, sentAt?, sets jsonb, recipients jsonb   -- unique (kind, day): one 6pm email a day
 ```
 
 ## Decisions made while building (P0.6)

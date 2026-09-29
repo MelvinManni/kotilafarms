@@ -16,7 +16,7 @@ const FIELDS = [
   { name: "confirm", label: "New password again", autoComplete: "new-password" },
 ] as const;
 
-export function PasswordForm({ submitLabel, onChanged }: { submitLabel: string; onChanged: () => Promise<void> | void }) {
+export function PasswordForm({ submitLabel, onChanged }: { submitLabel: string; onChanged: (password: string) => Promise<void> | void }) {
   const change = useChangePassword();
   const hydrated = useHydrated();
   const form = useForm<PasswordChangeInput>({ resolver: zodResolver(passwordChangeSchema), defaultValues: { current: "", password: "", confirm: "" } });
@@ -24,7 +24,7 @@ export function PasswordForm({ submitLabel, onChanged }: { submitLabel: string; 
     try {
       await change.mutateAsync(values);
       form.reset();
-      await onChanged();
+      await onChanged(values.password);
     } catch (error) {
       // Field problems from the server go next to the field
       if (error instanceof ApiRequestError) for (const issue of error.issues ?? []) form.setError(issue.path as keyof PasswordChangeInput, { message: issue.message });
