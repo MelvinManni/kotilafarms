@@ -8,12 +8,12 @@ The Docker image runs the app only. The database lives outside it: **AWS RDS (Po
 
 | Command | What it does |
 | --- | --- |
-| `sh docker-start.sh` (default) | Migrates, runs setup (when `FIRST_OWNER_EMAIL` is set), then runs the app on port 3000 |
+| `sh docker-start.sh` (default) | Runs the app on port 3000 and, alongside it, migrates and runs setup (when `FIRST_OWNER_EMAIL` is set) |
 | `node db-migrate.cjs` | Applies the committed migrations to `DATABASE_URL`, then exits. Safe to run every deploy |
 | `node db-setup.cjs` | Adds the first owner (`FIRST_OWNER_*`) and the fixed lists on an empty database, then exits. Safe to run again |
 | `node server.js` | Runs the app only |
 
-Both database steps are safe to repeat: migrations already applied are skipped, and setup leaves an existing owner alone. If either fails, the container stops and the app doesn't start. Set `DB_SETUP_ON_START=false` to skip both (for example when running more than one copy of the app, so they don't migrate at the same time).
+Both database steps are safe to repeat: migrations already applied are skipped, and setup leaves an existing owner alone. They run alongside the app, which starts at once, so health checks pass even while the database is slow or unreachable. If they fail, the log says `Database setup failed` and the app keeps running; fix the database settings and restart. Set `DB_SETUP_ON_START=false` to skip both (for example when running more than one copy of the app, so they don't migrate at the same time).
 
 It also carries Chromium (PDF reports) and Amazon's RDS certificates (`NODE_EXTRA_CA_CERTS`), so `?sslmode=verify-full` to RDS works.
 

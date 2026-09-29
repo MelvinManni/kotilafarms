@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-29 — App starts at once; database setup runs alongside it
+- **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P0.2)
+- **Summary:** Deckhand's health check still failed: the start script waited for migrations before starting the app, so a slow or unreachable RDS meant nothing answered. The app now starts straight away (as before the setup-on-start change), and migrations and first-owner setup run next to it. A failure is logged ("Database setup failed…") and the app keeps running. Checked with the legacy builder: `/` answers in 1–2s with RDS unreachable and on a blank database, where the owner is still made.
+- **Files:** `docker-start.sh`, `docs/13-deploy.md`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** On a brand-new database the first few seconds of requests can fail until migrations finish.
+
 ### 2026-09-29 — Migrations give up fast when the database can't be reached
 - **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P0.2)
 - **Summary:** Deploy #7 on Deckhand failed its 60s health check with no error in the build log. With no connect timeout, a migration against an unreachable RDS waits for the network to give up, past the health check. It now stops after 15 seconds with "Connection terminated due to connection timeout", and logs which host it is connecting to (no password).
