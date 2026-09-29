@@ -91,7 +91,11 @@ export function CapitalScreen() {
             loans={c.loans}
             onOpen={(loan) => setOpen({ kind: "detail", loan })}
           />
-          <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
+          <div
+            className={cn("grid gap-5 lg:grid-cols-2", {
+              "xl:grid-cols-3": repaid && outstanding,
+            })}
+          >
             <div
               className={cn({
                 "lg:col-span-2 xl:col-span-3": !repaid && !outstanding,
