@@ -8,7 +8,7 @@ The Docker image runs the app only. The database lives outside it: **AWS RDS (Po
 
 | Command | What it does |
 | --- | --- |
-| `./docker-start.sh` (default) | Migrates, runs setup (when `FIRST_OWNER_EMAIL` is set), then runs the app on port 3000 |
+| `sh docker-start.sh` (default) | Migrates, runs setup (when `FIRST_OWNER_EMAIL` is set), then runs the app on port 3000 |
 | `node db-migrate.cjs` | Applies the committed migrations to `DATABASE_URL`, then exits. Safe to run every deploy |
 | `node db-setup.cjs` | Adds the first owner (`FIRST_OWNER_*`) and the fixed lists on an empty database, then exits. Safe to run again |
 | `node server.js` | Runs the app only |

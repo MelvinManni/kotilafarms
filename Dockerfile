@@ -30,8 +30,8 @@ COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=build --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Run on every start by docker-start.sh; also usable alone: `node db-migrate.cjs`, `node db-setup.cjs`
 COPY --from=build --chown=nextjs:nodejs /app/dist/db-migrate.cjs /app/dist/db-setup.cjs ./
-COPY --chown=nextjs:nodejs --chmod=755 docker-start.sh ./
+COPY --chown=nextjs:nodejs docker-start.sh ./
 COPY --from=build --chown=nextjs:nodejs /app/src/db/migrations ./db/migrations
 USER nextjs
 EXPOSE 3000
-CMD ["./docker-start.sh"]
+CMD ["sh", "docker-start.sh"]
