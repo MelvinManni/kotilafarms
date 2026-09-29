@@ -36,6 +36,10 @@ export const envSchema = z
     CHROMIUM_PATH: optionalText,
     // Where the headless browser reaches this app (empty uses NEXTAUTH_URL)
     INTERNAL_APP_URL: optionalUrl,
+    // Emails through Resend; without a key no email is sent
+    RESEND_API_KEY: optionalText,
+    MAIL_FROM: z._default(z.string().check(z.minLength(3)), "Kotila Farms <hello@kotilafarms.com>"),
+    HOW_TO_VIDEO_URL: z._default(z.url(), "https://kotilafarms.s3.us-east-1.amazonaws.com/kotila-farm-how-to-staff.mp4"),
     FARM_TIMEZONE: z._default(z.string().check(z.refine(isTimeZone, "FARM_TIMEZONE must be a time zone name, like Africa/Lagos")), "Africa/Lagos"),
   })
   // Keys come as a pair, or not at all (then the SDK uses the machine's role)

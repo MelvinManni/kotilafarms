@@ -12,3 +12,4 @@ export * from "@/db/schema/finance";
 export * from "@/db/schema/settings";
 export * from "@/db/schema/sync";
 export * from "@/db/schema/audit";
+export * from "@/db/schema/activity";

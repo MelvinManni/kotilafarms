@@ -1,12 +1,14 @@
 // Shareholders, their capital and loans, and cash reconciliations
 import { integer, numeric, pgTable, text, uuid } from "drizzle-orm/pg-core";
 import { commonColumns } from "@/db/schema/_common";
-import { farmDay, money } from "@/db/schema/_columns";
+import { eventTime, farmDay, money } from "@/db/schema/_columns";
 
 export const shareholders = pgTable("shareholders", {
   ...commonColumns("shareholders"),
   name: text().notNull(),
   shares: integer().notNull(),
+  // Removed from the register: money stays in the books, shares stop counting
+  removedAt: eventTime(),
 });
 
 // + contributed, − withdrawn

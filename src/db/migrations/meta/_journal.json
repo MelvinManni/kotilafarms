@@ -15,6 +15,13 @@
       "when": 1790392547897,
       "tag": "0001_invite_name",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790692900072,
+      "tag": "0002_profile_activity_reminders",
+      "breakpoints": true
     }
   ]
 }

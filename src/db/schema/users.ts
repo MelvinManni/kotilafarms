@@ -14,6 +14,8 @@ export const users = pgTable(
     passwordHash: text().notNull(),
     role: roleEnum().notNull(),
     active: boolean().notNull().default(true),
+    // Set when the password was made by the app; the person must choose their own at sign-in
+    mustChangePassword: boolean().notNull().default(false),
     lastActiveAt: eventTime(),
     invitedBy: uuid().references((): AnyPgColumn => users.id),
     ...timestamps(),
