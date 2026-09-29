@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-29 — Sign-in logs database errors instead of showing them
+- **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P1.1)
+- **Summary:** On production, sign-in failed because the app couldn't read the database, and NextAuth sent the raw SQL error (with the email) to the browser, while the server log didn't have the real reason. Sign-in now logs "Sign-in could not read the database: …" with Postgres's reason, and the page says "the app can't reach its database". `describeDbError` has its own file so sign-in doesn't load the migrator. Checked on a production build with a wrong database password.
+- **Files:** `src/server/auth-options.ts`, `src/components/auth/sign-in-form.tsx`, `src/db/describe-db-error.ts` (new), `src/db/{run-migrations,migrate}.ts`, `src/server/db-on-start.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** Production RDS has the tables and the owner (made from a laptop `db:setup`). The deployed app still can't read it: check Deckhand's `DATABASE_URL` ends in `?sslmode=verify-full`, and set `NEXTAUTH_URL` to `https://kotilafarms.com`.
+
 ### 2026-09-29 — Say when RDS refuses a connection without SSL
 - **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P0.2)
 - **Summary:** The production database was never reached because `DATABASE_URL` had no `?sslmode=verify-full`; RDS answered "no pg_hba.conf entry … no encryption". The migrate error now adds "Add ?sslmode=verify-full to the end of DATABASE_URL." Checked against the real RDS (read only): without SSL refused, with SSL connected, database empty.

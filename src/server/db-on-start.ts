@@ -1,5 +1,6 @@
 // On server start in the container: create or update the tables, then the first owner
-import { describeDbError, runMigrations } from "@/db/run-migrations";
+import { describeDbError } from "@/db/describe-db-error";
+import { runMigrations } from "@/db/run-migrations";
 import { runSetup } from "@/db/setup/run-setup";
 import { parseSetupEnv } from "@/db/setup/setup-env";
 

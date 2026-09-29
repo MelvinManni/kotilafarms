@@ -1,6 +1,7 @@
 // `node db-migrate.cjs` inside the image: applies the committed migrations to DATABASE_URL (local Postgres or AWS RDS)
 import { existsSync } from "node:fs";
-import { describeDbError, runMigrations } from "@/db/run-migrations";
+import { describeDbError } from "@/db/describe-db-error";
+import { runMigrations } from "@/db/run-migrations";
 
 async function main() {
   if (existsSync(".env")) process.loadEnvFile(".env");

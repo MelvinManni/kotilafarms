@@ -17,6 +17,7 @@ import { signInSchema, type SignInInput } from "@/schemas/auth";
 const MESSAGES: Record<string, string> = {
   CredentialsSignin: "That email and password don't match an active account.",
   rate_limited: "Too many tries. Wait 15 minutes, then try again.",
+  db_unavailable: "Sign-in isn't working right now: the app can't reach its database. Try again in a few minutes.",
 };
 
 export function SignInForm() {

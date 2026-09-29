@@ -7,6 +7,7 @@ import { env } from "@/lib/env";
 import { getDb } from "@/server/db";
 import { allowAttempt, clearAttempts } from "@/server/rate-limit";
 import { checkCredentials, currentStatus } from "@/server/services/sign-in";
+import { describeDbError } from "@/db/describe-db-error";
 
 const REFRESH_MS = 5 * 60 * 1000;
 const THIRTY_DAYS = 30 * 24 * 60 * 60;
@@ -30,7 +31,11 @@ export function authOptions(): NextAuthOptions {
           const key = `${parsed.data.email.toLowerCase()}|${ip}`;
           // Surfaces as the "rate_limited" error on the sign-in page
           if (!allowAttempt(key)) throw new Error("rate_limited");
-          const user = await checkCredentials(getDb(), parsed.data.email, parsed.data.password);
+          const user = await checkCredentials(getDb(), parsed.data.email, parsed.data.password).catch((error: unknown) => {
+            // Log the real reason; the sign-in page only gets "db_unavailable", never the query
+            console.error(`Sign-in could not read the database: ${describeDbError(error)}`);
+            throw new Error("db_unavailable");
+          });
           if (user) clearAttempts(key);
           return user;
         },
