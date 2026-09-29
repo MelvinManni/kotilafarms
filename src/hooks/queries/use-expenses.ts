@@ -27,7 +27,7 @@ export function useCategories() {
 function useRefreshMoney() {
   const client = useQueryClient();
   return () => {
-    for (const key of [["expenses"], qk.sets.all(), qk.today(), qk.finance.cash()]) void client.invalidateQueries({ queryKey: key });
+    for (const key of [["expenses"], qk.sets.all(), qk.today(), ["finance"]]) void client.invalidateQueries({ queryKey: key });
     void client.invalidateQueries({ predicate: (q) => q.queryKey[0] === "sets" });
   };
 }

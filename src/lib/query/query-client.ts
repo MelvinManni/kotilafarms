@@ -19,3 +19,6 @@ export function makeQueryClient() {
 
 // Reference lists change rarely
 export const REFERENCE_STALE_MS = 5 * 60 * 1000;
+
+// Money figures: fresh for a minute, always fetched again when a page opens
+export const FINANCE_QUERY = { staleTime: 60_000, refetchOnMount: "always" } as const;

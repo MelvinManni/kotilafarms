@@ -25,7 +25,7 @@ export function useFeedPrices(feedTypeId: string | undefined) {
 function useRefreshFeed() {
   const client = useQueryClient();
   return () => {
-    for (const key of [["feed"], ["expenses"], qk.sets.all(), qk.today()]) void client.invalidateQueries({ queryKey: key });
+    for (const key of [["feed"], ["expenses"], ["finance"], qk.sets.all(), qk.today()]) void client.invalidateQueries({ queryKey: key });
   };
 }
 

@@ -26,7 +26,7 @@ export function useBuyer(id: string) {
 function useRefreshSales() {
   const client = useQueryClient();
   return () => {
-    for (const key of [["sales"], ["buyers"], qk.sets.all(), qk.today(), qk.finance.cash()]) void client.invalidateQueries({ queryKey: key });
+    for (const key of [["sales"], ["buyers"], qk.sets.all(), qk.today(), ["finance"]]) void client.invalidateQueries({ queryKey: key });
     void client.invalidateQueries({ predicate: (q) => q.queryKey[0] === "sets" });
   };
 }

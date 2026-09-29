@@ -1,12 +1,13 @@
 // Partner capital and loans (owners only; every change needs a connection)
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/query/fetcher";
+import { FINANCE_QUERY } from "@/lib/query/query-client";
 import { qk } from "@/lib/query/query-keys";
 import type { CapitalEntryCreate, LoanCreate, LoanRepay, ShareholderCreate, ShareholderUpdate } from "@/schemas/capital";
 import type { CapitalPayload } from "@/types/capital";
 
 export function useCapital() {
-  return useQuery({ queryKey: qk.finance.capital(), queryFn: ({ signal }) => apiFetch<CapitalPayload>("/api/finance/capital", { signal }) });
+  return useQuery({ ...FINANCE_QUERY, queryKey: qk.finance.capital(), queryFn: ({ signal }) => apiFetch<CapitalPayload>("/api/finance/capital", { signal }) });
 }
 
 // Capital and loans move cash too

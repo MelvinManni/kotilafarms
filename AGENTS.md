@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-29 — Finance figures refresh when a page opens
+- **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P2.5, P3.3)
+- **Summary:** Melvin found Finance stale. Cash position, P&L and capital now fetch again every time a page opens and count as fresh for one minute (`FINANCE_QUERY`). Sales and expenses used to refresh only the cash figure; they, feed buys and treatments with a cost now refresh all finance figures.
+- **Files:** `src/lib/query/query-client.ts`, `src/hooks/queries/{use-finance,use-capital,use-sales,use-expenses,use-feed,use-health}.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** none.
+
 ### 2026-09-29 — Pay out removed shareholders
 - **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P3.3)
 - **Summary:** Melvin asked to record withdrawals for shareholders, including removed ones. A removed shareholder can now have money taken out recorded (paying out someone who left); money put in and new loans are still refused. Capital and loans has a **Record a withdrawal** button; the sheet lists removed people as "Name (removed)" and, when one is picked, only allows money taken out and shows their net position.

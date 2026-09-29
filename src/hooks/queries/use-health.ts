@@ -29,7 +29,7 @@ export function useAddHealthRecord() {
   return useMutation({
     mutationFn: (input: HealthRecordCreateInput) => apiFetch<{ id: string }>("/api/health", { method: "POST", body: input }),
     onSuccess: () => {
-      for (const key of [["health"], ["expenses"], qk.sets.all()]) void client.invalidateQueries({ queryKey: key });
+      for (const key of [["health"], ["expenses"], ["finance"], qk.sets.all()]) void client.invalidateQueries({ queryKey: key });
     },
   });
 }
