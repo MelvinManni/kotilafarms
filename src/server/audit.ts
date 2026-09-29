@@ -38,3 +38,8 @@ export async function recordChange(
 export async function recordResolve(tx: Tx, table: string, rowId: string, who: Who, reason?: string) {
   await tx.insert(auditEvents).values({ table, rowId, action: "resolve", reason: reason ?? null, ...who });
 }
+
+// A change with no values to show (e.g. a password reset), with why
+export async function recordNote(tx: Tx, table: string, rowId: string, field: string, reason: string, who: Who) {
+  await tx.insert(auditEvents).values({ table, rowId, action: "update", field, reason, ...who });
+}

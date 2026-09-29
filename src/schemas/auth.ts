@@ -9,11 +9,14 @@ export const signInSchema = z.object({
   password: z.string().check(z.minLength(1, "Enter your password.")),
 });
 
-export const inviteCreateSchema = z.object({
+// Add a person, or invite them (older invite links)
+export const personCreateSchema = z.object({
   name: text(200, { length: 1, message: "Enter their name." }),
   email: z.pipe(z.email({ error: "Enter a valid email address." }), z.transform((e) => e.toLowerCase())),
   role,
 });
+
+export const inviteCreateSchema = personCreateSchema;
 
 export const passwordSchema = z.string().check(z.minLength(10, "Use at least 10 characters."));
 
@@ -36,6 +39,7 @@ export const userUpdateSchema = z
   .check(z.refine<{ role?: string; active?: boolean }>((v) => v.role !== undefined || v.active !== undefined, { message: "Nothing to change." }));
 
 export type SignInInput = z.infer<typeof signInSchema>;
+export type PersonCreateInput = z.infer<typeof personCreateSchema>;
 export type InviteCreateInput = z.infer<typeof inviteCreateSchema>;
 export type InviteAcceptInput = z.infer<typeof inviteAcceptSchema>;
 export type PasswordChangeInput = z.infer<typeof passwordChangeSchema>;

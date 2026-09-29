@@ -30,4 +30,6 @@ export const E2E_APP_ENV = {
   S3_BUCKET: "kotila-e2e",
   S3_REGION: "eu-west-1",
   FARM_TIMEZONE: "Africa/Lagos",
+  // Never send real email from e2e
+  RESEND_API_KEY: "",
 };

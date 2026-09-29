@@ -1,15 +1,15 @@
 "use client";
-// Invite someone (or reset a password): name, email, role → a link to share
+// Add someone: name, email, role → the app makes a password and emails it
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { InviteLink } from "@/components/settings/invite-link";
+import { StartingPassword } from "@/components/settings/starting-password";
 import { Button } from "@/components/kotila/button";
 import { Segmented } from "@/components/kotila/segmented";
 import { Notice } from "@/components/kotila/notice";
 import { Sheet } from "@/components/kotila/sheet";
 import { TextInput } from "@/components/kotila/fields/text-input";
-import { useCreateInvite } from "@/hooks/queries/use-invite";
-import { inviteCreateSchema, type InviteCreateInput } from "@/schemas/auth";
+import { useAddPerson } from "@/hooks/queries/use-people";
+import { personCreateSchema, type PersonCreateInput } from "@/schemas/auth";
 
 const ROLES = [
   { value: "owner", label: "Owner" },
@@ -17,32 +17,31 @@ const ROLES = [
   { value: "recorder", label: "Recorder" },
 ];
 
-export function InviteSheet({ onClose }: { onClose: () => void }) {
-  const invite = useCreateInvite();
-  const form = useForm<InviteCreateInput>({ resolver: zodResolver(inviteCreateSchema), defaultValues: { name: "", email: "", role: "recorder" } });
-  const submit = form.handleSubmit((values) => invite.mutate(values));
-  const done = invite.data;
+export function AddPersonSheet({ onClose }: { onClose: () => void }) {
+  const add = useAddPerson();
+  const form = useForm<PersonCreateInput>({ resolver: zodResolver(personCreateSchema), defaultValues: { name: "", email: "", role: "recorder" } });
+  const submit = form.handleSubmit((values) => add.mutate(values));
   return (
     <Sheet
-      title="Invite someone"
-      description="There's no sign-up. The link you send is how they set their password. Inviting someone who already has an account sends them a password reset."
+      title="Add someone"
+      description="The app makes a password and emails it with the sign-in link and the how-to video. They choose their own password when they first sign in."
       onClose={onClose}
       footer={
-        done ? (
+        add.data ? (
           <Button variant="primary" onClick={onClose}>Done</Button>
         ) : (
           <>
             <Button onClick={onClose}>Cancel</Button>
-            <Button variant="primary" onClick={submit} disabled={invite.isPending}>Make invite link</Button>
+            <Button variant="primary" onClick={submit} disabled={add.isPending}>{add.isPending ? "Adding…" : "Add and email password"}</Button>
           </>
         )
       }
     >
-      {done ? (
-        <InviteLink name={form.getValues("name")} url={`${window.location.origin}${done.path}`} isReset={done.isReset} />
+      {add.data ? (
+        <StartingPassword result={add.data} isReset={false} />
       ) : (
         <form onSubmit={submit} noValidate className="flex flex-col gap-5">
-          {invite.error ? <Notice tone="alert" compact>{invite.error.message}</Notice> : null}
+          {add.error ? <Notice tone="alert" compact>{add.error.message}</Notice> : null}
           <Controller control={form.control} name="name" render={({ field, fieldState }) => <TextInput label="Name" value={field.value} onChange={field.onChange} error={fieldState.error?.message} />} />
           <Controller
             control={form.control}
