@@ -28,9 +28,10 @@ RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
 COPY --from=build /app/public ./public
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=build --chown=nextjs:nodejs /app/.next/static ./.next/static
-# One-off jobs from the same image: `node db-migrate.cjs` (apply migrations) and `node db-setup.cjs` (first owner + fixed lists)
+# Run on every start by docker-start.sh; also usable alone: `node db-migrate.cjs`, `node db-setup.cjs`
 COPY --from=build --chown=nextjs:nodejs /app/dist/db-migrate.cjs /app/dist/db-setup.cjs ./
+COPY --chown=nextjs:nodejs --chmod=755 docker-start.sh ./
 COPY --from=build --chown=nextjs:nodejs /app/src/db/migrations ./db/migrations
 USER nextjs
 EXPOSE 3000
-CMD ["node", "server.js"]
+CMD ["./docker-start.sh"]
