@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-29 — Pay out removed shareholders
+- **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P3.3)
+- **Summary:** Melvin asked to record withdrawals for shareholders, including removed ones. A removed shareholder can now have money taken out recorded (paying out someone who left); money put in and new loans are still refused. Capital and loans has a **Record a withdrawal** button; the sheet lists removed people as "Name (removed)" and, when one is picked, only allows money taken out and shows their net position.
+- **Files:** `src/server/services/finance/capital-writes.ts`, `src/components/finance/{contribution-sheet,capital-screen}.tsx`, `src/app/api/finance/capital/capital.db.test.ts`, `e2e/capital.spec.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** none.
+
 ### 2026-09-29 — Profile, emailed passwords, shareholder removal, activity log, 6pm reminder
 - **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P1.1, P3.3)
 - **Summary:** Melvin asked for five things. (1) Your name opens `/profile`: details, change password (current, new, again), sign out; the account sheet is gone. (2) Owners **add someone** and the app emails a starting password with the sign-in link and the how-to video; the person must choose their own at first sign-in (proxy and API gate); **Reset password** does the same; if the email fails the owner sees the password once. (3) Shareholders can be **removed** and restored with a reason: money stays in the books, shares stop counting, no new money or loans. (4) **Settings › Activity** (owners): every record change and every sign-in, failed sign-in, sign-out and password change, in plain words, filtered by person, kind and day. (5) At **6pm Lagos** owners get one email listing running Sets with no log today (claimed per day in `reminder_runs`). Email goes through Resend's HTTP API; nothing is sent without `RESEND_API_KEY`. Also: db and e2e test setups now refuse a remote `DATABASE_URL` (the local `.env` points at production RDS).

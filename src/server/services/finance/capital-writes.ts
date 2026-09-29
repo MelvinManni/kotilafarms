@@ -14,7 +14,7 @@ async function shareholder(db: Executor, id: string) {
   return row;
 }
 
-// New money and loans only for people still on the register
+// New loans only for people still on the register
 async function currentShareholder(db: Executor, id: string) {
   const row = await shareholder(db, id);
   if (row.removedAt) throw unprocessable(`${row.name} was removed from the register. Restore them first.`);
@@ -54,7 +54,9 @@ export async function addCapitalEntry(db: Executor, input: CapitalEntryCreate, a
   return db.transaction(async (tx) => {
     const [existing] = await tx.select().from(capitalEntries).where(eq(capitalEntries.clientId, input.clientId));
     if (existing) return existing;
-    await currentShareholder(tx, input.shareholderId);
+    // A removed shareholder can still be paid out; nothing else
+    const person = await shareholder(tx, input.shareholderId);
+    if (person.removedAt && input.kind !== "withdrawn") throw unprocessable(`${person.name} was removed from the register. Only money taken out can be recorded for them.`);
     if (input.date > today) throw unprocessable("The date can't be in the future.");
     const amount = input.kind === "withdrawn" ? -input.amount : input.amount;
     const [row] = await tx.insert(capitalEntries).values({ clientId: input.clientId, shareholderId: input.shareholderId, date: input.date, amount, note: input.note ?? null, createdBy: actor.id }).returning();

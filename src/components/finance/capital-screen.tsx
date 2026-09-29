@@ -19,7 +19,7 @@ import { useOnline } from "@/hooks/use-online";
 import { useCurrentUser } from "@/lib/auth/current-user";
 import type { LoanRow, ShareholderRow } from "@/types/capital";
 
-type Open = { kind: "shareholder"; shareholder?: ShareholderRow } | { kind: "contribution" } | { kind: "loan" } | { kind: "detail"; loan: LoanRow } | null;
+type Open = { kind: "shareholder"; shareholder?: ShareholderRow } | { kind: "contribution" } | { kind: "withdrawal" } | { kind: "loan" } | { kind: "detail"; loan: LoanRow } | null;
 
 export function CapitalScreen() {
   const role = useCurrentUser().role;
@@ -38,6 +38,7 @@ export function CapitalScreen() {
         actions={
           <>
             <Button icon="plus" onClick={() => setOpen({ kind: "contribution" })} disabled={!online || !c?.shareholders.length}>Record a contribution</Button>
+            <Button icon="minus" onClick={() => setOpen({ kind: "withdrawal" })} disabled={!online || !(c?.shareholders.length || c?.removed.length)}>Record a withdrawal</Button>
             <Button variant="primary" icon="plus" onClick={() => setOpen({ kind: "loan" })} disabled={!online || !c?.shareholders.length}>Record a loan</Button>
           </>
         }
@@ -57,7 +58,8 @@ export function CapitalScreen() {
         </>
       ) : capital.isPending ? <p className="text-body text-on-deep-muted lg:text-ink-muted">Opening the register…</p> : null}
       {open?.kind === "shareholder" ? <ShareholderSheet shareholder={open.shareholder} onClose={close} /> : null}
-      {open?.kind === "contribution" && c ? <ContributionSheet shareholders={c.shareholders} onClose={close} /> : null}
+      {open?.kind === "contribution" && c ? <ContributionSheet shareholders={c.shareholders} removed={c.removed} onClose={close} /> : null}
+      {open?.kind === "withdrawal" && c ? <ContributionSheet shareholders={c.shareholders} removed={c.removed} initialKind="withdrawn" onClose={close} /> : null}
       {open?.kind === "loan" && c ? <LoanSheet c={c} onClose={close} /> : null}
       {open?.kind === "detail" ? <LoanDetailSheet loan={open.loan} onClose={close} /> : null}
     </>

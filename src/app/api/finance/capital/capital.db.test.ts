@@ -69,7 +69,7 @@ describe("capital and loans API", () => {
     });
   });
 
-  it("removes a shareholder: money stays, shares stop counting, no new money; restore undoes it", async () => {
+  it("removes a shareholder: money stays, shares stop counting, only payouts and no loans; restore undoes it", async () => {
     await withApi(async (tx) => {
       const { owner } = await readyFarm(tx);
       signInAs(owner);
@@ -91,9 +91,13 @@ describe("capital and loans API", () => {
       expect(body.removed[0]).toMatchObject({ name: "Nonso", ownership: 0, net: 458_000, removedOn: expect.any(String) });
       expect(body.totals).toMatchObject({ shares: 300, net: 1_358_000 });
 
-      const entry = await call(addEntry, { method: "POST", body: { clientId: crypto.randomUUID(), shareholderId: nonso.id, date: "2026-09-01", kind: "withdrawn", amount: 1_000 } });
-      expect(entry.status).toBe(422);
-      expect(entry.body.error.message).toBe("Nonso was removed from the register. Restore them first.");
+      const moneyIn = await call(addEntry, { method: "POST", body: { clientId: crypto.randomUUID(), shareholderId: nonso.id, date: "2026-09-01", kind: "contributed", amount: 1_000 } });
+      expect(moneyIn.status).toBe(422);
+      expect(moneyIn.body.error.message).toBe("Nonso was removed from the register. Only money taken out can be recorded for them.");
+      // Paying out a removed shareholder is allowed
+      const payout = await call(addEntry, { method: "POST", body: { clientId: crypto.randomUUID(), shareholderId: nonso.id, date: "2026-09-01", kind: "withdrawn", amount: 58_000 } });
+      expect(payout.status).toBe(201);
+      expect((await call(capital)).body.removed[0]).toMatchObject({ withdrawn: 58_000, net: 400_000 });
       const loan = await call(addLoan, { method: "POST", body: { clientId: crypto.randomUUID(), lenderShareholderId: nonso.id, amount: 5_000, advancedOn: "2026-09-01" } });
       expect(loan.status).toBe(422);
 
