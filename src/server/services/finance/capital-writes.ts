@@ -1,4 +1,4 @@
-// Owner writes: add a shareholder, record capital in or out, record a loan, mark a loan repaid — once per clientId, audited
+// Owner writes: add, change, remove or restore a shareholder, record capital in or out, record a loan, mark a loan repaid — once per clientId, audited
 import "server-only";
 import { and, eq, isNull } from "drizzle-orm";
 import type { Executor } from "@/db";
@@ -14,6 +14,20 @@ async function shareholder(db: Executor, id: string) {
   return row;
 }
 
+// New money and loans only for people still on the register
+async function currentShareholder(db: Executor, id: string) {
+  const row = await shareholder(db, id);
+  if (row.removedAt) throw unprocessable(`${row.name} was removed from the register. Restore them first.`);
+  return row;
+}
+
+function removal(before: { removedAt: Date | null; name: string }, removed: boolean | undefined) {
+  if (removed === undefined) return {};
+  if (removed && before.removedAt) throw unprocessable(`${before.name} is already removed.`);
+  if (!removed && !before.removedAt) throw unprocessable(`${before.name} is on the register.`);
+  return { removedAt: removed ? new Date() : null };
+}
+
 export async function addShareholder(db: Executor, input: ShareholderCreate, actor: SessionUser) {
   return db.transaction(async (tx) => {
     const [existing] = await tx.select().from(shareholders).where(eq(shareholders.clientId, input.clientId));
@@ -24,12 +38,12 @@ export async function addShareholder(db: Executor, input: ShareholderCreate, act
   });
 }
 
-// Fix a name or share count in the register; the reason is kept in the audit trail
+// Fix a name or share count, or remove / restore someone (money stays in the books); the reason is kept in the audit trail
 export async function updateShareholder(db: Executor, id: string, input: ShareholderUpdate, actor: SessionUser) {
   return db.transaction(async (tx) => {
     const before = await shareholder(tx, id);
     if (before.version !== input.baseVersion) throw conflict("Someone changed this shareholder. Open it again.");
-    const after = { ...(input.name !== undefined ? { name: input.name } : {}), ...(input.shares !== undefined ? { shares: input.shares } : {}) };
+    const after = { ...(input.name !== undefined ? { name: input.name } : {}), ...(input.shares !== undefined ? { shares: input.shares } : {}), ...removal(before, input.removed) };
     const [row] = await tx.update(shareholders).set({ ...after, version: before.version + 1 }).where(eq(shareholders.id, id)).returning();
     await recordChange(tx, { table: "shareholders", rowId: id, before, after, reason: input.reason, userId: actor.id });
     return row!;
@@ -40,7 +54,7 @@ export async function addCapitalEntry(db: Executor, input: CapitalEntryCreate, a
   return db.transaction(async (tx) => {
     const [existing] = await tx.select().from(capitalEntries).where(eq(capitalEntries.clientId, input.clientId));
     if (existing) return existing;
-    await shareholder(tx, input.shareholderId);
+    await currentShareholder(tx, input.shareholderId);
     if (input.date > today) throw unprocessable("The date can't be in the future.");
     const amount = input.kind === "withdrawn" ? -input.amount : input.amount;
     const [row] = await tx.insert(capitalEntries).values({ clientId: input.clientId, shareholderId: input.shareholderId, date: input.date, amount, note: input.note ?? null, createdBy: actor.id }).returning();
@@ -53,7 +67,7 @@ export async function addLoan(db: Executor, input: LoanCreate, actor: SessionUse
   return db.transaction(async (tx) => {
     const [existing] = await tx.select().from(loans).where(eq(loans.clientId, input.clientId));
     if (existing) return existing;
-    await shareholder(tx, input.lenderShareholderId);
+    await currentShareholder(tx, input.lenderShareholderId);
     if (input.advancedOn > today) throw unprocessable("The date can't be in the future.");
     const [row] = await tx.insert(loans).values({ ...input, createdBy: actor.id }).returning();
     await recordCreate(tx, "loans", row!.id, { userId: actor.id });

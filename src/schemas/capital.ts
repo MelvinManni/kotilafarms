@@ -10,10 +10,11 @@ const shares = z.number({ error: "Enter the shares held." }).check(whole("Whole 
 
 export const shareholderCreateSchema = z.object({ clientId: z.uuid(), name: shareholderName, shares });
 
-// Fix a name or share count in the register; the reason is kept with the change
+// Fix a name or share count, or remove / restore someone; the reason is kept with the change
 export const shareholderUpdateSchema = z.object({
   name: z.optional(shareholderName),
   shares: z.optional(shares),
+  removed: z.optional(z.boolean()),
   baseVersion: version,
   reason: text(300, { length: 3, message: "Say why the register changed." }),
 });

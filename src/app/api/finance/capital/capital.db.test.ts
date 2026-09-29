@@ -68,4 +68,40 @@ describe("capital and loans API", () => {
       expect((await call(editShareholder, { method: "PATCH", params, body: { shares: 1, baseVersion: fixed.body.version, reason: "nope" } })).status).toBe(403);
     });
   });
+
+  it("removes a shareholder: money stays, shares stop counting, no new money; restore undoes it", async () => {
+    await withApi(async (tx) => {
+      const { owner } = await readyFarm(tx);
+      signInAs(owner);
+      const add = async (name: string, shares: number, amount: number) => {
+        const row = (await call(addShareholder, { method: "POST", body: { clientId: crypto.randomUUID(), name, shares } })).body;
+        await call(addEntry, { method: "POST", body: { clientId: crypto.randomUUID(), shareholderId: row.id, date: "2026-06-01", kind: "contributed", amount } });
+        return row;
+      };
+      await add("Kosi", 300, 900_000);
+      const nonso = await add("Nonso", 100, 458_000);
+      const params = { id: nonso.id };
+      expect((await call(editShareholder, { method: "PATCH", params, body: { removed: true, baseVersion: nonso.version } })).status).toBe(422);
+      const removed = await call(editShareholder, { method: "PATCH", params, body: { removed: true, baseVersion: nonso.version, reason: "Left the company" } });
+      expect(removed.status).toBe(200);
+
+      const { body } = await call(capital);
+      expect(body.shareholders.map((s: { name: string }) => s.name)).toEqual(["Kosi"]);
+      expect(body.shareholders[0].ownership).toBe(1);
+      expect(body.removed[0]).toMatchObject({ name: "Nonso", ownership: 0, net: 458_000, removedOn: expect.any(String) });
+      expect(body.totals).toMatchObject({ shares: 300, net: 1_358_000 });
+
+      const entry = await call(addEntry, { method: "POST", body: { clientId: crypto.randomUUID(), shareholderId: nonso.id, date: "2026-09-01", kind: "withdrawn", amount: 1_000 } });
+      expect(entry.status).toBe(422);
+      expect(entry.body.error.message).toBe("Nonso was removed from the register. Restore them first.");
+      const loan = await call(addLoan, { method: "POST", body: { clientId: crypto.randomUUID(), lenderShareholderId: nonso.id, amount: 5_000, advancedOn: "2026-09-01" } });
+      expect(loan.status).toBe(422);
+
+      const trail = await tx.select().from(auditEvents).where(eq(auditEvents.rowId, nonso.id));
+      expect(trail.find((a) => a.field === "removedAt")).toMatchObject({ reason: "Left the company" });
+      const restored = await call(editShareholder, { method: "PATCH", params, body: { removed: false, baseVersion: removed.body.version, reason: "Came back" } });
+      expect(restored.body.removedAt).toBeNull();
+      expect((await call(capital)).body.shareholders).toHaveLength(2);
+    });
+  });
 });

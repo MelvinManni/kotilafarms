@@ -1,5 +1,5 @@
 "use client";
-// Add a shareholder to the register, or fix a name or share count (with a reason, kept in the history)
+// Add a shareholder, fix a name or share count, or remove / restore them (with a reason, kept in the history)
 import { useState } from "react";
 import { Button } from "@/components/kotila/button";
 import { TextInput } from "@/components/kotila/fields/text-input";
@@ -21,6 +21,14 @@ export function ShareholderSheet({ shareholder, onClose }: { shareholder?: Share
   const [errors, setErrors] = useState<Record<string, string>>({});
   const failed = add.error ?? update.error;
 
+  // Remove or restore: money stays in the books, shares stop (or start) counting
+  const setRemoved = (removed: boolean) => {
+    if (!shareholder) return;
+    const result = shareholderUpdateSchema.safeParse({ removed, baseVersion: shareholder.version, reason });
+    if (!result.success) return setErrors(fieldErrors(result.error));
+    update.mutate({ id: shareholder.id, ...result.data }, { onSuccess: onClose });
+  };
+
   const save = () => {
     const count = parseNumber(shares) ?? undefined;
     if (!shareholder) {
@@ -35,11 +43,22 @@ export function ShareholderSheet({ shareholder, onClose }: { shareholder?: Share
 
   return (
     <Sheet title={shareholder ? `Change ${shareholder.name}` : "Add a shareholder"} description={shareholder ? "Correct the register. The old value and your reason are kept in the history." : "As written in the share register."} onClose={onClose}
-      footer={<><Button onClick={onClose}>Cancel</Button><Button variant="primary" icon="check" onClick={save} disabled={add.isPending || update.isPending}>{shareholder ? "Save changes" : "Add shareholder"}</Button></>}>
+      footer={
+        <>
+          {shareholder ? (
+            <Button variant={shareholder.removedOn ? "outline" : "danger"} onClick={() => setRemoved(!shareholder.removedOn)} disabled={update.isPending}>
+              {shareholder.removedOn ? "Restore to the register" : "Remove from the register"}
+            </Button>
+          ) : null}
+          <Button onClick={onClose}>Cancel</Button>
+          <Button variant="primary" icon="check" onClick={save} disabled={add.isPending || update.isPending}>{shareholder ? "Save changes" : "Add shareholder"}</Button>
+        </>
+      }>
       {failed ? <Notice tone="alert" compact>{failed.message}</Notice> : null}
+      {shareholder?.removedOn ? <Notice compact>Removed from the register. Their money in and out stays in the books; their shares don&apos;t count towards ownership.</Notice> : null}
       <TextInput label="Name" required value={name} onChange={setName} error={errors.name} />
       <TextInput label="Shares held" required inputMode="numeric" value={shares} onChange={setShares} error={errors.shares} placeholder="e.g. 122,985" />
-      {shareholder ? <TextInput label="Why it changed" required value={reason} onChange={setReason} error={errors.reason} placeholder="e.g. Shares transferred from Emeka, 1 Oct" /> : null}
+      {shareholder ? <TextInput label="Why it changed" required value={reason} onChange={setReason} error={errors.reason} placeholder="e.g. Shares transferred from Emeka, 1 Oct" hint="Also needed to remove or restore someone." /> : null}
     </Sheet>
   );
 }
