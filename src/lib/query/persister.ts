@@ -9,5 +9,5 @@ export const queryPersister = createAsyncStoragePersister({
 });
 
 // Bump when cached shapes change, so an old cache is thrown away
-export const CACHE_BUSTER = "p1.8";
+export const CACHE_BUSTER = "2026-09-29";
 export const CACHE_MAX_AGE = 7 * 24 * 60 * 60 * 1000;

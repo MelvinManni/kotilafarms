@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-29 — Capital page no longer crashes on an old saved cache
+- **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P1.8, P3.3)
+- **Summary:** Melvin saw "e.removed is undefined" on `/finance/capital`. The phone's saved query cache still held capital data from before removed shareholders existed, and the page drew it before fetching again. The cache version (`CACHE_BUSTER`) was never bumped after P1.8; it is now, so old caches are thrown away.
+- **Files:** `src/lib/query/persister.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** Bump `CACHE_BUSTER` whenever an API response changes shape.
+
 ### 2026-09-29 — Tables: search, filters and a pinned first column
 - **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P0.5)
 - **Summary:** Melvin asked for every table to copy the Rumor guest table and to get search and filters. `LedgerTable` now runs on TanStack Table v9. Every table has a search box, and tables with useful groups have a Filter button: its choices come from the rows, each with a count, and a filter with only one choice is hidden. When a table scrolls sideways its first column stays put, with a soft fade beside it. Row taps are ignored after a drag, on a control inside the row, or when closing an overlay above it. Tables can show placeholder rows while loading and show "Nothing matches" with a way to clear the search. Totals hide while the rows are narrowed. The Sets and Expenses phone lists use the same search. The toolbar is left out of print. The ledger layout is kept; virtual scrolling is not copied, because the farm's tables are small and sit inside the page scroll.
