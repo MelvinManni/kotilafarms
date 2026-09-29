@@ -8,14 +8,11 @@ The Docker image runs the app only. The database lives outside it: **AWS RDS (Po
 
 | Command | What it does |
 | --- | --- |
-| `sh docker-start.sh` (default) | Runs the app on port 3000 and, alongside it, migrates and runs setup (when `FIRST_OWNER_EMAIL` is set) |
-| `node db-migrate.cjs` | Applies the committed migrations to `DATABASE_URL`, then exits. Safe to run every deploy |
-| `node db-setup.cjs` | Adds the first owner (`FIRST_OWNER_*`) and the fixed lists on an empty database, then exits. Safe to run again |
-| `node server.js` | Runs the app only |
+| `node server.js` (default) | Runs the app on port 3000. On start it migrates, then adds the first owner (when `FIRST_OWNER_EMAIL` is set) |
+| `node db-migrate.cjs` | Applies the committed migrations to `DATABASE_URL`, then exits |
+| `node db-setup.cjs` | Adds the first owner (`FIRST_OWNER_*`) and the fixed lists on an empty database, then exits |
 
-Both database steps are safe to repeat: migrations already applied are skipped, and setup leaves an existing owner alone. They run alongside the app, which starts at once, so health checks pass even while the database is slow or unreachable. If they fail, the log says `Database setup failed` and the app keeps running; fix the database settings and restart. Set `DB_SETUP_ON_START=false` to skip both (for example when running more than one copy of the app, so they don't migrate at the same time).
-
-It also carries Chromium (PDF reports) and Amazon's RDS certificates (`NODE_EXTRA_CA_CERTS`), so `?sslmode=verify-full` to RDS works.
+The image is built with `pnpm build:prod`: `db:generate` (migrations from the schema), `build` (the app), `build:db-scripts` (the two scripts above). Migrating and the first owner can't happen while the image builds (no database there), so the app does them each time it starts, in `src/instrumentation.ts`. Both are safe to repeat: migrations already applied are skipped, and an existing owner is left alone. If the database can't be reached, the log says `Database setup failed: …` within 15 seconds and the app keeps serving. `DB_SETUP_ON_START=false` turns this off (for example with more than one copy of the app, so they don't migrate at once).
 
 ## Settings the container needs
 

@@ -1,25 +1,15 @@
 // `node db-migrate.cjs` inside the image: applies the committed migrations to DATABASE_URL (local Postgres or AWS RDS)
 import { existsSync } from "node:fs";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { migrate } from "drizzle-orm/node-postgres/migrator";
-import { Pool } from "pg";
+import { describeDbError, runMigrations } from "@/db/run-migrations";
 
 async function main() {
   if (existsSync(".env")) process.loadEnvFile(".env");
   const url = process.env.DATABASE_URL;
   if (!url) throw new Error("DATABASE_URL is not set.");
-  // Give up fast when the database can't be reached, so the log shows why before health checks time out
-  const pool = new Pool({ connectionString: url, max: 1, connectionTimeoutMillis: 15_000 });
-  console.log(`Connecting to ${new URL(url).host}…`);
-  // Same migrations table as `pnpm db:migrate` (drizzle-kit), so either can run against one database
-  await migrate(drizzle({ client: pool }), { migrationsFolder: process.env.MIGRATIONS_DIR ?? "src/db/migrations" });
-  await pool.end();
-  console.log("Migrations are up to date.");
+  await runMigrations(url, process.env.MIGRATIONS_DIR ?? "src/db/migrations");
 }
 
 main().catch((error: unknown) => {
-  // Drizzle wraps the real reason (e.g. a wrong password) in `cause`
-  const cause = error instanceof Error && error.cause instanceof Error ? `\n${error.cause.message}` : "";
-  console.error(error instanceof Error ? `${error.message}${cause}` : error);
+  console.error(describeDbError(error));
   process.exit(1);
 });

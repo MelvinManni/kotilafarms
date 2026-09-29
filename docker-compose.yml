@@ -25,7 +25,7 @@ services:
     # Never started with the app unless asked for: production uses AWS RDS
     profiles: ["localdb"]
 
-  # Migrates and sets up the database on start, then serves (see docker-start.sh)
+  # Migrates and sets up the database on start, then serves (see src/server/db-on-start.ts)
   app:
     image: kotila-farm:${IMAGE_TAG:-local}
     build:

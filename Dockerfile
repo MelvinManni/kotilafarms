@@ -15,7 +15,8 @@ FROM base AS build
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN pnpm build && pnpm build:db-scripts
+# Migrations from the schema, the app, and the db scripts; migrate + first owner run when the app starts
+RUN pnpm build:prod
 
 FROM base AS runner
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 HOSTNAME=0.0.0.0
@@ -23,15 +24,14 @@ ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 HOSTNAME=0.0.0.0
 RUN apk add --no-cache chromium
 # Amazon RDS certificates, so `?sslmode=verify-full` connections to RDS are trusted
 RUN wget -qO /usr/local/share/rds-global-bundle.pem https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && chmod 644 /usr/local/share/rds-global-bundle.pem
-ENV CHROMIUM_PATH=/usr/bin/chromium INTERNAL_APP_URL=http://127.0.0.1:3000 NODE_EXTRA_CA_CERTS=/usr/local/share/rds-global-bundle.pem MIGRATIONS_DIR=/app/db/migrations
+ENV CHROMIUM_PATH=/usr/bin/chromium INTERNAL_APP_URL=http://127.0.0.1:3000 NODE_EXTRA_CA_CERTS=/usr/local/share/rds-global-bundle.pem MIGRATIONS_DIR=/app/db/migrations DB_SETUP_ON_START=true
 RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
 COPY --from=build /app/public ./public
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=build --chown=nextjs:nodejs /app/.next/static ./.next/static
-# Run on every start by docker-start.sh; also usable alone: `node db-migrate.cjs`, `node db-setup.cjs`
+# The app migrates and makes the first owner on start (DB_SETUP_ON_START); these run the same steps by hand
 COPY --from=build --chown=nextjs:nodejs /app/dist/db-migrate.cjs /app/dist/db-setup.cjs ./
-COPY --chown=nextjs:nodejs docker-start.sh ./
 COPY --from=build --chown=nextjs:nodejs /app/src/db/migrations ./db/migrations
 USER nextjs
 EXPOSE 3000
-CMD ["sh", "docker-start.sh"]
+CMD ["node", "server.js"]

@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-29 — The app creates its tables and first owner when it starts
+- **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P0.2)
+- **Summary:** On Deckhand nobody could sign in: the tables were never created, because the start script wasn't reliably run. The app now migrates and adds the first owner itself when the server starts (`src/instrumentation.ts` → `dbOnStart`), turned on in the image by `DB_SETUP_ON_START=true`; the image starts with plain `node server.js` again and `docker-start.sh` is gone. New `pnpm build:prod` (`db:generate`, `build`, `build:db-scripts`), which the Dockerfile runs. Migrate and setup logic moved to `runMigrations` and `runSetup`, shared by the app and the two scripts. Checked with the legacy builder: blank database → tables, owner, sign-in as owner works; restart leaves the owner alone; unreachable database logs the reason in 15s and the app keeps serving.
+- **Files:** `src/server/db-on-start.ts` (new), `src/db/run-migrations.ts` (new), `src/db/setup/run-setup.ts` (new), `src/instrumentation.ts`, `src/db/migrate.ts`, `src/db/setup/{index,setup-env}.ts`, `package.json`, `Dockerfile`, `docker-compose.yml`, `.env.example`, `docs/13-deploy.md`; removed `docker-start.sh`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** `db:generate` in the build writes a migration into the image if someone changes the schema without committing one; always run it locally and commit.
+
 ### 2026-09-29 — App starts at once; database setup runs alongside it
 - **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P0.2)
 - **Summary:** Deckhand's health check still failed: the start script waited for migrations before starting the app, so a slow or unreachable RDS meant nothing answered. The app now starts straight away (as before the setup-on-start change), and migrations and first-owner setup run next to it. A failure is logged ("Database setup failed…") and the app keeps running. Checked with the legacy builder: `/` answers in 1–2s with RDS unreachable and on a blank database, where the owner is still made.

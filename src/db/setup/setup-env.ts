@@ -8,6 +8,8 @@ const schema = z.object({
   FIRST_OWNER_PASSWORD: z.string({ error: "FIRST_OWNER_PASSWORD is required" }).check(z.minLength(10, "FIRST_OWNER_PASSWORD must be at least 10 characters")),
 });
 
+export type SetupEnv = z.infer<typeof schema>;
+
 export function parseSetupEnv(source: Record<string, string | undefined>) {
   const result = schema.safeParse(source);
   if (!result.success) throw new Error(`Setup settings are not valid. Fix .env:\n${z.prettifyError(result.error)}`);
