@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-29 — Migrations give up fast when the database can't be reached
+- **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P0.2)
+- **Summary:** Deploy #7 on Deckhand failed its 60s health check with no error in the build log. With no connect timeout, a migration against an unreachable RDS waits for the network to give up, past the health check. It now stops after 15 seconds with "Connection terminated due to connection timeout", and logs which host it is connecting to (no password).
+- **Files:** `src/db/migrate.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** The real cause of #7 is in Deckhand's runtime logs (likely RDS not reachable: public access, security group, or DATABASE_URL).
+
 ### 2026-09-29 — Container migrates and makes the first owner on start
 - **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P0.2, P2.6)
 - **Summary:** On Deckhand the app started but no owner was made: the image only ran `server.js`, and the migrate and setup jobs were never run. The image now starts with `docker-start.sh`: migrate, then setup when `FIRST_OWNER_EMAIL` is set, then the app. Both steps are safe to repeat; if either fails, the container stops. `DB_SETUP_ON_START=false` skips both. Compose drops its separate `migrate` job. A failed migration now prints the real reason (e.g. "password authentication failed"). Checked with the built image against a blank database: first start makes the owner, later starts leave it alone, removing `FIRST_OWNER_*` skips setup, a wrong password stops the container. No BuildKit-only Dockerfile features (Deckhand builds with the legacy builder); checked with `DOCKER_BUILDKIT=0`.
