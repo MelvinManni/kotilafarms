@@ -22,6 +22,8 @@ export function BuyersScreen() {
     avg: b.averagePrice === null ? none : b.vsBulk !== null && b.vsBulk < 0 ? { value: naira(b.averagePrice), sub: `${naira(-b.vsBulk)} under bulk rate`, tone: "alert" as const } : naira(b.averagePrice),
     spent: naira(b.spent),
     owed: b.balance > 0 ? { value: naira(b.balance), tone: "owed" as const } : none,
+    owes: b.balance > 0 ? "Owes money" : "Paid up",
+    rate: b.vsBulk !== null && b.vsBulk < 0 ? "Under the bulk rate" : "At the bulk rate or above",
     last: b.lastSale ? shortDate(b.lastSale) : none,
   }));
   return (
@@ -33,6 +35,8 @@ export function BuyersScreen() {
           caption="Buyers"
           columns={[{ key: "name", label: "Buyer" }, { key: "birds", label: "Birds bought", align: "right" }, { key: "avg", label: "Average per bird", align: "right" }, { key: "spent", label: "Spent", align: "right" }, { key: "owed", label: "Owes", align: "right" }, { key: "last", label: "Last sale" }]}
           rows={rows}
+          filters={[{ key: "owes", label: "Balance" }, { key: "rate", label: "Price per bird" }]}
+          loading={buyers.isPending}
           onRowClick={(r) => router.push(`/sales/buyers/${r.id}`)}
         />
       </Panel>

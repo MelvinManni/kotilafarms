@@ -3,7 +3,6 @@
 import { useCurrentUser } from "@/lib/auth/current-user";
 import { useState } from "react";
 import { SetsFigures } from "@/components/sets/sets-figures";
-import { SetCards } from "@/components/sets/set-cards";
 import { SetsTable } from "@/components/sets/sets-table";
 import { StartSetSheet } from "@/components/sets/start-set-sheet";
 import { Button } from "@/components/kotila/button";
@@ -41,10 +40,7 @@ export function SetsScreen() {
             <div className="px-6 pt-2">
               <Tabs items={[{ value: "all", label: "All", count: all.length }, { value: "active", label: "Running", count: running.length }, { value: "closed", label: "Closed", count: all.length - running.length }]} active={tab} onChange={setTab} />
             </div>
-            <div className="hidden lg:block">
-              <SetsTable sets={shown} />
-            </div>
-            <SetCards sets={shown} />
+            <SetsTable sets={shown} />
           </section>
           <p className="m-0 text-caption text-ink-muted">Profit and margin appear when a Set is closed. Running Sets show spend to date. Select a row to open the Set.</p>
         </>

@@ -23,7 +23,7 @@ export function LoansPanel({ loans, onOpen }: { loans: LoanRow[]; onOpen: (l: Lo
   }));
   return (
     <Panel flush title="Shareholder loans" subtitle="16% a year, simple interest · 10% withholding tax on interest · select a loan for its interest">
-      {rows.length ? <LedgerTable caption="Loans from shareholders to the farm" columns={columns} rows={rows} onRowClick={(r) => onOpen(loans.find((l) => l.id === r.id)!)} /> : <p className="m-0 px-6 pb-5 text-body text-ink-muted">No loans yet. Record money a shareholder lends beyond their capital.</p>}
+      {rows.length ? <LedgerTable caption="Loans from shareholders to the farm" columns={columns} rows={rows} filters={[{ key: "who", label: "Lender" }, { key: "status", label: "Status" }]} onRowClick={(r) => onOpen(loans.find((l) => l.id === r.id)!)} /> : <p className="m-0 px-6 pb-5 text-body text-ink-muted">No loans yet. Record money a shareholder lends beyond their capital.</p>}
     </Panel>
   );
 }

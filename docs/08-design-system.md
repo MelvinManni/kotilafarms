@@ -42,7 +42,7 @@ Where the built components differ from `design/reference-components/index.d.ts`:
 | Tag, StatusChip, Delta | shadcn `badge` variants | `components/kotila/tag.tsx` |
 | Figure, Money, Rows | plain components + `utils/format` | `components/kotila/figure.tsx` |
 | Panel | shadcn `card` (border, 24px radius; `raised`, `deep` variants) | `components/kotila/panel.tsx` |
-| LedgerTable | shadcn `table` (+ TanStack Table only if sorting is needed) | `components/kotila/ledger-table.tsx` |
+| LedgerTable | shadcn `table` + TanStack Table v9 (search, filters); first column pinned when it scrolls sideways | `components/kotila/ledger-table.tsx`, parts in `components/kotila/table/` |
 | Notice | shadcn `alert` with tones: neutral, warning, alert, success, owed | `components/kotila/notice.tsx` |
 | SyncStatus | badge + tooltip, reads the offline queue store | `components/kotila/sync-status.tsx` |
 | Person, RoleBadge | shadcn `avatar` + badge | `components/kotila/person.tsx` |

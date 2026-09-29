@@ -27,6 +27,7 @@ const edited = (log: DailyLogRow, field: string) => {
 function logRow(log: DailyLogRow, today: string) {
   return {
     id: log.date,
+    state: "Logged",
     date: { value: farmDay(log.date), sub: `day ${log.dayOfAge}${log.date === today ? " · today" : ""}` },
     deaths: { value: String(log.deaths), figure: true, sub: edited(log, "deaths") },
     feed: log.feedQty === null ? muted : { value: `${log.feedQty} ${log.feedUnit}`, sub: edited(log, "feedQty") ?? log.feedTypeName ?? undefined },
@@ -42,6 +43,7 @@ function phoneRow(date: string, pending: PendingLog, startDate: string, today: s
   const day = Math.round((Date.parse(date) - Date.parse(startDate)) / 86_400_000);
   return {
     id: date,
+    state: "On this phone",
     date: { value: farmDay(date), sub: `day ${day}${date === today ? " · today" : ""}` },
     deaths: { value: String(p.deaths), figure: true },
     feed: p.feedQty ? `${String(p.feedQty)} ${String(p.feedUnit ?? "bags")}` : muted,
@@ -56,6 +58,7 @@ function emptyRow(date: string, startDate: string, today: string) {
   const isToday = date === today;
   return {
     id: date,
+    state: isToday ? "Not logged yet" : "Missed",
     date: { value: farmDay(date), sub: `day ${day}${isToday ? " · today" : ""}` },
     deaths: muted, feed: muted, water: muted, seen: muted,
     by: isToday ? { value: "Not logged yet", tone: "muted" as const } : { tag: { tone: "warning" as const, label: "Missed" }, sub: "select to fill it in" },
@@ -73,5 +76,5 @@ export function LogTable({ setId, startDate, endDate, today, logs, pending, days
     const onPhone = pending?.get(d);
     rows.push(onPhone ? phoneRow(d, onPhone, startDate, today) : log ? logRow(log, today) : emptyRow(d, startDate, today));
   }
-  return <LedgerTable dense caption="Daily logs, newest first" columns={columns} rows={rows} onRowClick={(r) => router.push(`/log/${setId}/${r.id}`)} />;
+  return <LedgerTable dense caption="Daily logs, newest first" columns={columns} rows={rows} filters={[{ key: "state", label: "Day" }, { key: "water", label: "Water" }]} onRowClick={(r) => router.push(`/log/${setId}/${r.id}`)} />;
 }

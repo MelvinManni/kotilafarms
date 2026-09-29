@@ -8,6 +8,9 @@ import { doseLabel, vaccineStateLabel } from "@/utils/metrics/vaccine-status";
 
 const columns = [{ key: "vax", label: "Vaccine" }, { key: "due", label: "Due" }, { key: "given", label: "Given" }, { key: "status", label: "Status" }];
 
+// Filter words: "3 days late" and "4 days late" both count as Late
+const GROUP = { given: "Given", "given-late": "Given late", late: "Late", "due-today": "Due today", "due-tomorrow": "Due tomorrow", upcoming: "Upcoming" } as const;
+
 const TONE = { given: "success", "given-late": "warning", late: "alert", "due-today": "warning", "due-tomorrow": "warning", upcoming: "neutral" } as const;
 
 type SchedulePanelProps = { set: SetSummary; vaccines: SetVaccineRow[] | undefined; onOpen: (v: SetVaccineRow) => void; onEdit: () => void };
@@ -20,14 +23,15 @@ export function SchedulePanel({ set, vaccines, onOpen, onEdit }: SchedulePanelPr
     vax: { value: v.item, sub: doseLabel(v.doseNo) },
     due: { value: `Day ${v.dueAgeDays}`, sub: farmDay(v.dueOn) },
     given: v.givenOn ? { value: `Day ${v.givenDay}`, sub: `${farmDay(v.givenOn)}${v.givenBy ? ` · ${v.givenBy.split(" ")[0]}` : ""}` } : { value: "—", tone: "muted" as const },
+    group: GROUP[v.state],
     status: { tag: { tone: TONE[v.state], label: vaccineStateLabel(v) } },
   }));
   return (
     <Panel flush title={`Vaccine schedule · Set ${set.number}`} subtitle={`${set.pen ? `${set.pen} · ` : ""}started ${shortDate(set.startDate, false)} · day ${set.dayOfAge}${all}`} action={vaccines && set.status !== "closed" ? { label: "Change schedule", onClick: onEdit } : undefined}>
-      {vaccines ? (
-        rows.length ? <LedgerTable caption={`Set ${set.number} vaccines`} columns={columns} rows={rows} onRowClick={(r) => onOpen(vaccines.find((v) => v.id === r.id)!)} /> : <p className="m-0 px-6 pb-5 text-body text-ink-muted">No vaccines on this Set’s schedule.</p>
+      {vaccines && rows.length === 0 ? (
+        <p className="m-0 px-6 pb-5 text-body text-ink-muted">No vaccines on this Set’s schedule.</p>
       ) : (
-        <p className="m-0 px-6 pb-5 text-body text-ink-muted">Loading the schedule…</p>
+        <LedgerTable caption={`Set ${set.number} vaccines`} columns={columns} rows={rows} loading={!vaccines} filters={[{ key: "group", label: "Status" }]} onRowClick={(r) => onOpen(vaccines!.find((v) => v.id === r.id)!)} />
       )}
     </Panel>
   );

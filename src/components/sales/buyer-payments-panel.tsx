@@ -19,7 +19,7 @@ export function BuyerPaymentsPanel({ name, payments }: { name: string; payments:
   const rows = payments.map((p) => ({ id: p.key, date: farmDay(p.date), amount: naira(p.amount), method: p.kind === "later" ? methodLabel(p.method) : { value: methodLabel(p.method), sub: p.kind }, for: `${shortDate(p.sale.date, false)} · ${count(p.sale.birds)} birds`, by: p.by }));
   return (
     <Panel flush title="Payments">
-      {rows.length ? <LedgerTable dense caption={`Payments from ${name}, newest first`} columns={columns} rows={rows} /> : <p className="m-0 px-6 pb-5 text-body text-ink-muted">No payments yet.</p>}
+      {rows.length ? <LedgerTable dense caption={`Payments from ${name}, newest first`} columns={columns} rows={rows} filters={[{ key: "method", label: "Method" }, { key: "by", label: "Recorded by" }]} /> : <p className="m-0 px-6 pb-5 text-body text-ink-muted">No payments yet.</p>}
     </Panel>
   );
 }

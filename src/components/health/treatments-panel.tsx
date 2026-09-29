@@ -24,7 +24,7 @@ export function TreatmentsPanel({ rows, onRecord }: { rows: HealthRecordRow[]; o
   }));
   return (
     <Panel flush title="Drugs and supplements" subtitle={treatmentsSummary(rows)} action={{ label: "Record a treatment", onClick: onRecord }}>
-      {rows.length ? <LedgerTable dense caption="Drugs and supplements given, newest first" columns={columns} rows={table} /> : <p className="m-0 px-6 pb-5 text-body text-ink-muted">Record each drug, vaccine booster or supplement with how much, the cost and why. It shows here and on the Set.</p>}
+      {rows.length ? <LedgerTable dense caption="Drugs and supplements given, newest first" columns={columns} rows={table} filters={[{ key: "set", label: "Set" }, { key: "item", label: "Item" }, { key: "by", label: "Entered by" }]} /> : <p className="m-0 px-6 pb-5 text-body text-ink-muted">Record each drug, vaccine booster or supplement with how much, the cost and why. It shows here and on the Set.</p>}
     </Panel>
   );
 }

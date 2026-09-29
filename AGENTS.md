@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-29 — Tables: search, filters and a pinned first column
+- **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P0.5)
+- **Summary:** Melvin asked for every table to copy the Rumor guest table and to get search and filters. `LedgerTable` now runs on TanStack Table v9. Every table has a search box, and tables with useful groups have a Filter button: its choices come from the rows, each with a count, and a filter with only one choice is hidden. When a table scrolls sideways its first column stays put, with a soft fade beside it. Row taps are ignored after a drag, on a control inside the row, or when closing an overlay above it. Tables can show placeholder rows while loading and show "Nothing matches" with a way to clear the search. Totals hide while the rows are narrowed. The Sets and Expenses phone lists use the same search. The toolbar is left out of print. The ledger layout is kept; virtual scrolling is not copied, because the farm's tables are small and sit inside the page scroll.
+- **Files:** `src/components/kotila/ledger-table.tsx`, `src/components/kotila/table/*`, `src/hooks/{use-ledger-query,use-table-scroll-state}.ts`, `src/utils/table/{cell-text,row-click}.ts` + tests, `src/types/ledger.ts`, `src/constants/set-status-labels.ts`, `src/components/ui/popover.tsx` (shadcn), every table caller (filters per table), `src/components/expenses/expense-phone-rows.tsx`, `e2e/table-search.spec.ts`, docs 08 and 11
+- **Packages:** @tanstack/react-table@9.2.4 (added)
+- **Migrations:** none
+- **Follow-ups:** Expenses' Filter button offers only Paid by and Receipt, because the screen already filters by Set, category and month. Search and filters reset when you leave the page (they aren't kept in the URL).
+
 ### 2026-09-29 — Finance figures refresh when a page opens
 - **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P2.5, P3.3)
 - **Summary:** Melvin found Finance stale. Cash position, P&L and capital now fetch again every time a page opens and count as fresh for one minute (`FINANCE_QUERY`). Sales and expenses used to refresh only the cash figure; they, feed buys and treatments with a cost now refresh all finance figures.

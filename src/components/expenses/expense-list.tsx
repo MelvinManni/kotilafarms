@@ -1,7 +1,7 @@
 "use client";
 // Expenses as a ledger on desktop and as rows on phones; a row opens the expense
 import { LedgerTable } from "@/components/kotila/ledger-table";
-import { Tag } from "@/components/kotila/tag";
+import { ExpensePhoneRows } from "@/components/expenses/expense-phone-rows";
 import type { ExpenseRow } from "@/types/expense";
 import { farmDay } from "@/utils/format/dates";
 import { naira } from "@/utils/format/naira";
@@ -21,6 +21,12 @@ const columns = [
   { key: "receipt", label: "Receipt" },
 ];
 
+// The screen above already filters by Set, category and month
+const FILTERS = [
+  { key: "by", label: "Paid by" },
+  { key: "proof", label: "Receipt" },
+];
+
 export function ExpenseList({ rows, onOpen }: { rows: ExpenseRow[]; onOpen: (e: ExpenseRow) => void }) {
   const table = rows.map((e) => ({
     id: e.id,
@@ -28,29 +34,19 @@ export function ExpenseList({ rows, onOpen }: { rows: ExpenseRow[]; onOpen: (e: 
     set: attribution(e),
     amount: e.possibleDuplicateOf ? { value: naira(e.amount), sub: "looks like a repeat", tone: "alert" as const } : naira(e.amount),
     by: e.paidBy?.name.split(" ")[0] ?? e.createdBy.split(" ")[0],
+    proof: e.receiptKey ? "With a receipt" : "No receipt",
     receipt: e.receiptKey ? { tag: { tone: "success" as const, label: "Receipt" } } : { value: "None", tone: "muted" as const },
   }));
+  const byId = new Map(rows.map((e) => [e.id, e]));
   return (
-    <>
-      <div className="hidden lg:block">
-        <LedgerTable dense caption="Expenses, newest first" columns={columns} rows={table} onRowClick={(r) => onOpen(rows.find((e) => e.id === r.id)!)} />
-      </div>
-      <ul className="m-0 flex list-none flex-col p-0 lg:hidden">
-        {rows.map((e) => (
-          <li key={e.id} className="border-t border-line-soft first:border-t-0">
-            <button type="button" onClick={() => onOpen(e)} className="flex w-full cursor-pointer items-center gap-3 border-0 bg-transparent px-5 py-3.5 text-left outline-none focus-visible:bg-row-hover">
-              <span className="flex min-w-0 grow flex-col gap-1">
-                <strong className="truncate text-body font-semibold text-ink">{e.description}</strong>
-                <span className="text-caption text-ink-muted">{farmDay(e.date)} · {e.category.name}</span>
-              </span>
-              <span className="flex shrink-0 flex-col items-end gap-1">
-                <strong className="text-body font-bold tabular-nums">{naira(e.amount)}</strong>
-                <Tag tone={e.capitalItem ? "deep" : e.overhead ? "neutral" : "success"}>{e.capitalItem ? "Capital" : e.overhead ? "Overhead" : `Set ${e.setNumber}`}</Tag>
-              </span>
-            </button>
-          </li>
-        ))}
-      </ul>
-    </>
+    <LedgerTable
+      dense
+      caption="Expenses, newest first"
+      columns={columns}
+      rows={table}
+      filters={FILTERS}
+      onRowClick={(r) => onOpen(byId.get(r.id)!)}
+      phone={(shown) => <ExpensePhoneRows rows={shown.map((r) => byId.get(r.id)!)} onOpen={onOpen} />}
+    />
   );
 }

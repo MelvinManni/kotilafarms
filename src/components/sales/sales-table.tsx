@@ -20,6 +20,13 @@ const columns = [
   { key: "method", label: "Method" },
 ];
 
+const FILTERS = [
+  { key: "set", label: "Set" },
+  { key: "kind", label: "Sold" },
+  { key: "owing", label: "Balance" },
+  { key: "method", label: "Method" },
+];
+
 type SalesTableProps = {
   sales: (SaleRow | OtherSaleRow)[];
   onOpen: (sale: SaleRow) => void;
@@ -32,9 +39,11 @@ type SalesTableProps = {
 export function SalesTable({ sales, onOpen, hideBuyer, caption = "Sales, newest first", footer }: SalesTableProps) {
   const rows = sales.map((s) =>
     s.kind === "manure"
-      ? { id: s.id, date: farmDay(s.date), buyer: { value: "Manure and droppings", sub: "Other sale" }, set: `Set ${s.set.number}`, birds: none, per: none, total: naira(s.amount), paid: naira(s.amount), bal: none, method: none }
+      ? { id: s.id, kind: "Manure", owing: "Paid in full", date: farmDay(s.date), buyer: { value: "Manure and droppings", sub: "Other sale" }, set: `Set ${s.set.number}`, birds: none, per: none, total: naira(s.amount), paid: naira(s.amount), bal: none, method: none }
       : {
           id: s.id,
+          kind: "Birds",
+          owing: s.balance > 0 ? "Still owed" : "Paid in full",
           date: farmDay(s.date),
           buyer: s.buyer.name,
           set: `Set ${s.set.number}`,
@@ -53,6 +62,7 @@ export function SalesTable({ sales, onOpen, hideBuyer, caption = "Sales, newest 
       columns={hideBuyer ? columns.filter((c) => c.key !== "buyer") : columns}
       footer={footer}
       rows={rows}
+      filters={FILTERS}
       onRowClick={(r) => {
         const sale = sales.find((s) => s.id === r.id);
         if (sale?.kind === "birds") onOpen(sale);

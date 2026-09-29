@@ -22,5 +22,5 @@ export function PeopleTable({ people, meId, onSelect }: { people: UserRow[]; meI
     last: { value: lastActive(p.lastActiveAt), tone: p.active ? undefined : ("muted" as const) },
     status: p.active ? { tag: { tone: "success" as const, label: "Active" } } : { tag: { tone: "closed" as const, label: "Deactivated" } },
   }));
-  return <LedgerTable caption="People with access" columns={columns} rows={rows} onRowClick={(row) => onSelect(people.find((p) => p.id === row.id)!)} />;
+  return <LedgerTable caption="People with access" columns={columns} rows={rows} filters={[{ key: "role", label: "Role" }, { key: "status", label: "Status" }]} onRowClick={(row) => onSelect(people.find((p) => p.id === row.id)!)} />;
 }

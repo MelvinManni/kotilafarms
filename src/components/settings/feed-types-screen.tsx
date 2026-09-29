@@ -25,7 +25,7 @@ export function FeedTypesScreen() {
       {feeds.isError ? <Notice tone="alert">{feeds.error.message}</Notice> : null}
       <Panel flush title="Feed types" subtitle={feeds.data?.length === 0 ? "No feeds yet. Add the starter, grower and finisher you buy." : "Select a feed to change it."}>
         {feeds.data?.length ? (
-          <LedgerTable caption="Feed types" columns={[{ key: "name", label: "Feed" }, { key: "bag", label: "Bag size", align: "right" }, { key: "status", label: "", align: "right" }]} rows={rows} onRowClick={(r) => setSheet({ feed: feeds.data!.find((f) => f.id === r.id) })} />
+          <LedgerTable caption="Feed types" columns={[{ key: "name", label: "Feed" }, { key: "bag", label: "Bag size", align: "right" }, { key: "status", label: "", align: "right" }]} rows={rows} filters={[{ key: "status", label: "Status" }]} onRowClick={(r) => setSheet({ feed: feeds.data!.find((f) => f.id === r.id) })} />
         ) : null}
       </Panel>
       {sheet ? <FeedTypeSheet feed={sheet.feed} onClose={() => setSheet(null)} /> : null}

@@ -2,6 +2,7 @@
 // Every Set as a ledger; money columns only when the API sent money
 import { useRouter } from "next/navigation";
 import { LedgerTable } from "@/components/kotila/ledger-table";
+import { SetCards } from "@/components/sets/set-cards";
 import type { SetSummary } from "@/types/sets";
 import { count } from "@/utils/format/count";
 import { shortDate } from "@/utils/format/dates";
@@ -46,5 +47,14 @@ export function SetsTable({ sets }: { sets: SetSummary[] }) {
         ]
       : []),
   ];
-  return <LedgerTable caption="Every Set, newest first" columns={columns} rows={sets.map(row)} onRowClick={(r) => router.push(`/sets/${r.id}`)} />;
+  return (
+    <LedgerTable
+      caption="Every Set, newest first"
+      columns={columns}
+      rows={sets.map(row)}
+      filters={[{ key: "status", label: "Stage" }]}
+      onRowClick={(r) => router.push(`/sets/${r.id}`)}
+      phone={(shown) => <SetCards sets={sets.filter((s) => shown.some((r) => r.id === s.id))} />}
+    />
+  );
 }

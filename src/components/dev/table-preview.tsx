@@ -21,7 +21,7 @@ export function TablePreview() {
   return (
     <PreviewSection title="Ledger table">
       <div className="rounded-xl border border-line bg-surface">
-        <LedgerTable caption="Sets" columns={columns} rows={rows} onRowClick={() => undefined} />
+        <LedgerTable caption="Sets" columns={columns} rows={rows} filters={[{ key: "status", label: "Stage" }]} onRowClick={() => undefined} />
       </div>
       <div className="rounded-xl border border-line bg-surface">
         <LedgerTable

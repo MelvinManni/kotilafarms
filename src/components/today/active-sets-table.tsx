@@ -13,6 +13,7 @@ export function ActiveSetsTable({ sets }: { sets: SetSummary[] }) {
   const rows = sets.map((s) => ({
     id: s.id,
     set: { value: `Set ${s.number}${s.pen ? ` · ${s.pen}` : ""}`, sub: s.status[0]!.toUpperCase() + s.status.slice(1) },
+    stage: { status: s.status },
     age: `Day ${s.dayOfAge}`,
     live: { value: count(s.liveBirds), sub: `of ${count(s.intake)} started` },
     mort: { value: pct(s.mortalityRate), sub: `${count(s.deaths)} birds` },
@@ -35,6 +36,7 @@ export function ActiveSetsTable({ sets }: { sets: SetSummary[] }) {
         ...(money ? [{ key: "spend", label: "Spend to date", align: "right" as const }] : []),
       ]}
       rows={rows}
+      filters={[{ key: "stage", label: "Stage" }]}
       onRowClick={(r) => router.push(`/sets/${r.id}`)}
     />
   );

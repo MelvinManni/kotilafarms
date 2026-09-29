@@ -16,7 +16,7 @@ export function CategoriesScreen() {
   const role = useCurrentUser().role;
   const categories = useCategories();
   const [sheet, setSheet] = useState<{ category?: ExpenseCategory } | null>(null);
-  const rows = (categories.data ?? []).map((c) => ({ id: c.id, name: c.name, capital: c.isCapitalEligible ? { tag: { tone: "deep" as const, label: "Capital items allowed" } } : { value: "—", tone: "muted" as const } }));
+  const rows = (categories.data ?? []).map((c) => ({ id: c.id, name: c.name, kind: c.isCapitalEligible ? "Capital items allowed" : "No capital items", capital: c.isCapitalEligible ? { tag: { tone: "deep" as const, label: "Capital items allowed" } } : { value: "—", tone: "muted" as const } }));
   return (
     <div className="flex flex-col gap-6">
       <PageHeader title="Settings" actions={<Button variant="primary" icon="plus" onClick={() => setSheet({})}>Add a category</Button>} />
@@ -27,6 +27,8 @@ export function CategoriesScreen() {
           caption="Expense categories"
           columns={[{ key: "name", label: "Category" }, { key: "capital", label: "Capital items", align: "right" }]}
           rows={rows}
+          filters={[{ key: "kind", label: "Capital items" }]}
+          loading={categories.isPending}
           onRowClick={(r) => setSheet({ category: categories.data!.find((c) => c.id === r.id) })}
         />
       </Panel>

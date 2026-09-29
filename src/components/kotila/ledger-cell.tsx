@@ -1,27 +1,13 @@
 // One LedgerTable cell: a plain value, or value + sub-line, tone, tag, status or delta
-import { isValidElement, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Delta } from "@/components/kotila/delta";
 import { StatusChip } from "@/components/kotila/status-chip";
-import { Tag, type TagTone } from "@/components/kotila/tag";
-import type { SetStatus } from "@/types/set-status";
+import { Tag } from "@/components/kotila/tag";
+import type { Cell } from "@/types/ledger";
+import { isCellObject } from "@/utils/table/cell-text";
 import { cn } from "@/utils/cn";
 
-export type CellObject = {
-  value?: ReactNode;
-  sub?: ReactNode;
-  tone?: "alert" | "owed" | "muted";
-  figure?: boolean;
-  tag?: { tone: TagTone; label: string };
-  status?: SetStatus;
-  day?: number;
-  delta?: { direction: "up" | "down"; label: string; tone?: "good" | "bad" };
-};
-
-export type Cell = ReactNode | CellObject;
-
-function isCellObject(cell: Cell): cell is CellObject {
-  return typeof cell === "object" && cell !== null && !isValidElement(cell) && !Array.isArray(cell);
-}
+export type { Cell, CellObject } from "@/types/ledger";
 
 export function LedgerCell({ cell }: { cell: Cell }) {
   if (!isCellObject(cell)) return <>{cell}</>;

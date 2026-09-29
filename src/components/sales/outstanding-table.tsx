@@ -22,8 +22,9 @@ export function OutstandingTable({ owed, onOpen }: { owed: Outstanding; onOpen: 
     total: naira(s.total),
     paid: naira(s.paid),
     bal: { value: naira(s.balance), tone: "owed" as const, figure: true },
+    late: s.daysOwed > 14 ? "Over two weeks" : "Two weeks or less",
     age: { tag: { tone: s.daysOwed > 14 ? ("alert" as const) : ("warning" as const), label: `${s.daysOwed} ${s.daysOwed === 1 ? "day" : "days"}` } },
   }));
   const footer = { buyer: `${owed.buyers} ${owed.buyers === 1 ? "buyer" : "buyers"}`, total: naira(owed.total.sales), paid: naira(owed.total.paid), bal: { value: naira(owed.total.balance), tone: "owed" as const } };
-  return <LedgerTable dense caption="Buyers who still owe money" columns={columns} rows={rows} footer={footer} onRowClick={(r) => onOpen(owed.rows.find((s) => s.id === r.id)!)} />;
+  return <LedgerTable dense caption="Buyers who still owe money" columns={columns} rows={rows} footer={footer} filters={[{ key: "set", label: "Set" }, { key: "late", label: "Owed for" }]} onRowClick={(r) => onOpen(owed.rows.find((s) => s.id === r.id)!)} />;
 }

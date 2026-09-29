@@ -9,7 +9,7 @@ import { pct } from "@/utils/format/percent";
 
 export function SetCards({ sets }: { sets: SetSummary[] }) {
   return (
-    <ul className="m-0 flex list-none flex-col p-0 lg:hidden">
+    <ul className="m-0 flex list-none flex-col p-0">
       {sets.map((s) => {
         const closed = s.status === "closed";
         return (
