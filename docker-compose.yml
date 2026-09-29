@@ -25,35 +25,24 @@ services:
     # Never started with the app unless asked for: production uses AWS RDS
     profiles: ["localdb"]
 
-  # Applies committed migrations, then exits; the app starts only if it succeeds
-  migrate:
+  # Migrates and sets up the database on start, then serves (see docker-start.sh)
+  app:
     image: kotila-farm:${IMAGE_TAG:-local}
     build:
       context: .
       args:
         NODE_VERSION: ${NODE_VERSION:-24}
-    command: ["node", "db-migrate.cjs"]
+    restart: unless-stopped
     env_file: .env
     environment:
       # Inside a container "localhost" is the container itself; CONTAINER_DATABASE_URL overrides for the all-local stack
       DATABASE_URL: ${CONTAINER_DATABASE_URL:-${DATABASE_URL}}
+    ports:
+      - "${APP_PORT:-3000}:3000"
     depends_on:
       db:
         condition: service_healthy
         required: false
-    profiles: ["app"]
-
-  app:
-    image: kotila-farm:${IMAGE_TAG:-local}
-    restart: unless-stopped
-    env_file: .env
-    environment:
-      DATABASE_URL: ${CONTAINER_DATABASE_URL:-${DATABASE_URL}}
-    ports:
-      - "${APP_PORT:-3000}:3000"
-    depends_on:
-      migrate:
-        condition: service_completed_successfully
     profiles: ["app"]
 
 volumes:

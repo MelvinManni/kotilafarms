@@ -16,6 +16,8 @@ async function main() {
 }
 
 main().catch((error: unknown) => {
-  console.error(error instanceof Error ? error.message : error);
+  // Drizzle wraps the real reason (e.g. a wrong password) in `cause`
+  const cause = error instanceof Error && error.cause instanceof Error ? `\n${error.cause.message}` : "";
+  console.error(error instanceof Error ? `${error.message}${cause}` : error);
   process.exit(1);
 });

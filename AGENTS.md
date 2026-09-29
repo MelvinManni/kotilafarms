@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-29 — Container migrates and makes the first owner on start
+- **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P0.2, P2.6)
+- **Summary:** On Deckhand the app started but no owner was made: the image only ran `server.js`, and the migrate and setup jobs were never run. The image now starts with `docker-start.sh`: migrate, then setup when `FIRST_OWNER_EMAIL` is set, then the app. Both steps are safe to repeat; if either fails, the container stops. `DB_SETUP_ON_START=false` skips both. Compose drops its separate `migrate` job. A failed migration now prints the real reason (e.g. "password authentication failed"). Checked with the built image against a blank database: first start makes the owner, later starts leave it alone, removing `FIRST_OWNER_*` skips setup, a wrong password stops the container.
+- **Files:** `docker-start.sh` (new), `Dockerfile`, `docker-compose.yml`, `src/db/migrate.ts`, `.env.example`, `docs/13-deploy.md`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** Migrations have no lock; with more than one copy of the app, set `DB_SETUP_ON_START=false` and migrate once per deploy.
+
 ### 2026-09-27 — App container for AWS: database outside the image
 - **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P0.2, P2.6)
 - **Summary:** Melvin said Docker is for running the app, and production's database is AWS RDS. Compose no longer forces the local database: the app and a `migrate` job use `DATABASE_URL` from `.env` (RDS in production); the Postgres container is now only for local development (`localdb` profile, or `docker compose up -d db`). The image can migrate and set up a database by itself (`node db-migrate.cjs`, `node db-setup.cjs`, bundled with esbuild), and trusts Amazon's RDS certificates so `?sslmode=verify-full` works. Fixed a production-only PDF bug: behind HTTPS the session cookie is `__Secure-…`, which Chromium won't store for `http://127.0.0.1`, so the printer now passes the Cookie header through instead. Checked end to end: built the image, pointed it at a separate database, ran migrate and setup (twice), signed in and downloaded a PDF from the container.
