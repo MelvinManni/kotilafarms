@@ -4,6 +4,7 @@ import { and, eq, gt, isNull, sql } from "drizzle-orm";
 import type { Executor } from "@/db";
 import { invites, users } from "@/db/schema";
 import { conflict, notFound, unprocessable } from "@/server/errors";
+import { recordCreate, recordNote } from "@/server/audit";
 import { hashPassword } from "@/server/password";
 import { hashToken, newToken } from "@/server/tokens";
 import type { InviteAcceptInput, InviteCreateInput } from "@/schemas/auth";
@@ -54,6 +55,9 @@ export async function acceptInvite(db: Executor, input: InviteAcceptInput) {
           .values({ name: row.invite.name, email: row.invite.email, role: row.invite.role, passwordHash, invitedBy: row.invite.createdBy })
           .returning();
     await tx.update(invites).set({ acceptedAt: new Date() }).where(eq(invites.id, row.invite.id));
+    // The person accepting the link is the one acting
+    if (existing) await recordNote(tx, "users", user!.id, "password", "Set a new password from a reset link", { userId: user!.id });
+    else await recordCreate(tx, "users", user!.id, { userId: user!.id });
     return { email: user!.email };
   });
 }

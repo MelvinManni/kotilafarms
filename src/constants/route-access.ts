@@ -19,6 +19,7 @@ const ACCESS: [string, Role[]][] = [
   ["/print", ["owner", "manager"]],
   ["/settings", ["owner", "manager"]],
   ["/settings/users", ["owner"]],
+  ["/settings/activity", ["owner"]],
 ];
 
 export function isPublicPath(pathname: string): boolean {
