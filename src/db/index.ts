@@ -2,9 +2,10 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "@/db/schema";
+import { withRdsCa } from "@/db/with-rds-ca";
 
 export function createDb(url: string) {
-  const pool = new Pool({ connectionString: url, max: 10 });
+  const pool = new Pool({ connectionString: withRdsCa(url), max: 10 });
   return drizzle({ client: pool, schema, casing: "snake_case" });
 }
 

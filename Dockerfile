@@ -24,7 +24,7 @@ ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 HOSTNAME=0.0.0.0
 RUN apk add --no-cache chromium
 # Amazon RDS certificates, so `?sslmode=verify-full` connections to RDS are trusted
 RUN wget -qO /usr/local/share/rds-global-bundle.pem https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem && chmod 644 /usr/local/share/rds-global-bundle.pem
-ENV CHROMIUM_PATH=/usr/bin/chromium INTERNAL_APP_URL=http://127.0.0.1:3000 NODE_EXTRA_CA_CERTS=/usr/local/share/rds-global-bundle.pem MIGRATIONS_DIR=/app/db/migrations DB_SETUP_ON_START=true
+ENV CHROMIUM_PATH=/usr/bin/chromium INTERNAL_APP_URL=http://127.0.0.1:3000 NODE_EXTRA_CA_CERTS=/usr/local/share/rds-global-bundle.pem RDS_CA_FILE=/usr/local/share/rds-global-bundle.pem MIGRATIONS_DIR=/app/db/migrations DB_SETUP_ON_START=true
 RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
 COPY --from=build /app/public ./public
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./

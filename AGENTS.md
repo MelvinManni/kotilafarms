@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-29 — SSL to RDS no longer depends on NODE_EXTRA_CA_CERTS
+- **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P0.2)
+- **Summary:** On Deckhand, sign-in and setup failed with "self-signed certificate in certificate chain": the app reached RDS over SSL but didn't trust Amazon's certificate. The image was fine; the same error comes back when `NODE_EXTRA_CA_CERTS` is overridden (e.g. set to a laptop path in the host's settings). Both database pools now hand pg the certificate file directly (`sslrootcert`, from `RDS_CA_FILE` in the image) for any `*.rds.amazonaws.com` host. Checked in the image with Deckhand's hardening against the real RDS: with `NODE_EXTRA_CA_CERTS` broken and even without `sslmode`, migrations run and the owner signs in.
+- **Files:** `src/db/with-rds-ca.ts` (new, with test), `src/db/index.ts`, `src/db/run-migrations.ts`, `Dockerfile`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** If Deckhand's settings have `NODE_EXTRA_CA_CERTS`, remove it (harmless now, but it prints a warning).
+
 ### 2026-09-29 — Sign-in logs database errors instead of showing them
 - **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P1.1)
 - **Summary:** On production, sign-in failed because the app couldn't read the database, and NextAuth sent the raw SQL error (with the email) to the browser, while the server log didn't have the real reason. Sign-in now logs "Sign-in could not read the database: …" with Postgres's reason, and the page says "the app can't reach its database". `describeDbError` has its own file so sign-in doesn't load the migrator. Checked on a production build with a wrong database password.
