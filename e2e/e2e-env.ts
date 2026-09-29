@@ -5,6 +5,10 @@ if (existsSync(".env")) process.loadEnvFile(".env");
 
 function databaseUrl(): string {
   const base = new URL(process.env.TEST_DATABASE_URL ?? process.env.DATABASE_URL ?? "postgres://kotila:kotila@localhost:5432/kotila");
+  // e2e drops and recreates its database: never borrow a remote server from DATABASE_URL
+  if (!process.env.TEST_DATABASE_URL && !["localhost", "127.0.0.1", "db"].includes(base.hostname)) {
+    throw new Error(`DATABASE_URL points at ${base.hostname}. Set TEST_DATABASE_URL to a local database for e2e.`);
+  }
   base.pathname = "/kotila_e2e";
   return base.toString();
 }

@@ -1,10 +1,9 @@
 "use client";
 // App frame: side rail on desktop; green band, top bar and tab bar on phones (recorders always get the phone frame)
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { SyncRunner } from "@/components/offline/sync-runner";
 import { SyncSheet } from "@/components/offline/sync-sheet";
-import { AccountSheet } from "@/components/layout/account-sheet";
 import { MoreSheet } from "@/components/layout/more-sheet";
 import { PhoneBand } from "@/components/layout/phone-band";
 import { SideRail } from "@/components/layout/side-rail";
@@ -22,9 +21,10 @@ import { cn } from "@/utils/cn";
 
 export function AppShell({ user, children }: { user: SessionUser; children: ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const conflicts = useConflicts(can.manageOperations(user.role));
   const sync = useSyncSummary(user.id, conflicts.data?.length ?? 0);
-  const [sheet, setSheet] = useState<"account" | "more" | "sync" | null>(null);
+  const [sheet, setSheet] = useState<"more" | "sync" | null>(null);
   const phoneOnly = user.role === "recorder";
   const active = activeNavId(pathname);
   // Owed balances show as a badge on Sales for people who see money
@@ -51,7 +51,7 @@ export function AppShell({ user, children }: { user: SessionUser; children: Reac
         <div className={cn("relative min-w-0 grow", phoneOnly && "mx-auto max-w-120")}>
           <PhoneBand className={phoneOnly ? undefined : "lg:hidden"} />
           <div className={cn("fixed inset-x-3 top-3 z-30", phoneOnly ? "mx-auto max-w-114" : "lg:hidden")}>
-            <TopBar sync={syncWithAction} user={user} onAccount={() => setSheet("account")} />
+            <TopBar sync={syncWithAction} user={user} onAccount={() => router.push("/profile")} />
           </div>
           <main data-shell={phoneOnly ? "phone" : "responsive"} className={cn("relative flex flex-col gap-4 px-4 pt-24 pb-30", !phoneOnly && "lg:gap-6 lg:px-10 lg:pt-8 lg:pb-10")}>
             {children}
@@ -60,7 +60,6 @@ export function AppShell({ user, children }: { user: SessionUser; children: Reac
             <TabBar items={phoneOnly ? RECORDER_TABS : MANAGER_TABS} active={active} onPress={(id) => id === "more" && setSheet("more")} />
           </div>
         </div>
-        {sheet === "account" ? <AccountSheet user={user} onClose={() => setSheet(null)} /> : null}
         {sheet === "more" ? <MoreSheet role={user.role} onClose={() => setSheet(null)} /> : null}
         {sheet === "sync" ? <SyncSheet user={user} onClose={() => setSheet(null)} /> : null}
       </div>

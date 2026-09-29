@@ -3,11 +3,12 @@ import type { Role } from "@/types/role";
 
 declare module "next-auth" {
   interface Session {
-    user: { id: string; name: string; email: string; role: Role };
+    user: { id: string; name: string; email: string; role: Role; mustChangePassword?: boolean };
   }
   interface User {
     id: string;
     role: Role;
+    mustChangePassword?: boolean;
   }
 }
 
@@ -17,5 +18,6 @@ declare module "next-auth/jwt" {
     role?: Role;
     active?: boolean;
     checkedAt?: number;
+    mustChangePassword?: boolean;
   }
 }

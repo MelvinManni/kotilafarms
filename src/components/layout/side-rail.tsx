@@ -60,9 +60,14 @@ export function SideRail({ items, active, badges = {}, user, sync, settingsHref 
           Settings
         </Link>
         {user ? (
-          <div className="flex border-t border-sidebar-border px-2 pt-4">
+          <Link
+            href="/profile"
+            aria-label={`Your profile: ${user.name}`}
+            aria-current={active === "profile" ? "page" : undefined}
+            className="flex rounded-md border-t border-sidebar-border px-2 pt-4 pb-1 outline-none hover:bg-sidebar-accent focus-visible:shadow-focus"
+          >
             <Person name={user.name} role={user.role} />
-          </div>
+          </Link>
         ) : null}
       </div>
     </nav>

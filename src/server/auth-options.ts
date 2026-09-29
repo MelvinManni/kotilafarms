@@ -6,6 +6,7 @@ import * as z from "zod/mini";
 import { env } from "@/lib/env";
 import { getDb } from "@/server/db";
 import { allowAttempt, clearAttempts } from "@/server/rate-limit";
+import { recordAuthEvent } from "@/server/auth-events";
 import { checkCredentials, currentStatus } from "@/server/services/sign-in";
 import { describeDbError } from "@/db/describe-db-error";
 
@@ -37,23 +38,30 @@ export function authOptions(): NextAuthOptions {
             throw new Error("db_unavailable");
           });
           if (user) clearAttempts(key);
+          await recordAuthEvent(getDb(), { kind: user ? "sign_in" : "sign_in_failed", email: parsed.data.email, userId: user?.id, ip });
           return user;
         },
       }),
     ],
     callbacks: {
-      async jwt({ token, user }) {
-        if (user) return { ...token, id: user.id, role: user.role, active: true, checkedAt: Date.now() };
-        if (token.id && Date.now() - (token.checkedAt ?? 0) > REFRESH_MS) {
+      async jwt({ token, user, trigger }) {
+        if (user) return { ...token, id: user.id, role: user.role, active: true, mustChangePassword: Boolean(user.mustChangePassword), checkedAt: Date.now() };
+        // "update" comes right after a password change, so the gate lifts at once
+        if (token.id && (trigger === "update" || Date.now() - (token.checkedAt ?? 0) > REFRESH_MS)) {
           const status = await currentStatus(getDb(), token.id);
-          return { ...token, role: status?.role, name: status?.name ?? token.name, active: Boolean(status?.active), checkedAt: Date.now() };
+          return { ...token, role: status?.role, name: status?.name ?? token.name, active: Boolean(status?.active), mustChangePassword: Boolean(status?.mustChangePassword), checkedAt: Date.now() };
         }
         return token;
       },
       async session({ session, token }) {
         if (!token.id || !token.role || token.active === false) return { ...session, user: undefined as never };
-        session.user = { id: token.id, name: token.name ?? "", email: token.email ?? "", role: token.role };
+        session.user = { id: token.id, name: token.name ?? "", email: token.email ?? "", role: token.role, mustChangePassword: Boolean(token.mustChangePassword) };
         return session;
+      },
+    },
+    events: {
+      async signOut({ token }) {
+        if (token?.email) await recordAuthEvent(getDb(), { kind: "sign_out", email: token.email, userId: token.id });
       },
     },
   };

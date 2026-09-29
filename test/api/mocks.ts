@@ -14,12 +14,13 @@ vi.mock("@/server/farm-today", () => ({ farmToday: () => apiState.today }));
 vi.mock("@/server/auth", async (importOriginal) => {
   const original = await importOriginal<typeof import("@/server/auth")>();
   const { unauthorized } = await import("@/server/errors");
+  const { passwordGate } = await import("@/server/password-gate");
   return {
     ...original,
     getSessionUser: async () => apiState.user,
     requireSession: async () => {
       if (!apiState.user) throw unauthorized();
-      return apiState.user;
+      return passwordGate(apiState.user);
     },
   };
 });

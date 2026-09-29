@@ -38,7 +38,7 @@ export function TopBar({ title, back, sync, user, onAccount }: TopBarProps) {
           <button
             type="button"
             onClick={onAccount}
-            aria-label={`Account: ${user.name}`}
+            aria-label={`Your profile: ${user.name}`}
             className="flex size-11 cursor-pointer items-center justify-center rounded-full bg-green-100 font-display text-[15px] font-semibold text-green-700 outline-none focus-visible:shadow-focus"
           >
             {initials(user.name)}
