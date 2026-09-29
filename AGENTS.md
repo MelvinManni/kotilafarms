@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-09-29 — Say when RDS refuses a connection without SSL
+- **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P0.2)
+- **Summary:** The production database was never reached because `DATABASE_URL` had no `?sslmode=verify-full`; RDS answered "no pg_hba.conf entry … no encryption". The migrate error now adds "Add ?sslmode=verify-full to the end of DATABASE_URL." Checked against the real RDS (read only): without SSL refused, with SSL connected, database empty.
+- **Files:** `src/db/run-migrations.ts`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** Settings fix on Deckhand: add `?sslmode=verify-full` to `DATABASE_URL`.
+
 ### 2026-09-29 — The app creates its tables and first owner when it starts
 - **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P0.2)
 - **Summary:** On Deckhand nobody could sign in: the tables were never created, because the start script wasn't reliably run. The app now migrates and adds the first owner itself when the server starts (`src/instrumentation.ts` → `dbOnStart`), turned on in the image by `DB_SETUP_ON_START=true`; the image starts with plain `node server.js` again and `docker-start.sh` is gone. New `pnpm build:prod` (`db:generate`, `build`, `build:db-scripts`), which the Dockerfile runs. Migrate and setup logic moved to `runMigrations` and `runSetup`, shared by the app and the two scripts. Checked with the legacy builder: blank database → tables, owner, sign-in as owner works; restart leaves the owner alone; unreachable database logs the reason in 15s and the app keeps serving.
