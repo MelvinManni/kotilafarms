@@ -29,7 +29,7 @@ export function ExpensesScreen() {
   const router = useRouter();
   const isOwner = useCurrentUser().role === "owner";
   const today = todayInZone(FARM_TIMEZONE);
-  const [filters, setFilters] = useState<ExpenseFilterState>({ month: params.get("set") ? undefined : today.slice(0, 7), set: params.get("set") ?? undefined, show: "all" });
+  const [filters, setFilters] = useState<ExpenseFilterState>({ set: params.get("set") ?? undefined, show: "all" });
   const [sheet, setSheet] = useState<{ kind: "add" } | { kind: "edit" | "history" | "remove"; expense: ExpenseRow } | null>(params.get("add") ? { kind: "add" } : null);
   const list = useExpenses(filters);
   const sets = useSets();

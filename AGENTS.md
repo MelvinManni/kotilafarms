@@ -170,6 +170,14 @@ Append a new entry at the **top** of the list below after every change (feature,
 
 ## Change log
 
+### 2026-10-03 — Expenses open on every month
+- **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P1.5)
+- **Summary:** Melvin asked for Expenses to show every month by default instead of the current month. The Month filter now starts on "Every month"; picking a month still narrows the list.
+- **Files:** `src/components/expenses/expenses-screen.tsx`
+- **Packages:** none
+- **Migrations:** none
+- **Follow-ups:** none.
+
 ### 2026-09-29 — Capital page no longer crashes on an old saved cache
 - **Agent:** Claude Code (Opus 5.5) · **Task:** follow-up (P1.8, P3.3)
 - **Summary:** Melvin saw "e.removed is undefined" on `/finance/capital`. The phone's saved query cache still held capital data from before removed shareholders existed, and the page drew it before fetching again. The cache version (`CACHE_BUSTER`) was never bumped after P1.8; it is now, so old caches are thrown away.
